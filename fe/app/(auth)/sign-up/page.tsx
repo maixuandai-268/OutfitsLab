@@ -24,7 +24,7 @@ export default function SignUp() {
     };
 
     return (
-        <div className="w-full max-w-md px-6 bg-white flex flex-col shadow-2xl shadow-[#FFE9CC]/50 rounded-3xl">
+        <div className="w-full max-w-md px-6 flex flex-col shadow-2xl shadow-[#FFE9CC]/50 rounded-3xl">
             <main className="mt-[85px] flex justify-center pb-12">
                 <div className="w-full max-w-[448px] text-center">
 
@@ -72,7 +72,7 @@ export default function SignUp() {
 
                         <div>
                             <label htmlFor="email" className="block mb-2 text-sm font-semibold text-left text-[#2C2C2C]">
-                                Tên hiển thị
+                                Display Name
                             </label>
                             <div className="relative">
                                 <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#D4A23F]">
