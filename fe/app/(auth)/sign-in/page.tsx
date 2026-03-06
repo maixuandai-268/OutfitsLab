@@ -16,10 +16,10 @@ export default function SignIn() {
                     </div>
 
                     <h1 className="mb-1 text-2xl font-bold">
-                        Welcome Back
+                        Welcome back
                     </h1>
                     <p className="text-[#4d4d4d] text-[16px] mb-6">
-                        Sign in to continue to OutfitsLab
+                        Sign In to continue to OutfitsLab
                     </p>
 
                     <div className="flex flex-col mt-10">
@@ -35,7 +35,7 @@ export default function SignIn() {
                             placeholder="Enter your password"
                             className="mt-1 w-[448px] h-[50px] border border-[#FFE9CC] rounded-[16px] pl-10 pr-4 py-3" />
                     </div>
-                    {/* dòng này là nhớ mật khẩu và quên mật khẩu, nhớ mật khẩu thì có checkbox còn quên mật khẩu thì có link để reset password, 2 cái này nằm cùng 1 dòng và cách nhau bằng margin-left auto để đẩy quên mật khẩu về bên phải */}
+
                     <div className="mt-8 flex w-full items-center">
                         <input
                             type="checkbox"
@@ -52,7 +52,7 @@ export default function SignIn() {
                         Sign In →
                     </div>
 
-                    <p className="mt-10 ml-8 text-center text-[14px] text-[#4d4d4d]">Or continue with</p>
+                    <p className="mt-10 ml-8 text-center text-[14px] text-[#4d4d4d]">Or continue with </p>
 
                     <div className="grid grid-cols-2 gap-2 w-[448px] h-[50px] mt-6 font-semibold">
                         <button className="w-[216px] h-[52px] border-3 border-[#FFE9CC] rounded-[16px]">Google</button>
@@ -62,6 +62,7 @@ export default function SignIn() {
                         Don't have an account?
                         <a href="Sign Up" className="ml-1 text-[#D4A23F]">Create one</a>
                     </p>
+
 
                     <section className="w-full h-full flex flex-col items-center py-16">
                         <div className="w-[448px] h-[1px] bg-[#FFE9CC] mb-12 "></div>
