@@ -81,7 +81,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                         </div>
 
                         <div className="mt-4">
-                            <label className="text-[14px] font-semibold">Store Logo</label>
+                            <label className="text-[14px] font-semibold">Store Logo vip </label>
                             <div className="w-full h-[152px] mt-2 border-2 border-[#FFE9CC] rounded-xl bg-[#FFF4E6] flex flex-col items-center justify-center cursor-pointer">
                                 <span className="text-xl">⬆</span>
                                 <p className="text-[14px] font-medium">
