@@ -4,6 +4,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 require('dotenv').config();
 
 const password = process.env.DB_PASSWORD || '';
@@ -25,4 +27,4 @@ const password = process.env.DB_PASSWORD || '';
     UsersModule,
   ],
 })
-export class AppModule { }
+export class AppModule { };

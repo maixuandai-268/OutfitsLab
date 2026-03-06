@@ -4,6 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Report } from './report.entity';
+import { ReportDto } from './dto/report.dto';
 
 @Injectable()
 export class IssueReportService {
@@ -12,7 +13,7 @@ export class IssueReportService {
         private reportRepository: Repository<Report>,
     ) {}
 
-    async create(report: Report): Promise<Report> {
+    async create(report: ReportDto): Promise<Report> {
         return this.reportRepository.save(report);
     }
 

@@ -8,8 +8,8 @@ export class IssueReportController {
     constructor(private readonly issueReportService: IssueReportService) {}
 
     @Post()
-    async reportIssue(@Body() ReportDto: ReportDto) {
-        return this.issueReportService.create(ReportDto);
+    async reportIssue(@Body() reportDto: ReportDto) {
+        return this.issueReportService.create(reportDto);
     }
 
     @Get()
