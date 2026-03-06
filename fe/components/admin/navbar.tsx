@@ -4,9 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Try On", href: "/try-on" },
-  { label: "Shop", href: "/shop" },
+  { label: "Home", href: "/admin" },
+  { label: "Us", href: "/admin" },
+  { label: "Home", href: "/admin" },
+  { label: "Home", href: "/admin" },
+  { label: "Home", href: "/admin" },
+  { label: "Home", href: "/admin" },
 ];
 
 export default function Navbar() {
@@ -14,12 +17,7 @@ export default function Navbar() {
 
   return (
     <nav className="h-14 border-b bg-white flex items-center px-6">
-      {/* Logo */}
-      <Link href="/" className="font-bold text-lg mr-8">
-        VIRTUAL FIT
-      </Link>
-
-      {/* Nav items */}
+      
       <div className="flex gap-6">
         {navItems.map((item) => {
           const active = pathname === item.href;
