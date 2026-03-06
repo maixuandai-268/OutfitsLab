@@ -5,9 +5,10 @@ import { useState } from "react";
 
 export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
 
     return (
-        <div className="w-full max-w-md px-6 bg-white flex flex-col">
+        <div className="w-full max-w-md px-6 flex flex-col">
             <div className="mt-[85px] flex justify-center ">
                 <div className="text-center ">
                     <div className="w-16 h-16 bg-[#D4A23F] rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
@@ -22,7 +23,7 @@ export default function SignIn() {
                     </p>
 
                     <div className="flex flex-col mt-10">
-                        <label htmlFor="Email" className="text-[14px] font-semibold text-left">Email Address</label>
+                        <label htmlFor="Email" className="text-[14px] font-bold text-left">Email Address</label>
                         <input type="email"
                             placeholder="you@example.com"
                             className="mt-1 w-[448px] h-[50px] border border-[#FFE9CC] rounded-[16px] pl-10 pr-4 py-3" />
@@ -34,11 +35,17 @@ export default function SignIn() {
                             placeholder="Enter your password"
                             className="mt-1 w-[448px] h-[50px] border border-[#FFE9CC] rounded-[16px] pl-10 pr-4 py-3" />
                     </div>
-
-                    <div className="mt-8 flex w-full">
-                        <button className="w-4 h-4 border border-[#666666] rounded-[2px] bg-white text-left"></button>
-                        <h1 className="ml-2 text-[14px] text-[#4d4d4d]">Remember me</h1>
-                        <p className="ml-42 text-[14px] text-[#D4A23F]">Forgot password?</p>
+                    {/* dòng này là nhớ mật khẩu và quên mật khẩu, nhớ mật khẩu thì có checkbox còn quên mật khẩu thì có link để reset password, 2 cái này nằm cùng 1 dòng và cách nhau bằng margin-left auto để đẩy quên mật khẩu về bên phải */}
+                    <div className="mt-8 flex w-full items-center">
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                            className="w-4 h-4 border border-[#666666] rounded-[2px] bg-white appearance-none checked:bg-[#D4A23F] checked:border-[#D4A23F] relative checked:before:content-['✓'] checked:before:text-white checked:before:absolute checked:before:inset-0 checked:before:flex checked:before:items-center checked:before:justify-center"
+                        />
+                        <label htmlFor="remember" className="ml-2 text-[14px] text-[#4d4d4d] cursor-pointer">Remember me</label>
+                        <p className="ml-auto text-[14px] text-[#D4A23F]">Forgot password?</p>
                     </div>
 
                     <div className="mt-8 w-[448px] h-[50px] flex items-center justify-center border bg-[#BD8928] rounded-full text-white">
