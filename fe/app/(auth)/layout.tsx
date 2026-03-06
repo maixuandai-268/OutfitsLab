@@ -1,4 +1,4 @@
-import AuthHeader from "@/components/auth/AuthHeader";
+import AuthHeader from "@/app/(auth)/AuthHeader";
 
 export default function AuthLayout({
     children,
