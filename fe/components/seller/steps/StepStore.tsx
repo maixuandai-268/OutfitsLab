@@ -79,9 +79,9 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                                 </span>
                             </div>
                         </div>
-
+                        {/* dòng 4 */}
                         <div className="mt-4">
-                            <label className="text-[14px] font-semibold">Store Logo vip </label>
+                            <label className="text-[14px] font-semibold">Store Logo</label>
                             <div className="w-full h-[152px] mt-2 border-2 border-[#FFE9CC] rounded-xl bg-[#FFF4E6] flex flex-col items-center justify-center cursor-pointer">
                                 <span className="text-xl">⬆</span>
                                 <p className="text-[14px] font-medium">
@@ -91,6 +91,39 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                                     PNG, JPG Max 5MB, Square recommended)
                                 </p>
 
+                            </div>
+                        </div>
+                        {/*  dòng 5 */}
+                        <div className="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label htmlFor="Password" className="block mb-2 text-sm font-semibold text-left text-[#2C2C2C]">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="password"
+                                        id="Password"
+                                        name="Password"
+                                        placeholder="••••••••"
+                                        className="w-full h-14 pl-5 pr-5 rounded-2xl border border-[#FFE9CC] bg-[#FFFBF5] outline-none text-base transition-all"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="ConfirmPassword" className="block mb-2 text-sm font-semibold text-left text-[#2C2C2C]">
+                                    Confirm Password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="password"
+                                        id="ConfirmPassword"
+                                        name="ConfirmPassword"
+                                        placeholder="••••••••"
+                                        className="w-full h-14 pl-5 pr-5 rounded-2xl border border-[#FFE9CC] bg-[#FFFBF5] outline-none text-base transition-all"
+                                        required
+                                    />
+                                </div>
                             </div>
                         </div>
 
