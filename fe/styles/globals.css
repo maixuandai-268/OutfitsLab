@@ -1,10 +1,11 @@
-
 @import "tailwindcss";
 
-
+/* Tokens */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-geist-sans: var(--font-geist-sans);
+  --font-geist-mono: var(--font-geist-mono);
 }
 
 @theme inline {
@@ -14,7 +15,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark scheme tokens – OK */
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -22,11 +23,7 @@
   }
 }
 
-
 body {
-  /* Không set background ở đây để không che gradient trong layout */
-  /* background: transparent; */
   color: var(--foreground);
-  /* Đừng ép Arial, để font Geist từ layout hoạt động */
   font-family: var(--font-geist-sans, system-ui, sans-serif);
 }
