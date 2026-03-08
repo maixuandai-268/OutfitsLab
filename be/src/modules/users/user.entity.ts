@@ -1,16 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, UpdateDateColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
-  email: string;
+  @Column()   
+  email : string;
 
-<<<<<<< HEAD
-  @Column({ nullable: true })
-=======
   @Column({nullable : true})   
   firstName : string;
 
@@ -18,18 +15,27 @@ export class User {
   lastName : string;
 
   @Column()
->>>>>>> 4312d6179b418c70d7d5f75da24fd76d5ae06a21
   displayName: string;
 
-  @Column({ select: false }) // Password sẽ không bị lộ khi dùng lệnh find() thông thường
-  password: string;
+  @Column({ unique: true , nullable : true })
+  avatarUrl: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({select:false})
+  password : string;
+
+  @Column({nullable : true})
+  bio : string;
+
+  @Column({default : 1})
+  isActive : boolean;
 
   @Column({ default: 'user' })
   role: 'user' | 'admin' | 'shop';
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+  
 }
