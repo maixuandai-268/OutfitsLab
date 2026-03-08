@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity('blogs') // Tên bảng sẽ là 'blogs' trong pgAdmin 4
+@Entity('blogs') 
 export class Blog {
   @PrimaryGeneratedColumn()
   id: number;

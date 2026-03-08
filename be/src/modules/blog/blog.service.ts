@@ -1,32 +1,36 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException,NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './blog.entity';
+import { Blog } from './blog.entity';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
   constructor(
-    @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
+    @InjectRepository(Blog)
+    private readonly blogRepository: Repository<Blog>,
   ) {}
 
-  // Tạo bài viết mới
-  async create(data: Partial<Post>) {
-    try {
-      const newPost = this.postRepository.create(data);
-      return await this.postRepository.save(newPost);
-    } catch (error) {
-      if (error.code === '23505') { // Mã lỗi duplicate slug trong Postgres
-        throw new ConflictException('Slug này đã tồn tại rồi!');
-      }
-      throw error;
-    }
+  async create(createBlogDto: CreateBlogDto) {
+    const existing = await this.blogRepository.findOne({ where: { slug: createBlogDto.slug } });
+    if (existing) throw new ConflictException('Slug blog này đã tồn tại!');
+
+    const newBlog = this.blogRepository.create(createBlogDto);
+    return await this.blogRepository.save(newBlog);
   }
 
-  // Lấy tất cả bài viết để hiển thị ra Next.js
   async findAll() {
-    return await this.postRepository.find({
-      order: { createdAt: 'DESC' }, // Bài mới nhất lên đầu
-    });
+    return await this.blogRepository.find({ order: { createdAt: 'DESC' } });
   }
+
+  async update(id: number, updateBlogDto: UpdateBlogDto) {
+  const blog = await this.blogRepository.findOneBy({ id });
+  if (!blog) {
+    throw new NotFoundException(`Không tìm thấy Blog với id ${id}`);
+  }
+  
+  Object.assign(blog, updateBlogDto);
+  return await this.blogRepository.save(blog);
+}
 }
