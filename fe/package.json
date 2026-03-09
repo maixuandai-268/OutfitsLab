@@ -10,13 +10,14 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
-    "@react-three/drei": "9.88.13",
-    "@react-three/fiber": "8.15.19",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
     "lucide-react": "^0.563.0",
     "next": "^16.1.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "three": "^0.182.0",
+    "three-stdlib": "^2.36.1",
     "zustand": "^5.0.10"
   },
   "devDependencies": {
