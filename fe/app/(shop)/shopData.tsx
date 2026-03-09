@@ -18,6 +18,8 @@ export interface Shop {
   location: string;
   created_at: string;
   rating: number;
+  reviews: number;
+  specialty: string;
 }
 
 export interface Product {
@@ -60,11 +62,11 @@ export const USERS: User[] = [
 ];
 
 export const SHOPS: Shop[] = [
-  { id: 1, owner_id: 2, shop_name: 'Vintage Vibes Store', avatar_url: 'https://marketplace.canva.com/EAGLzFyubFo/1/0/1600w/canva-black-and-white-modern-personal-brand-logo-1vnFbGGdNKQ.jpg', description: 'Retro 90s', location: 'New York, NY', created_at: '2020-05-15', rating: 4.8 },
-  { id: 2, owner_id: 4, shop_name: 'Urban Streetwear', avatar_url: 'https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=300&q=80', description: 'Modern Streetwear', location: 'Los Angeles, CA', created_at: '2021-08-22', rating: 4.6 },
-  { id: 3, owner_id: 5, shop_name: 'Minimalist Haven', avatar_url: 'https://images.playground.com/c47b059d-ae11-4989-9eb6-aa069a2a0cf0.jpeg', description: 'Simple & Clean', location: 'Chicago, IL', created_at: '2022-03-10', rating: 4.7 },
-  { id: 4, owner_id: 6, shop_name: 'Sporty Pro Gear', avatar_url: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80', description: 'Gym & Yoga', location: 'Miami, FL', created_at: '2019-11-05', rating: 4.9 },
-  { id: 5, owner_id: 7, shop_name: 'Elegant Ladies', avatar_url: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=300&q=80', description: 'Evening Dresses', location: 'San Francisco, CA', created_at: '2020-05-15', rating: 4.5 },
+  { id: 1, owner_id: 2, shop_name: 'Vintage Vibes Store', avatar_url: 'https://marketplace.canva.com/EAGLzFyubFo/1/0/1600w/canva-black-and-white-modern-personal-brand-logo-1vnFbGGdNKQ.jpg', description: 'Retro 90s', location: 'New York, NY', created_at: '2020-05-15', rating: 4.8, reviews: 324, specialty: 'Vintage & Retro' },
+  { id: 2, owner_id: 4, shop_name: 'Urban Streetwear', avatar_url: 'https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=300&q=80', description: 'Modern Streetwear', location: 'Los Angeles, CA', created_at: '2021-08-22', rating: 4.6, reviews: 124, specialty: 'Streetwear' },
+  { id: 3, owner_id: 5, shop_name: 'Minimalist Haven', avatar_url: 'https://images.playground.com/c47b059d-ae11-4989-9eb6-aa069a2a0cf0.jpeg', description: 'Simple & Clean', location: 'Chicago, IL', created_at: '2022-03-10', rating: 4.7, reviews: 524, specialty: 'Minimalist Fashion' },
+  { id: 4, owner_id: 6, shop_name: 'Sporty Pro Gear', avatar_url: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80', description: 'Gym & Yoga', location: 'Miami, FL', created_at: '2019-11-05', rating: 4.9, reviews: 124, specialty: 'Gym & Yoga' },
+  { id: 5, owner_id: 7, shop_name: 'Elegant Ladies', avatar_url: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=300&q=80', description: 'Evening Dresses', location: 'San Francisco, CA', created_at: '2020-05-15', rating: 4.9, reviews: 424, specialty: 'Luxury & Evening Wear' },
 ];
 
 export const PRODUCTS: Product[] = [
