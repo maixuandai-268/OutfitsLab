@@ -1,17 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './blog.entity';
+import { Blog } from './blog.entity';
 
 @Injectable()
 export class BlogService {
   constructor(
-    @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
+    @InjectRepository(Blog)
+    private readonly postRepository: Repository<Blog>,
   ) {}
 
   // Tạo bài viết mới
-  async create(data: Partial<Post>) {
+  async create(data: Partial<Blog>) {
     try {
       const newPost = this.postRepository.create(data);
       return await this.postRepository.save(newPost);
