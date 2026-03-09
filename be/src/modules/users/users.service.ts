@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable , NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -21,10 +22,28 @@ export class UsersService {
   }
 
   findByEmailWithPassword(email: string) {
-  return this.userRepo
-    .createQueryBuilder('user')
-    .addSelect('user.password')
-    .where('user.email = :email', { email })
-    .getOne();
-}
+    return this.userRepo
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepo.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`Có lỗi khi tìm id người dùng : ${id}`);
+    }
+
+    Object.assign(user, updateUserDto);
+    return await this.userRepo.save(user);
+  }
+
+  async remove(id: number){
+    const user = await this.userRepo.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`Có lỗi khi tìm id người dùng : ${id}`);
+    }
+    return await this.userRepo.delete(user);
+  }
 }

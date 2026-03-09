@@ -1,13 +1,13 @@
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, UpdateDateColumn } from 'typeorm';
 /* eslint-disable prettier/prettier */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
-  email: string;
+  @Column()   
+  email : string;
 
   @Column({nullable : true})   
   firstName : string;
@@ -18,15 +18,25 @@ export class User {
   @Column()
   displayName: string;
 
-  @Column({ select: false }) // Password sẽ không bị lộ khi dùng lệnh find() thông thường
-  password: string;
+  @Column({ unique: true , nullable : true })
+  avatarUrl: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({select:false})
+  password : string;
+
+  @Column({nullable : true})
+  bio : string;
+
+  @Column({default : 1})
+  isActive : boolean;
 
   @Column({ default: 'user' })
   role: 'user' | 'admin' | 'shop';
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+  
 }
