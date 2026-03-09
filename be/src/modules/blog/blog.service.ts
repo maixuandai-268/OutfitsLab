@@ -1,36 +1,45 @@
-import { Injectable, ConflictException,NotFoundException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Blog } from './blog.entity';
-import { CreateBlogDto } from './dto/create-blog.dto';
-import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
   constructor(
     @InjectRepository(Blog)
-    private readonly blogRepository: Repository<Blog>,
+    private readonly blogRepo : Repository<Blog>,
   ) {}
 
-  async create(createBlogDto: CreateBlogDto) {
-    const existing = await this.blogRepository.findOne({ where: { slug: createBlogDto.slug } });
-    if (existing) throw new ConflictException('Slug blog này đã tồn tại!');
-
-    const newBlog = this.blogRepository.create(createBlogDto);
-    return await this.blogRepository.save(newBlog);
+  // Tạo bài viết mới
+  async create(data: Partial<Blog>) {
+    try {
+      const newPost = this.blogRepo.create(data);
+      return await this.blogRepo.save(newPost);
+    } catch (error) {
+      if (error.code === '23505') { // Mã lỗi duplicate slug trong Postgres
+        throw new ConflictException('Slug này đã tồn tại rồi!');
+      }
+      throw error;
+    }
   }
 
+  // Lấy tất cả bài viết để hiển thị ra Next.js
   async findAll() {
-    return await this.blogRepository.find({ order: { createdAt: 'DESC' } });
+    return await this.blogRepo.find({ order: { createdAt: 'DESC' } });
   }
 
-  async update(id: number, updateBlogDto: UpdateBlogDto) {
-  const blog = await this.blogRepository.findOneBy({ id });
+  async update(id: number, updateBlogDto: UpdateBlogDto)  {
+  const blog = await this.blogRepo.findOneBy({ id });
   if (!blog) {
-    throw new NotFoundException(`Không tìm thấy Blog với id ${id}`);
+    throw new BadRequestException(`Không tìm thấy Blog với id ${id}`);
   }
   
   Object.assign(blog, updateBlogDto);
-  return await this.blogRepository.save(blog);
+  return await this.blogRepo.save(blog);
 }
 }

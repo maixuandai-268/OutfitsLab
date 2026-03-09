@@ -1,25 +1,22 @@
-import { Controller, Get, Patch, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Param, Patch, Body, UsePipes, ValidationPipe, Delete, UseGuards } from '@nestjs/common';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../common/decorators/get-user.decorator';
 
-@Controller('users') // Đường dẫn thực tế: /api/users (do prefix trong main.ts)
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+@Controller('blog')
+export class UserController {
+  constructor(private readonly userService : UsersService) {}
 
-  @Get()
-  findAll() {
-    return this.usersService.getAllUsers();
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('user')
+  update(@GetUser() user,
+   @Body() updateUserDto: UpdateUserDto) {
+   return this.userService.update(user.sub, updateUserDto);
   }
 
-  @Patch(':id/status')
-  toggleStatus(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.toggleStatus(id);
-  }
-
-  @Patch(':id/role')
-  changeRole(
-    @Param('id', ParseIntPipe) id: number,
-    @Body('role') role: 'user' | 'admin' | 'shop',
-  ) {
-    return this.usersService.changeRole(id, role);
+   @Delete(':id')
+    remove(@GetUser() user) {
+    return this.userService.remove(user.sub);
   }
 }

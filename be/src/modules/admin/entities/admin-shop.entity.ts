@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity('shops') 
 export class AdminShopEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -8,9 +7,21 @@ export class AdminShopEntity {
   @Column()
   shop_name: string;
 
+  @Column()
+  owner_name: string; 
+
+  @Column()
+  owner_email: string;
+
+  @Column({ default: 0 })
+  docs_count: number; 
+
   @Column({ default: 'pending' })
   status: string; 
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  submitted_at: Date; 
+
   @Column({ nullable: true })
-  reject_reason: string; 
+  reject_reason?: string; 
 }

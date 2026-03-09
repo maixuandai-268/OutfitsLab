@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, UpdateDateColumn } from 'typeorm';
+/* eslint-disable prettier/prettier */
 
 @Entity('users')
 export class User {
