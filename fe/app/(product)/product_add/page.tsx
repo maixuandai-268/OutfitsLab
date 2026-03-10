@@ -130,12 +130,12 @@ export default function AddProductPage() {
             {/* Available Sizes */}
             <div>
               <label className="block text-sm font-semibold mb-3">Available Sizes</label>
-              <div className="flex flex-wrap justify-between gap-1">
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                 {sizes.map(size => (
                   <button
                     key={size}
                     type="button"
-                    className="w-20 h-12 rounded-lg font-semibold border-2 border-[#ffe9cc]"
+                    className="w-full h-12 rounded-lg font-semibold border-2 border-[#ffe9cc]"
                   >
                     {size}
                   </button>
@@ -146,12 +146,12 @@ export default function AddProductPage() {
             {/* Available Colors */}
             <div>
               <label className="block text-sm font-semibold mb-3">Available Colors</label>
-              <div className="flex flex-wrap justify-between gap-1">
+              <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
                 {colors.map(item => (
                   <button
                     key={item.name}
                     type="button"
-                    className="w-16 h-16 rounded-lg border-2 border-gray-300"
+                    className="w-full h-12 sm:h-16 rounded-2xl border-2 border-gray-300"
                     style={{ backgroundColor: item.color }}
                     title={item.name}
                   />
