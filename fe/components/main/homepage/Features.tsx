@@ -32,7 +32,7 @@ const items = [
 
 export default function Features() {
   return (
-    <section className="w-full py-16 md:py-20">
+    <section className="w-full max-w-7xl mx-auto py-16 md:py-20">
       {/* Heading với spacing rộng hơn */}
       <div className="text-center mb-16 space-y-4 gap-4">
         <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900">
