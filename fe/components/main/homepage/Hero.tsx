@@ -1,6 +1,6 @@
 // components/main/homepage/Hero.tsx
 "use client";
-import { ShoppingOutlined, AppstoreOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { ShoppingOutlined, AppstoreOutlined  } from "@ant-design/icons";
 import Link from "next/link";
 import ThreeCard from "./ThreeCard";
 
@@ -60,15 +60,6 @@ export default function Hero() {
               Khám phá Catalog
             </Link>
 
-            <a
-              href="https://youtu.be/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-100 transition-all text-slate-700 hover:text-emerald-600"
-            >
-              <PlayCircleOutlined className="text-xl" /> 
-              Xem demo
-            </a>
           </div>
 
           {/* Stats - spacing tốt hơn */}
