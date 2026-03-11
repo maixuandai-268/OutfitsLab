@@ -16,7 +16,6 @@ export class BlogService {
     private readonly blogRepo : Repository<Blog>,
   ) {}
 
-  // Tạo bài viết mới
   async create(data: Partial<Blog>) {
     try {
       const newPost = this.blogRepo.create(data);
