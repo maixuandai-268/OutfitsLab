@@ -4,7 +4,7 @@ interface StepStoreProps {
     primaryCategory: string;
     onChange: (field: string, value: string) => void;
 }
-export default function StepStore({ storeName, storeDescription, primaryCategory, onChange }: StepStoreProps) {
+export default function StepStore({ storeName, storeDescription, primaryCategory, onChange, prevStep }: StepStoreProps) {
     return (
         <div className="bg-white mt-0.5r">
             <div className="w-full flex flex-col">
@@ -63,7 +63,10 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                     <button className="bg-yellow-600 hover:bg-yellow-700 text-white py-3 rounded-full font-medium">
                         Start Adding Products
                     </button>
-                    <button className="border border-yellow-600 text-yellow-600 py-3 rounded-full font-medium hover:bg-yellow-50">
+                    <button
+                        type="button"
+                        onClick={prevStep}
+                        className="border border-yellow-600 text-yellow-600 py-3 rounded-full font-medium hover:bg-yellow-50">
                         Back to Home
                     </button>
                 </div>
@@ -78,10 +81,8 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                         <li>→ Go live and start selling!</li>
                     </ul>
                 </div>
-
             </div>
         </div>
-
     )
 }
 

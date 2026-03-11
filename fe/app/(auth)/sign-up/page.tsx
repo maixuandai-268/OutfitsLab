@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
@@ -28,12 +30,14 @@ export default function SignUp() {
             <main className="mt-4 flex justify-center pb-12">
                 <div className="text-center">
                     <div className="h-[74px] max-w-7xl mx-auto px-6 flex items-center justify-center">
-                        <img src="/images/logo.png"
-                            alt="OutfitsLab"
-                            width={300}
-                            height={60}
-                            priority
-                            className="object-contain" />
+                        <Link href={"/product"}>
+                            <img
+                                src="/images/logo.png"
+                                alt="OutfitsLab"
+                                width={300}
+                                height={60}
+                                className="object-contain" />
+                        </Link>
 
                     </div>
 
@@ -85,7 +89,7 @@ export default function SignUp() {
                             </label>
                             <div className="relative">
                                 <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#2C2C2C]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                                 </div>
                                 <input
                                     type="text"
@@ -125,7 +129,7 @@ export default function SignUp() {
                             </label>
                             <div className="relative">
                                 <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#2C2C2C]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 lucide lucide-phone-icon lucide-phone"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233_14_14_0_0_0_6.392_6.384" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-5 h-5 lucide lucide-phone-icon lucide-phone"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233_14_14_0_0_0_6.392_6.384" /></svg>
                                 </div>
                                 <input
                                     type="tel"
@@ -205,14 +209,14 @@ export default function SignUp() {
                     <div className="grid grid-cols-2 gap-4">
                         <button
                             type="button"
-                            className="h-14 border-2 border-[#222222] rounded-2xl hover:bg-[#999DA2] bg-black flex items-center justify-center gap-3 font-semibold text-[#FFFFFF] transition-all active:scale-95"
+                            className="h-14 border-2 border-[#222222] rounded-2xl hover:bg-[#999DA2] bg-black flex items-center justify-center gap-3 font-bold text-[#FFFFFF] transition-all active:scale-95"
                         >
                             <span className="heading text-xl">G</span>
                             Google
                         </button>
                         <button
                             type="button"
-                            className="h-14 border-2 border-[#222222] rounded-2xl hover:bg-[#999DA2] bg-black flex items-center justify-center gap-3 font-semibold text-[#FFFFFF] transition-all active:scale-95"
+                            className="h-14 border-2 border-[#222222] rounded-2xl hover:bg-[#999DA2] bg-black flex items-center justify-center gap-3 font-bold text-[#FFFFFF] transition-all active:scale-95"
                         >
                             <span className="heading text-xl text-blue-600">f</span>
                             Facebook

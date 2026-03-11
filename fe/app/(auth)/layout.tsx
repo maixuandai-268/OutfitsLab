@@ -4,8 +4,6 @@ const adlam = ADLaM_Display({
     subsets: ['latin'],
     weight: '400'
 })
-import AuthHeader from "@/app/(auth)/AuthHeader";
-
 export default function AuthLayout({
     children,
 }: {
@@ -13,9 +11,6 @@ export default function AuthLayout({
 }) {
     return (
         <div className="min-h-screen flex flex-col">
-
-            {/* <AuthHeader /> */}
-
 
             <main className="flex-1 flex justify-center">
                 {children}
