@@ -9,7 +9,7 @@ export default function BecomPage() {
     const [formData, setFormData] = useState({ name: "" });
     return (
         <div className="min-h-screen bg-[#FFFBF5]">
-            <StepConfirm name={""} />
+            <StepStore name={""} />
         </div>
     )
 }

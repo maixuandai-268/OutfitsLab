@@ -1,3 +1,9 @@
+import { ADLaM_Display } from 'next/font/google'
+
+const adlam = ADLaM_Display({
+    subsets: ['latin'],
+    weight: '400'
+})
 import AuthHeader from "@/app/(auth)/AuthHeader";
 
 export default function AuthLayout({
@@ -8,7 +14,7 @@ export default function AuthLayout({
     return (
         <div className="min-h-screen flex flex-col">
 
-            <AuthHeader />
+            {/* <AuthHeader /> */}
 
 
             <main className="flex-1 flex justify-center">
