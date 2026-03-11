@@ -7,6 +7,7 @@ import { Injectable, ConflictException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Blog } from './blog.entity';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -21,14 +22,13 @@ export class BlogService {
       const newPost = this.blogRepo.create(data);
       return await this.blogRepo.save(newPost);
     } catch (error) {
-      if (error.code === '23505') { // Mã lỗi duplicate slug trong Postgres
+      if (error.code === '23505') { 
         throw new ConflictException('Slug này đã tồn tại rồi!');
       }
       throw error;
     }
   }
 
-  // Lấy tất cả bài viết để hiển thị ra Next.js
   async findAll() {
     return await this.blogRepo.find({ order: { createdAt: 'DESC' } });
   }

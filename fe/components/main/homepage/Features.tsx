@@ -1,4 +1,3 @@
-// components/main/homepage/Features.tsx
 "use client";
 import {
   ExperimentOutlined,
@@ -9,24 +8,24 @@ import {
 
 const items = [
   {
-    icon: <ExperimentOutlined className="text-emerald-600" />,
-    title: "Thử Nghiệm Dễ Dàng",
-    desc: "Tương tác mượt, thay chất liệu & phụ kiện theo thời gian thực.",
+    icon: <ExperimentOutlined />,
+    title: "Thử Nghiệm AI",
+    desc: "Mô phỏng vải mượt mà, thay đổi chất liệu trong 0.1s.",
   },
   {
-    icon: <AppstoreAddOutlined className="text-emerald-600" />,
-    title: "Catalog Đa Dạng",
-    desc: "Kho outfit phong phú từ seller độc lập đến thương hiệu lớn.",
+    icon: <AppstoreAddOutlined />,
+    title: "Catalog Vô Tận",
+    desc: "Hàng nghìn mẫu thiết kế từ cộng đồng thiết kế toàn cầu.",
   },
   {
-    icon: <TeamOutlined className="text-emerald-600" />,
-    title: "Cộng Đồng Seller",
-    desc: "Chia sẻ preset, nhận phản hồi & phát triển shop nhanh.",
+    icon: <TeamOutlined />,
+    title: "Mạng Xã Hội",
+    desc: "Chia sẻ outfit, nhận feedback và lên xu hướng.",
   },
   {
-    icon: <ShoppingCartOutlined className="text-emerald-600" />,
-    title: "E‑Commerce Tích Hợp",
-    desc: "Thanh toán & vận chuyển đồng bộ với nền tảng của bạn.",
+    icon: <ShoppingCartOutlined />,
+    title: "Mua Sắm 1-Click",
+    desc: "Thanh toán an toàn, vận chuyển nhanh chóng tức thì.",
   },
 ];
 
@@ -38,51 +37,26 @@ export default function Features() {
         <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900">
           Tại Sao Chọn <span className="text-emerald-600">CustomOutfit3D</span>?
         </h3>
-        <p className="text-slate-600 text-lg mx-auto text-center mt-4 mb-4">
-          Khám phá những tính năng vượt trội giúp bạn tạo ra trải nghiệm thời trang số hoàn hảo
-        </p>
       </div>
 
-      {/* Grid với spacing tốt hơn */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {items.map((it, idx) => (
           <div
             key={idx}
-            className="group p-8 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
-            style={{
-              background: "rgba(255,255,255,.75)",
-              backdropFilter: "saturate(150%) blur(16px)",
-              boxShadow:
-                "0 10px 30px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.7)",
-              border: "1px solid rgba(255,255,255,.7)",
-              borderRadius: 24,
-            }}
+            className="group p-10 bg-white/50 backdrop-blur-md border border-white/80 rounded-[2.5rem] hover:bg-white hover:shadow-2xl hover:shadow-pink-100 transition-all duration-500 text-center"
           >
-            <div className="flex justify-center mb-6">
-              <div 
-                className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 grid place-content-center shadow-md transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
-              >
-                <div className="text-3xl text-black">
-                  {it.icon}
-                </div>
-              </div>
+            <div className="mb-6 inline-flex w-16 h-16 rounded-3xl bg-pink-50 text-[#ff0080] items-center justify-center text-3xl group-hover:rotate-12 transition-transform duration-500">
+              {it.icon}
             </div>
-
-            {/* Title */}
-            <h4 className="font-bold text-xl text-slate-900 text-center mb-3 transition-colors group-hover:text-emerald-600">
+            <h4 className="font-black text-slate-800 text-xl mb-4 uppercase tracking-tight">
               {it.title}
             </h4>
-
-            {/* Description */}
-            <p className="text-slate-600 text-sm leading-relaxed text-center">
+            <p className="text-slate-400 text-sm font-medium leading-relaxed">
               {it.desc}
             </p>
-
-            {/* Hover indicator line */}
-            <div className="mt-6 h-1 w-0 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full mx-auto transition-all duration-300 group-hover:w-full"></div>
           </div>
         ))}
-      </div> 
+      </div>
     </section>
   );
 }
