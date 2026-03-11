@@ -1,8 +1,3 @@
-"use client";
-
-
-import { useState } from "react";
-
 interface StepStoreProps {
     storeName: string;
     storeDescription: string;
@@ -13,6 +8,7 @@ interface StepStoreProps {
 export default function StepStore({ storeName, storeDescription, primaryCategory, onChange, nextStep, prevStep }: StepStoreProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
+export default function StepStore({ storeName, storeDescription, primaryCategory, onChange }: StepStoreProps) {
     return (
         <div className="mt-0.5 bg-white">
             <div className="w-full flex flex-col">
@@ -135,6 +131,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                                 </div>
                             </div>
                         </div>
+
                         {/* dòng 6  */}
                         <div className="mt-6 p-4 bg-[#FFF4E6] rounded-2xl flex items-center">
 
@@ -157,6 +154,9 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                             </p>
 
                         </div>
+
+                        {/* dòng 6 */}
+
 
 
                         {/* Buttons */}

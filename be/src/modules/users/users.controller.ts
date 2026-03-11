@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Patch, Body, UsePipes, ValidationPipe, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Patch, Body, UsePipes, ValidationPipe, Delete, UseGuards, Req } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,4 +19,10 @@ export class UserController {
     remove(@GetUser() user) {
     return this.userService.remove(user.sub);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me')
+  getMe(@GetUser() user) {
+  return this.userService.findById(user.sub);
+}
 }

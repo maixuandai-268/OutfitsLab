@@ -46,4 +46,10 @@ export class UsersService {
     }
     return await this.userRepo.delete(user);
   }
+
+  findById(id: number) {
+  return this.userRepo.findOne({
+    where: { id },
+  });
+}
 }
