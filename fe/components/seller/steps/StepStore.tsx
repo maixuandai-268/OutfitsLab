@@ -5,6 +5,9 @@ interface StepStoreProps {
     onChange: (field: string, value: string) => void;
 }
 
+export default function StepStore({ storeName, storeDescription, primaryCategory, onChange, nextStep, prevStep }: StepStoreProps) {
+    const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
 export default function StepStore({ storeName, storeDescription, primaryCategory, onChange }: StepStoreProps) {
     return (
         <div className="mt-0.5 bg-white">
@@ -57,7 +60,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                             <input type="text"
                                 placeholder="Describe your store..."
                                 className="w-full h-[146px] border border-[#FFE9CC] rounded-2xl bg-[#FFFBF5] pl-4 pb-22" />
-                            <h1 className="mt-2 text-gray-500 text-[12px]">0/500 characters</h1>
+                            <h1 className="mt-2 text-gray-500 text-[12px]">500 characters</h1>
                         </div>
 
                         <div className="mt-4">
@@ -83,7 +86,9 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                         <div className="mt-4">
                             <label className="text-[14px] font-semibold">Store Logo</label>
                             <div className="w-full h-[152px] mt-2 border-2 border-[#FFE9CC] rounded-xl bg-[#FFF4E6] flex flex-col items-center justify-center cursor-pointer">
-                                <span className="text-xl">⬆</span>
+                                <span className="text-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-upload-icon lucide-upload"><path d="M12 3v12" /><path d="m17 8-5-5-5 5" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></svg>
+                                </span>
                                 <p className="text-[14px] font-medium">
                                     Click to upload or drag and drop
                                 </p>
@@ -126,9 +131,57 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                                 </div>
                             </div>
                         </div>
+
+                        {/* dòng 6  */}
+                        <div className="mt-6 p-4 bg-[#FFF4E6] rounded-2xl flex items-center">
+
+                            <input
+                                type="checkbox"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                                className="w-4 h-4 border border-[#666666] mr-2"
+                            />
+
+                            <p className="text-[14px] text-[#4d4d4d]">
+                                I agree to the
+                                <span className="text-[#D19F42] cursor-pointer ml-1">
+                                    Terms of Service
+                                </span>
+                                <span className="mx-1">and</span>
+                                <span className="text-[#D19F42] cursor-pointer">
+                                    Seller Agreement
+                                </span>
+                            </p>
+
+                        </div>
+
                         {/* dòng 6 */}
 
 
+
+                        {/* Buttons */}
+
+                        <div className="flex justify-between mt-6">
+
+                            <button
+                                type="button"
+                                onClick={prevStep}
+                                className="w-[180px] h-[50px] border border-[#D19F42] text-[#D19F42] rounded-full font-medium"
+                            >
+                                Back
+                            </button>
+
+                            <button
+                                type="button"
+                                disabled={!rememberMe}
+                                onClick={nextStep}
+                                className={`w-[220px] h-[50px] rounded-full text-white font-medium 
+        ${rememberMe ? "bg-[#D19F42]" : "bg-[#E5CFA2] cursor-not-allowed"}`}
+                            >
+                                Create Store
+                            </button>
+
+                        </div>
 
                     </div>
                 </div>

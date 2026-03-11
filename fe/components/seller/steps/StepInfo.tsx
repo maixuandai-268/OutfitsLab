@@ -1,7 +1,7 @@
 interface StepInfoProps {
-    name: string;
+    nextStep: () => void;
 }
-export default function StepInfo({ name }: StepInfoProps) {
+export default function StepInfo({ nextStep }: StepInfoProps) {
     return (
         <div className="mt-0.5 bg-white">
             <div className="w-full flex flex-col">
@@ -76,9 +76,11 @@ export default function StepInfo({ name }: StepInfoProps) {
                             <p className="text-gray-500 text-[14px]">We use your information to create your seller account and help customers contact you about their purchases.</p>
                         </div>
 
-                        <h1 className="mt-8 border border-[#BD8928] bg-[#BD8928] rounded-full  w-full h-[50px]">
-
-                            <a href="StepStore" className="text-center text-white flex flex-col justify-center mt-3">Continue to Store Details →</a>
+                        <h1 className="mt-8">
+                            <button onClick={nextStep}
+                                className="text-center text-white flex flex-col justify-center mt-3 border border-[#BD8928] bg-[#BD8928] rounded-full  w-full h-[50px]">
+                                Continue to Store Details →
+                            </button>
                         </h1>
 
                     </div>
