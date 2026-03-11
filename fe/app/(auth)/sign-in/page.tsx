@@ -9,7 +9,7 @@ export default function SignIn() {
 
     return (
         <div className="w-full max-w-md px-6 flex flex-col">
-            <div className="mt-[85px] flex justify-center ">
+            <div className="mt-21.25 flex justify-center ">
                 <div className="text-center ">
                     <div className="w-16 h-16 bg-[#D4A23F] rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
                         O
@@ -26,7 +26,7 @@ export default function SignIn() {
                         <label htmlFor="Email" className="text-[14px] font-bold text-left">Email Address</label>
                         <input type="email"
                             placeholder="you@example.com"
-                            className="mt-1 w-[448px] h-[50px] border border-[#FFE9CC] rounded-[16px] pl-10 pr-4 py-3" />
+                            className="mt-1 w-md h-12.5 border border-[#FFE9CC] rounded-2xl pl-10 pr-4 py-3" />
                     </div>
 
                     <div className="flex flex-col mt-6">
@@ -56,7 +56,7 @@ export default function SignIn() {
 
                     <div className="grid grid-cols-2 gap-2 w-[448px] h-[50px] mt-6 font-semibold">
                         <button className="w-[216px] h-[52px] border-3 border-[#FFE9CC] rounded-[16px]">Google</button>
-                        <button className="w-[216px] h-[52px] border-3 border-[#FFE9CC] rounded-[16px]">Facebook</button>
+                        <button className="w-[216px] h-13 border-3 border-[#FFE9CC] rounded-[16px]">Facebook</button>
                     </div>
                     <p className="mt-6 mb-6 text-[14px] text-[#4d4d4d] text-center flex justify-center">
                         Don't have an account?

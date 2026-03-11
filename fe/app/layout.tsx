@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/loader.css";
 import "@/styles/admin.css";
+import Navbar from "@/components/main/navbar";
+import Footer from "@/components/footer";
+import { AuthProvider } from "@/context/AuthContext";
 
 
 const geistSans = Geist({
@@ -25,14 +28,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi">
       <body
-        className="antialiased text-slate-800 "
-        style={{
-          background: `radial-gradient(1200px 600px at 10% 10%, #fff6ea 0%, transparent 60%),
-                       radial-gradient(900px 500px at 90% 20%, #e9fff8 0%, transparent 60%),
-                       linear-gradient(135deg, #fbf8f3, #f6fbf9)`,
-        }}
       >
+        <AuthProvider>
+          <Navbar/>
           {children}
+        <Footer/>
+        </AuthProvider>
+        
       </body>
     </html>
   );

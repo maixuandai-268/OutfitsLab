@@ -6,7 +6,7 @@ import ThreeCard from "./ThreeCard";
 
 export default function Hero() {
   return (
-    <section className="w-full pb-20 mt-16">
+    <section className="w-full">
       {/* Grid layout với khoảng cách rộng hơn */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20 items-center">
         

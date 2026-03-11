@@ -7,6 +7,7 @@ import { Injectable, ConflictException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Blog } from './blog.entity';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -15,7 +16,6 @@ export class BlogService {
     private readonly blogRepo : Repository<Blog>,
   ) {}
 
-  // Tạo bài viết mới
   async create(data: Partial<Blog>) {
     try {
       const newPost = this.blogRepo.create(data);
