@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from "react";
+
 export default function AddProductPage() {
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
   const colors = [
@@ -10,6 +14,20 @@ export default function AddProductPage() {
     { name: 'Yellow', color: '#FFFF00' },
     { name: 'Pink', color: '#FF69B4' },
   ]
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+
+  const toggleSize = (size: string) => {
+    setSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    );
+  };
+
+  const toggleColor = (color: string) => {
+    setSelectedColors((prev) =>
+      prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
+    );
+  };
 
   return (
     <div className=" min-h-screen">
@@ -51,7 +69,7 @@ export default function AddProductPage() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold mb-2">Price</label>
-                <div className="flex items-center bg-[#fffbf5] px-4 h-[50px] border-2 border-[#ffe9cc] rounded-lg">
+                <div className="flex items-center bg-[#fffbf5] px-4 h-12.5 border-2 border-[#ffe9cc] rounded-lg">
                   <span className=" font-semibold mr-2">$</span>
                   <input
                     type="number"
@@ -63,7 +81,7 @@ export default function AddProductPage() {
 
               <div>
                 <label className="block text-sm font-semibold mb-2">Category</label>
-                <select className="w-full bg-[#fffbf5] px-4 h-[50px] border-2 border-[#ffe9cc] rounded-lg">
+                <select className="w-full bg-[#fffbf5] px-4 h-12.5 border-2 border-[#ffe9cc] rounded-lg">
                   <option>Choose option...</option>
                   <option>TOP</option>
                   <option>BOTTOM</option>
@@ -129,13 +147,13 @@ export default function AddProductPage() {
 
             {/* Available Sizes */}
             <div>
-              <label className="block text-sm font-semibold mb-3">Available Sizes</label>
               <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                 {sizes.map(size => (
                   <button
                     key={size}
                     type="button"
-                    className="w-full h-12 rounded-lg font-semibold border-2 border-[#ffe9cc]"
+                    className={`w-full h-12 rounded-lg font-semibold border-2 transition-colors duration-200 ${selectedSizes.includes(size) ? 'bg-[#d19f42] text-white border-[#d19f42]' : 'border-[#ffe9cc] hover:bg-[#fff4e6]'}`}
+                    onClick={() => toggleSize(size)}
                   >
                     {size}
                   </button>
@@ -146,15 +164,22 @@ export default function AddProductPage() {
             {/* Available Colors */}
             <div>
               <label className="block text-sm font-semibold mb-3">Available Colors</label>
-              <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+              <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
                 {colors.map(item => (
                   <button
-                    key={item.name}
+                    key={item.color}
                     type="button"
-                    className="w-full h-12 sm:h-16 rounded-2xl border-2 border-gray-300"
+                    className={`w-full h-12 sm:h-16 rounded-3xl border-2 flex justify-center items-center ${selectedColors.includes(item.color) ? 'border-[#d19f42] scale-110' : 'border-gray-300 hover:border-[#d19f42]'}`}
                     style={{ backgroundColor: item.color }}
-                    title={item.name}
-                  />
+                    title={item.color}
+                    onClick={() => toggleColor(item.color)}
+                  >
+                    {selectedColors.includes(item.color) && (
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-6 h-6 ${['#FFFFFF', '#FFFF00'].includes(item.color) ? 'text-black' : 'text-white'}`}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                    )}
+                  </button>
                 ))}
               </div>
             </div>
