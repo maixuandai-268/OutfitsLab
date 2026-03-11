@@ -31,10 +31,11 @@ const items = [
 
 export default function Features() {
   return (
-    <section className="w-full py-20">
-      <div className="text-center mb-16 space-y-4">
-        <h3 className="text-4xl md:text-5xl font-black text-slate-900 uppercase tracking-tighter">
-          Tại Sao Là <span className=" decoration-pink-300 decoration-8">OutfitsLab</span>?
+    <section className="w-full max-w-7xl mx-auto py-16 md:py-20">
+      {/* Heading với spacing rộng hơn */}
+      <div className="text-center mb-16 space-y-4 gap-4">
+        <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900">
+          Tại Sao Chọn <span className="text-emerald-600">CustomOutfit3D</span>?
         </h3>
       </div>
 

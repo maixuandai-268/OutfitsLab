@@ -11,13 +11,12 @@ export function ModelSelector() {
 
   return (
     <div className="space-y-2">
-      <div className="text-sm font-semibold">Body Model</div>
       <div className="grid grid-cols-2 gap-2">
         {ids.map((id) => (
           <button
             key={id}
             onClick={() => setModelId(id)}
-            className={`rounded-md border px-3 py-2 text-sm ${modelId === id ? 'border-orange-400 bg-orange-50' : 'border-gray-200 bg-white text-gray-700'}`}
+            className={`rounded-md border px-3 py-3 text-sm ${modelId === id ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-white text-gray-700'}`}
           >
             {id}
           </button>

@@ -2,15 +2,18 @@
 import Hero from '@/components/main/homepage/Hero'
 import Mission from '@/components/main/homepage/Mission'
 import Features from '@/components/main/homepage/Features'
+import FashionCTA from '@/components/main/homepage/FashionCTA'
+import SellerHero from '@/components/main/homepage/SellerHero'
 
 export default function Page() {
   return (
-    <> 
-    <main className="w-full max-w-7xl mx-auto flex flex-col px-6 md:px-12 lg:px-16">
-        <div className="flex flex-col gap-16 md:gap-20">
+    <main className="">
+        <div className=" w-full max-w-[95rem] mx-auto flex-col gap-16 md:gap-20 px-4 sm:px-6 lg:px-8">
           <Hero />
           <Mission />
           <Features />
+          <SellerHero />
+          <FashionCTA />
         </div>
     </main>
     </>

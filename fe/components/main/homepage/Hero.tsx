@@ -1,5 +1,5 @@
 "use client";
-import { ShoppingOutlined, AppstoreOutlined } from "@ant-design/icons";
+import { ShoppingOutlined, AppstoreOutlined  } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -44,6 +44,7 @@ export default function Hero() {
               <AppstoreOutlined className="text-xl text-[#ff0080]" /> 
               Khám phá sản phẩm
             </Link>
+
           </div>
 
           {/* Stats Section */}
