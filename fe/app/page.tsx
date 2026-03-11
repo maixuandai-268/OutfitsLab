@@ -5,12 +5,14 @@ import Features from '@/components/main/homepage/Features'
 
 export default function Page() {
   return (
-    <main className="w-full w-max-7xl mx-auto flex flex-col">
-        <div className="flex flex-col gap-16 md:gap-20 px-4 sm:px-6 lg:px-8">
+    <> 
+    <main className="w-full max-w-7xl mx-auto flex flex-col px-6 md:px-12 lg:px-16">
+        <div className="flex flex-col gap-16 md:gap-20">
           <Hero />
           <Mission />
           <Features />
         </div>
     </main>
+    </>
   )
 }
