@@ -19,13 +19,7 @@ interface FilterSectionProps {
   options: FilterOption[];
   selectedOptions: string[];
   onToggle: (value: string) => void;
-  /**
-   * Hiển thị:
-   *  - "chip-list": giống mockup (item được chọn là pill nền kem + có check icon)
-   *  - "checkbox" | "radio": fallback kiểu input truyền thống
-   */
   variant?: "chip-list" | "checkbox" | "radio";
-  /** Icon đầu mục (trang trí tiêu đề) */
   icon?: "category" | "color";
 }
 
@@ -46,14 +40,13 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
       <BgColorsOutlined className="text-[#C4872E]" />
     ) : null;
 
-  // ---- CHIP LIST (đẹp như ảnh) ----
   if (variant === "chip-list") {
     return (
       <section className="mb-2">
         <button
+          type="button"
           onClick={() => setIsExpanded((s) => !s)}
           className="w-full flex justify-between items-center mb-2"
-          aria-expanded={isExpanded}
           aria-controls={`section-${title}`}
         >
           <div className="flex items-center gap-2">
@@ -80,7 +73,6 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
                         ? "bg-[#FDF0DE] text-[#A36A1F] font-medium"
                         : "text-gray-700 hover:bg-gray-50",
                     ].join(" ")}
-                    aria-pressed={active}
                   >
                     <span className={active ? "opacity-100" : "opacity-0"}>
                       <CheckOutlined className="text-[#A36A1F] text-[12px]" />
@@ -97,12 +89,14 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   }
 
   // ---- Fallback: checkbox / radio (nếu muốn dùng kiểu cũ) ----
+  const inputType = variant === "radio" ? "radio" : "checkbox";
+
   return (
     <section className="mb-4">
       <button
+        type="button"
         onClick={() => setIsExpanded((s) => !s)}
         className="w-full flex justify-between items-center mb-2 font-medium text-gray-800"
-        aria-expanded={isExpanded}
         aria-controls={`section-${title}`}
       >
         <div className="flex items-center gap-2">
@@ -120,7 +114,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
               className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded"
             >
               <input
-                type={variant}
+                type={inputType}
                 checked={selectedOptions.includes(option.value)}
                 onChange={() => onToggle(option.value)}
                 className="mr-2 w-4 h-4"
