@@ -84,7 +84,7 @@ export default function ThreeScene({
     // Wrapper cần có kích thước (w/h) từ parent; ở đây ta chắc chắn Canvas fill 100%
     <div className={className} style={style}>
       <Canvas
-        className="!w-full !h-full"
+        className="w-full h-full"
         gl={{ antialias: true }}
         // ✅ Camera gần hơn và FOV rộng hơn để model to hơn
         camera={{ position: [0, 0.3, 1.8], fov: 45 }}

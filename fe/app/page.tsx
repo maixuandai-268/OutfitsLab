@@ -16,5 +16,6 @@ export default function Page() {
           <FashionCTA />
         </div>
     </main>
+    </>
   )
 }

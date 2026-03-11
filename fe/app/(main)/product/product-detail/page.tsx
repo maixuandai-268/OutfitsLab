@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { PlusOutlined, CodeSandboxOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { PRODUCTS, ORDERS, SHOPS } from '../../../shopData';
+import { PRODUCTS, ORDERS, SHOPS } from '../../../(shop)/shopData';
 
 export default function ProductsPage() {
   const params = useParams();

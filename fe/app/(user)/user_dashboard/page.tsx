@@ -128,6 +128,7 @@ function AboutSection() {
                   name={input.name}
                   value={input.value}
                   onChange={handleChange}
+                  placeholder={input.label}
                   className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl font-bold text-slate-700 text-sm focus:outline-none focus:border-admin-blue focus:bg-white transition-all shadow-inner"
                 />
               </div>

@@ -1,8 +1,3 @@
-"use client";
-
-
-import { useState } from "react";
-
 interface StepStoreProps {
     storeName: string;
     storeDescription: string;
@@ -11,8 +6,6 @@ interface StepStoreProps {
 }
 
 export default function StepStore({ storeName, storeDescription, primaryCategory, onChange }: StepStoreProps) {
-    const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     return (
         <div className="mt-0.5 bg-white">
             <div className="w-full flex flex-col">
@@ -134,10 +127,6 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                             </div>
                         </div>
                         {/* dòng 6 */}
-                        <div className="mt-4 h-[52px] bg-[#FFF4E6] rounded-2xl flex flex-col ">
-                            <label htmlFor="remember" className="ml-2 text-[14px] text-[#4d4d4d] cursor-pointer">I agree to the</label>
-
-                        </div>
 
 
 
