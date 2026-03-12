@@ -2,27 +2,23 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SignIn() {
     const router = useRouter();
-
-    const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { login } = useAuth();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        setLoading(true);
-
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
+        setLoading(true);
 
         const payload = {
-            ...data,
-            rememberMe
+            ...data
         };
 
         try {
@@ -37,6 +33,8 @@ export default function SignIn() {
             const result = await res.json();
 
             console.log(result);
+
+            login(result.access_token);
 
             if (res.ok) {
                 router.push("/");
@@ -107,7 +105,6 @@ export default function SignIn() {
                                     </svg>
                                 </div>
                                 <input
-                                    type={showPassword ? "text" : "password"}
                                     id="password"
                                     name="password"
                                     placeholder="••••••••"
@@ -117,20 +114,8 @@ export default function SignIn() {
                             </div>
                         </div>
 
-                        <div className="mt-6 flex w-[400px] items-center">
-                            <input
-                                type="checkbox"
-                                id="remember"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                                className="w-4 h-4 border border-[#666666]"
-                            />
-                            <label
-                                htmlFor="remember"
-                                className="ml-2 text-[14px] text-[#4d4d4d]">
-                                Remember me
-                            </label>
-                            <p className="ml-auto text-[14px] text-[#FF00A8] cursor-pointer hover:underline">
+                        <div className="mt-6 flex w-[400px] items-center justify-center">
+                            <p className=" text-[14px] text-[#FF00A8] cursor-pointer hover:underline">
                                 Forgot password?
                             </p>
                         </div>
@@ -139,7 +124,11 @@ export default function SignIn() {
                             type="submit"
                             className="heading w-[400px] h-16 mt-8 bg-gradient-to-r from-[#FF00A8] to-[#990065] text-white font-semibold text-lg rounded-2xl shadow-lg shadow-[#FF00A8]/40 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.985] transition-all duration-200 flex items-center justify-center gap-3"
                         >
+<<<<<<< HEAD
+                            Đăng nhập
+=======
                             Sign In
+>>>>>>> d58f066399960a6e5fa4a830db4fecb7e7529371
                             <span className="text-2xl">→</span>
                         </button>
 
@@ -172,7 +161,7 @@ export default function SignIn() {
                         </button>
                     </div>
                     <p className="mt-8 mb-6 text-[14px] text-[#4D4D4D] text-base">
-                        Don't have an account?
+                        Không có tài khoản?{" "}
                         <a href="/sign-up"
                             className="heading ml-1 text-[#FA649A] hover:underline">
                             Create one
