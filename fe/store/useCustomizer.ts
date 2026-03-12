@@ -6,7 +6,7 @@ export type Size = 'XS'|'S'|'M'|'L'|'XL'
 export type Pattern = 'none'|'stripes'|'polka'|'plaid'
 export type BackgroundPreset = 'neutral'|'studio'|'shadow'|'gradientWarm'|'gradientCool'
 export type ModelId = 'avatar_female' | 'avatar_male'
-export type GarmentSlot = 'top' | 'bottom' | 'shoes'
+export type GarmentSlot = 'top' | 'bottom' | 'shoes' | 'hat'
 type Hex = `#${string}`
 
 interface CustomizerState {
