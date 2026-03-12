@@ -16,15 +16,16 @@ export default function Sidebar() {
     
       <div className="divide-y divide-gray-300">
         <div className="pb-4">
-          <p className="text-2xl font-semibold mb-5">Model</p>
+          <p className="text-2xl font-semibold mb-5">Mô hình</p>
           <ModelSelector />
         </div>
         
 
       
-        <AccordionSection title="Colors">
+        <AccordionSection title="Màu sắc">
           <div className="space-y-4">
             <ColorSwatches part="skin" label="Skin color" />
+            <ColorSwatches part="hat" label="Hat color" />
             <ColorSwatches part="top" label="Top color" />
             <ColorSwatches part="bottom" label="Bottom color" />
             <ColorSwatches part="shoes" label="Shoes color" />
@@ -32,26 +33,28 @@ export default function Sidebar() {
         </AccordionSection>
 
              
-        <AccordionSection title="Outfit">
+        <AccordionSection title="Trang phục">
           <OutfitSelector />
         </AccordionSection>
 
        
-        <AccordionSection title="Pattern">
+        <AccordionSection title="Kết cấu">
           <div className="space-y-4">
+            <PatternPicker target="hat" />
             <PatternPicker target="top" />
             <PatternPicker target="bottom" />
+            <PatternPicker target="shoes" />
           </div>
         </AccordionSection>
 
        
-        <AccordionSection title="Background">
+        <AccordionSection title="Nền">
           <BackgroundPicker />
         
         </AccordionSection>
 
         
-        <AccordionSection title="Size">
+        <AccordionSection title="Kích cỡ">
           <SizePicker />
         
         </AccordionSection>

@@ -12,7 +12,7 @@ const ModelViewer = dynamic(
 
 export default function TryOnClient() {   
   return (
-    <div className="flex items-center justify-center min-h-screen pt-20 bg-white">
+    <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="max-w-7xl px-4 py-10 w-full">
         <div className="grid gap-6 grid-cols-1 lg:grid-cols-[1fr_320px] mb-10">
           <section className="flex flex-col gap-7">
@@ -24,7 +24,7 @@ export default function TryOnClient() {
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold">Recommended Outfit Combinations</h2>
+          <h2 className="text-2xl font-semibold">Gợi ý kết hợp Trang phục</h2>
         </div>
         <div className="mt-7">
           <hr className="border-t border-dashed border-gray-400 mb-5" />
