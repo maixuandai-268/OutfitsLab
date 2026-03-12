@@ -32,10 +32,9 @@ export function OutfitSelector() {
     )
   }
 
-  const slots: GarmentSlot[] = ['top', 'bottom', 'shoes']
+  const slots: GarmentSlot[] = ['top', 'bottom', 'shoes', 'hat']
   return (
     <div className="space-y-3">
-      <div className="text-sm font-semibold">Outfit</div>
       {slots.map(renderSlot)}
     </div>
   )

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { HeartIcon, MessageCircleIcon } from 'lucide-react';
 
 interface Shop {
   id: number;
@@ -18,7 +19,7 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
   return (
     <div className="bg-white border-b-2 border-[#ffe9cc]">
         <img src="/images/shopBackground.png" alt="ShopBackground" className="w-full h-30 md:h-55 object-cover" />
-        <div className="max-w-310 mx-auto py-8 md:py-15">
+        <div className="max-w-310 mx-auto px-6 py-8 md:py-15">
           <div className="flex flex-col md:flex-row gap-12">
             {/* Avatar */} 
             <div className="flex items-end">
@@ -77,12 +78,12 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
             <div className="flex items-end w-full md:w-auto mt-4 md:mt-0">
               <div className="flex flex-col gap-3 w-full">
                 <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-8 py-2 rounded-full border-3 border-[#d19f42] text-[#d19f42] font-semibold hover:bg-[#fff9f0]">
-                  {/* <HeartIcon className="w-6 h-6 text-black" /> */}
+                  <HeartIcon className="w-6 h-6 text-black" />
                   Favorite
                 </button>
 
                 <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-8 py-2 rounded-full border-3 text-white bg-[#d19f42] font-semibold hover:bg-[#c28e2d]">
-                  {/* <MessageIcon className="w-6 h-6 text-black" /> */}
+                  <MessageCircleIcon className="w-6 h-6 text-white" />
                   Contact
                 </button>
               </div>
