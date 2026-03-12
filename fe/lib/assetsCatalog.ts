@@ -4,6 +4,10 @@ export const BODY_MODELS = {
 } as const
 
 export const GARMENTS = {
+  hat: {
+    cap_01: '/model/garments/hat/hat_cap_01.glb',
+    beanie_01: '/model/garments/hat/hat_beanie_01.glb',
+  },
   top: {
     tshirt_01: '/model/garments/top/top_tshirt_01.glb',
     hoodie_01: '/model/garments/top/top_hoodie_01.glb',

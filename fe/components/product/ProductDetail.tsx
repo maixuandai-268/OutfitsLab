@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Heart } from 'lucide-react';
-import { PRODUCTS } from '@/app/(shop)/shopData';
 import { ProductCard } from './ProductCard';
 
 interface Product {
@@ -25,7 +24,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
 	const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-	const discountPrice = 58.99;
+	const discountPrice = 158.99;
 	const sizes = ['90cm', '100cm', '110cm', '120cm', '130cm', '140cm', '150cm', '160cm', '170cm']
 	const colors = [
 		{ color: '#000000' }, // Black
@@ -42,7 +41,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   return (
     <div className="flex flex-col md:flex-row gap-8"> 
 			 <div className="w-full md:w-1/2 px-4"> {/*Ảnh sản phẩm */}
-					<img src={product.image_url} alt={product.name} className="rounded-lg w-full min-h-150 object-cover shadow-4xl"/>
+					<img src={product.image_url} alt={product.name} className="rounded-lg w-full min-h-150 max-h-150 object-cover shadow-4xl"/>
 					<p className="font-semibold mt-6">Best mix style with</p>
 					<div className="mt-4">
 						<ProductCard count={3} columns={3} />
@@ -58,7 +57,10 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 							<p className="text-sm">{product.rating} ({product.reviews} Reviews)</p>
 						</div>
 					</div>	
-				<p className="text-3xl mb-6 font-bold">${product.price}</p>
+        <div className="flex items-center gap-2 mb-6">
+          <p className="text-xs line-through mb-4"> ${product.price}</p>
+          <p className="text-3xl font-black">${discountPrice.toFixed(2)}</p>
+        </div>
 				<div className="bg-gray-200 mx-auto mb-6 h-px w-full"></div>
 				<p className="font-semibold mb-3">Color</p>
 				{/* Available Colors */}
