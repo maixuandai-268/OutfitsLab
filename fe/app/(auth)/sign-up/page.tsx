@@ -5,51 +5,51 @@ import { notification } from "antd";
 
 export default function SignUp() {
 
-   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
 
-    const payload = { ...data };
+        const payload = { ...data };
 
-    try {
-        const response = await fetch("http://localhost:3000/api/auth/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-        });
+        try {
+            const response = await fetch("http://localhost:3000/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || "Đăng ký thất bại");
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || "Đăng ký thất bại");
+            }
+
+            notification.success({
+                message: "Đăng ký thành công",
+                description: "Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập ngay bây giờ.",
+                duration: 4,
+            });
+
+            setTimeout(() => {
+                window.location.href = "/sign-in";
+            }, 2000);
+
+        } catch (error) {
+            console.error("Registration error:", error);
+
+            notification.error({
+                message: "Đăng ký thất bại",
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : "Đã có lỗi xảy ra khi tạo tài khoản. Vui lòng thử lại sau.",
+                duration: 5,
+            });
         }
-
-        notification.success({
-            message: "Đăng ký thành công",
-            description: "Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập ngay bây giờ.",
-            duration: 4, 
-        });
-
-        setTimeout(() => {
-            window.location.href = "/sign-in";
-        }, 2000);
-
-    } catch (error) {
-        console.error("Registration error:", error);
-
-        notification.error({
-            message: "Đăng ký thất bại",
-            description:
-                error instanceof Error
-                    ? error.message
-                    : "Đã có lỗi xảy ra khi tạo tài khoản. Vui lòng thử lại sau.",
-            duration: 5,
-        });
-    }
-};
+    };
 
     return (
         <div className="w-full max-w-md mx-auto px-6 flex flex-col shadow-2xl shadow-[#F5F5FF]/50 rounded-3xl">

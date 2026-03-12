@@ -30,7 +30,6 @@ export default function StepInfo({ nextStep }: StepInfoProps) {
                     <span className="text-[#262626]">Xác nhận thông tin</span>
                 </div>
             </div>
-            {/* dòng 2 */}
             <div className="min-h-screen border border-[#FFE9CC] bg-gradient-to-r from-[#FFEAFD] to-[#BFFFF7] p-4 max-h-full">
                 <div className="flex justify-center items-center mt-10 ">
                     <div className="w-[832px] h-[566px] border border-[#FFE9CC] rounded-[24px] bg-white p-10">

@@ -96,7 +96,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-<<<<<<< HEAD
+
         <nav className="hidden md:flex items-center gap-10 text-base font-medium text-gray-700">
           <Link href="/" className="hover:text-rose-500 transition">Home</Link>
           <Link href="/product" className="hover:text-rose-500 transition">Collections</Link>
@@ -104,55 +104,46 @@ export default function Navbar() {
           <Link href="/SellersList" className="hover:text-rose-500 transition">Shops</Link>
           <Link href="/blog" className="hover:text-rose-500 transition">Community</Link>
           <Link href="/about" className="hover:text-rose-500 transition">About</Link>
-=======
-        {/* Menu */}
-        <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-700">
-          <Link href="/">Home</Link>
-          <Link href="product">Collections</Link>
-          <Link href="try-on">Custom-Room</Link>
-          <Link href="/SellersList">Shops</Link>
-          <Link href="blog">Community</Link>
-          <Link href="/about">About</Link>
->>>>>>> d58f066399960a6e5fa4a830db4fecb7e7529371
-        </nav>
 
-        <div className="hidden md:flex items-center gap-8">
-          <div className="flex items-center gap-7 text-2xl text-gray-600">
-            <BellOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
-            <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
-          </div>
 
-          {!user ? (
-            <div className="flex items-center gap-4">
-              <Link
-                href="/sign-up"
-                className="px-6 py-2.5 font-semibold text-yellow-700 border-2 border-yellow-700 rounded-xl hover:bg-yellow-50 transition"
-              >
-                Sign Up
-              </Link>
-              <Link
-                href="/sign-in"
-                className="px-7 py-2.5 font-semibold bg-yellow-700 text-white rounded-xl hover:bg-yellow-800 transition"
-              >
-                Sign In
-              </Link>
+          <div className="hidden md:flex items-center gap-8">
+            <div className="flex items-center gap-7 text-2xl text-gray-600">
+              <BellOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
+              <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
             </div>
-          ) : (
-            <Dropdown
-              menu={{ items: getMenuItems() }}
-              placement="bottomRight"
-              trigger={["click"]}
-              arrow
-            >
-              <div className="flex items-center gap-3 cursor-pointer group">
-                <Avatar
-                  size={40}
-                  icon={<UserOutlined />}
-                />
+
+            {!user ? (
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/sign-up"
+                  className="px-6 py-2.5 font-semibold text-yellow-700 border-2 border-yellow-700 rounded-xl hover:bg-yellow-50 transition"
+                >
+                  Sign Up
+                </Link>
+                <Link
+                  href="/sign-in"
+                  className="px-7 py-2.5 font-semibold bg-yellow-700 text-white rounded-xl hover:bg-yellow-800 transition"
+                >
+                  Sign In
+                </Link>
               </div>
-            </Dropdown>
-          )}
-        </div>
+            ) : (
+              <Dropdown
+                menu={{ items: getMenuItems() }}
+                placement="bottomRight"
+                trigger={["click"]}
+                arrow
+              >
+                <div className="flex items-center gap-3 cursor-pointer group">
+                  <Avatar
+                    size={40}
+                    icon={<UserOutlined />}
+                  />
+                </div>
+              </Dropdown>
+            )}
+          </div>
+        </nav>
       </div>
     </header>
   );

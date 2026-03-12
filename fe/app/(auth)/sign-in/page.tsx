@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function SignIn() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const { login } = useAuth();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -118,11 +119,6 @@ export default function SignIn() {
                             </label>
                             <p className="ml-auto text-[14px] text-[#FF00A8] cursor-pointer hover:underline">
                                 Quên mật khẩu?
-
-                      <div className="mt-6 flex w-[400px] items-center justify-center">
-                            <p className=" text-[14px] text-[#FF00A8] cursor-pointer hover:underline">
-                                Forgot password?
-
                             </p>
                         </div>
 
@@ -166,9 +162,6 @@ export default function SignIn() {
                         </button>
                     </div>
                     <p className="mt-8 mb-6 text-[14px] text-[#4D4D4D] text-base">
-
-                        Bạn đã có tài khoản chưa?
-
                         Không có tài khoản?{" "}
 
                         <a href="/sign-up"
