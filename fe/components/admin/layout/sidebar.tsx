@@ -75,8 +75,6 @@ export default function Sidebar({ dark = false,
           );
         })}
       </nav>
-
-      {/* User profile */}
       {open && (
         <div className={`px-4 py-4 border-t ${dark ? "border-gray-700" : "border-slate-100"}`}>
           <div className="flex items-center gap-2.5">

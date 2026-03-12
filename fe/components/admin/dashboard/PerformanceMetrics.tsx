@@ -4,10 +4,10 @@ import CardTitle from "../shared/cardTitle";
 
 // Data tại chỗ
 const performanceMetrics = [
-  { label: "Conversion Rate", value: "3.6%",  progress: 36, color: "#6366f1" },
-  { label: "Avg Session",     value: "4m 32s", progress: 62, color: "#10b981" },
-  { label: "Pages / Visit",   value: "5.4",    progress: 54, color: "#f59e0b" },
-  { label: "Return Rate",     value: "68.2%",  progress: 68, color: "#8b5cf6" },
+  { label: "Tỷ lệ chuyển đổi", value: "3.6%",  progress: 36, color: "#6366f1" },
+  { label: "Phiên trung bình",     value: "4m 32s", progress: 62, color: "#10b981" },
+  { label: "Trang / lượt truy cập",   value: "5.4",    progress: 54, color: "#f59e0b" },
+  { label: "Tỷ lệ quay lại",     value: "68.2%",  progress: 68, color: "#8b5cf6" },
 ];
 
 export default function PerformanceMetrics({ dark } : { dark: boolean }) {

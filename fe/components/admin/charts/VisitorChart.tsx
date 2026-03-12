@@ -14,7 +14,7 @@ const visitorData = [
 export default function VisitorChart({ dark } : { dark: boolean }) {
   return (
     <Card dark={dark}>
-      <CardTitle dark={dark} title="Weekly Visitors" sub="This week's traffic" />
+      <CardTitle dark={dark} title="Số lượng người truy cập" sub="Lưu lượng tuần này" />
       <ResponsiveContainer width="100%" height={180}>
         <BarChart data={visitorData} barSize={28}>
           <CartesianGrid strokeDasharray="3 3" stroke={dark ? "#374151" : "#f1f5f9"} vertical={false} />

@@ -9,7 +9,6 @@ interface RevenueChartProps {
     dark: boolean;
 }
 
-// Colocate data trong component
 const revenueData = [
   { month: "Jan", revenue: 31000, expenses: 18000 },
   { month: "Feb", revenue: 40000, expenses: 22000 },
@@ -27,7 +26,7 @@ export default function RevenueChart({ dark } : RevenueChartProps) {
   return (
     <Card dark={dark}>
       <div className="flex items-start justify-between mb-5">
-        <CardTitle dark={dark} title="Revenue Overview" sub="Monthly revenue vs expenses" />
+        <CardTitle dark={dark} title="Doanh thu" sub="Doanh thu hàng tháng so với chi phí" />
         <select
           aria-label="Select year"
           className={`text-xs px-2.5 py-1.5 rounded-lg border cursor-pointer outline-none ${

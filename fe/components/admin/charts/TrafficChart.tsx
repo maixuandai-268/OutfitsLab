@@ -5,10 +5,10 @@ import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
 // Data gắn tại chỗ
 const pieData = [
-  { name: "Direct",   value: 38, color: "#6366f1" },
-  { name: "Organic",  value: 27, color: "#10b981" },
-  { name: "Referral", value: 20, color: "#f59e0b" },
-  { name: "Social",   value: 15, color: "#ef4444" },
+  { name: "Trực tiếp",   value: 38, color: "#6366f1" },
+  { name: "Tự nhiên",  value: 27, color: "#10b981" },
+  { name: "Giới thiệu", value: 20, color: "#f59e0b" },
+  { name: "Mạng xã hội",   value: 15, color: "#ef4444" },
 ];
 
 interface TrafficChartProps {
@@ -18,7 +18,7 @@ interface TrafficChartProps {
 export default function TrafficChart({ dark }: TrafficChartProps) {
   return (
     <Card dark={dark}>
-      <CardTitle dark={dark} title="Traffic Sources" sub="Where your visitors come from" />
+      <CardTitle dark={dark} title="Nguồn lưu lượng truy cập" sub="Từ đâu đến với bạn" />
       <ResponsiveContainer width="100%" height={160}>
         <PieChart>
           <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={72} paddingAngle={3} dataKey="value">
