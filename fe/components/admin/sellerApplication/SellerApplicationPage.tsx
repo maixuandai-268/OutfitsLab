@@ -6,19 +6,19 @@ import {
   EyeOutlined,
 } from "@ant-design/icons";
 
-type Status = "pending" | "approved" | "blocked";
+type Status = "Chờ xét duyệt" | "Đã duyệt" | "Blocked";
 
 interface SellerApplication {
   id: string;
   name: string;
   owner: string;
   email: string;
-  submitted: string; // ISO date: "2024-01-16"
+  submitted: string; 
   docs: number;
   status: Status;
 }
 
-interface ApplicationsPageProps {
+interface SellerApplicationsPageProps {
   dark: boolean;
 }
 
@@ -30,7 +30,7 @@ const seed: SellerApplication[] = [
     email: "tuanfashion@example.com",
     submitted: "2024-01-16",
     docs: 3,
-    status: "pending",
+    status: "Chờ xét duyệt",
   },
   {
     id: "APP-1002",
@@ -39,7 +39,7 @@ const seed: SellerApplication[] = [
     email: "vintage@example.com",
     submitted: "2024-01-15",
     docs: 4,
-    status: "pending",
+    status: "Chờ xét duyệt",
   },
   {
     id: "APP-1003",
@@ -48,31 +48,30 @@ const seed: SellerApplication[] = [
     email: "modern@example.com",
     submitted: "2024-01-14",
     docs: 2,
-    status: "pending",
+    status: "Chờ xét duyệt",
   },
 ];
 
-type TabKey = "all" | "pending" | "approved" | "blocked";
+type TabKey = "Tất cả" | "Chờ xét duyệt" | "Đã duyệt" | "Blocked";
 
-export default function SellerApplicationsPage({ dark }: ApplicationsPageProps) {
-  const [tab, setTab] = useState<TabKey>("all");
+export default function SellerApplicationsPage({ dark }: SellerApplicationsPageProps) {
+  const [tab, setTab] = useState<TabKey>("Tất cả");
   const [apps, setApps] = useState<SellerApplication[]>(seed);
 
   const filtered = useMemo(() => {
-    if (tab === "all") return apps;
-    if (tab === "pending") return apps.filter((a) => a.status === "pending");
-    if (tab === "approved") return apps.filter((a) => a.status === "approved");
-    return apps.filter((a) => a.status === "blocked");
+    if (tab === "Tất cả") return apps;
+    if (tab === "Chờ xét duyệt") return apps.filter((a) => a.status === "Chờ xét duyệt");
+    if (tab === "Đã duyệt") return apps.filter((a) => a.status === "Đã duyệt");
+    return apps.filter((a) => a.status === "Blocked");
   }, [tab, apps]);
 
   const onApprove = (id: string) =>
-    setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status: "approved" } : a)));
+    setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status: "Đã duyệt" } : a)));
 
   const onReject = (id: string) =>
-    setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status: "blocked" } : a)));
+    setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status: "Blocked" } : a)));
 
   const onView = (app: SellerApplication) => {
-    // Tùy bạn mở Drawer/Modal; tạm thời dùng alert
     alert(`View details:\n\n${app.name}\nOwner: ${app.owner}\nEmail: ${app.email}\nSubmitted: ${app.submitted}\nDocs: ${app.docs}`);
   };
 
@@ -80,15 +79,13 @@ export default function SellerApplicationsPage({ dark }: ApplicationsPageProps) 
 
   return (
     <main className={`flex-1 overflow-y-auto p-6 ${wrapBg}`}>
-      {/* Filter pills */}
       <FiltersRow dark={dark} tab={tab} setTab={setTab} counts={{
-        all: apps.length,
-        pending: apps.filter(a => a.status === "pending").length,
-        approved: apps.filter(a => a.status === "approved").length,
-        blocked: apps.filter(a => a.status === "blocked").length,
+        "Tất cả": apps.length,
+        "Chờ xét duyệt": apps.filter(a => a.status === "Chờ xét duyệt").length,
+        "Đã duyệt": apps.filter(a => a.status === "Đã duyệt").length,
+        "Blocked": apps.filter(a => a.status === "Blocked").length,
       }} />
 
-      {/* List */}
       <div className="mt-4 flex flex-col gap-4">
         {filtered.map((app) => (
           <ApplicationCard
@@ -111,7 +108,6 @@ export default function SellerApplicationsPage({ dark }: ApplicationsPageProps) 
   );
 }
 
-/* ----------------------------- Sub Components ----------------------------- */
 
 function FiltersRow({
   dark,
@@ -125,10 +121,10 @@ function FiltersRow({
   counts: Record<TabKey, number>;
 }) {
   const pills: { key: TabKey; label: string }[] = [
-    { key: "all", label: "All" },
-    { key: "pending", label: "Pending Review" },
-    { key: "approved", label: "Approved" },
-    { key: "blocked", label: "Blocked" },
+    { key: "Tất cả", label: "Tất cả" },
+    { key: "Chờ xét duyệt", label: "Chờ xét duyệt" },
+    { key: "Đã duyệt", label: "Đã duyệt" },
+    { key: "Blocked", label: "Blocked" },
   ];
 
   return (
@@ -180,7 +176,6 @@ function ApplicationCard({
 
   return (
     <div className={`${cardBase}`}>
-      {/* Header */}
       <div className={`px-4 pt-3 pb-2 flex items-start justify-between`}>
         <div>
           <p className={`text-[15px] font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>
@@ -196,10 +191,8 @@ function ApplicationCard({
         <StatusBadge status={app.status} />
       </div>
 
-      {/* Divider */}
       <div className={`border-t ${headerLine}`} />
 
-      {/* Footer row: left meta + right actions */}
       <div className="px-4 py-2.5 flex items-center justify-between gap-3">
         <p className={`${subText}`}>
           Submitted: {app.submitted} • Docs: {app.docs}
@@ -212,7 +205,7 @@ function ApplicationCard({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500 hover:bg-emerald-600 text-white"
             title="Approve"
           >
-            <CheckOutlined /> Approve
+            <CheckOutlined /> Phê duyệt
           </button>
           <button
             type="button"
@@ -220,7 +213,7 @@ function ApplicationCard({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-500 hover:bg-rose-600 text-white"
             title="Reject"
           >
-            <CloseOutlined /> Reject
+            <CloseOutlined /> Từ chối
           </button>
           <button
             type="button"
@@ -232,7 +225,7 @@ function ApplicationCard({
             }`}
             title="View Details"
           >
-            <EyeOutlined /> View Details
+            <EyeOutlined /> Xem chi tiết
           </button>
         </div>
       </div>
@@ -242,11 +235,11 @@ function ApplicationCard({
 
 function StatusBadge({ status }: { status: Status }) {
   const map: Record<Status, string> = {
-    pending: "bg-amber-100 text-amber-700",
-    approved: "bg-emerald-100 text-emerald-700",
-    blocked: "bg-slate-200 text-slate-700",
+    "Chờ xét duyệt": "bg-amber-100 text-amber-700",
+    "Đã duyệt": "bg-emerald-100 text-emerald-700",
+    "Blocked": "bg-slate-200 text-slate-700",
   };
-  const label = status === "pending" ? "Pending" : status === "approved" ? "Approved" : "Blocked";
+  const label = status === "Chờ xét duyệt" ? "Chờ xét duyệt" : status === "Đã duyệt" ? "Đã duyệt" : "Blocked";
   return (
     <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${map[status]}`}>
       {label}
