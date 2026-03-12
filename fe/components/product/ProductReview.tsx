@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Star, ThumbsUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { PRODUCTS, REVIEWS, USERS } from '@/app/(shop)/shopData';
-import { ProductCard } from './ProductCard';
 
 export default function ReviewSection() {
   const [activeFilter, setActiveFilter] = useState('All Reviews');
@@ -21,16 +20,16 @@ export default function ReviewSection() {
                       <Star key={star} size={20} className="text-yellow-500" fill="currentColor" />
                   ))}
               </div>
-              <p className="text-gray-500 text-sm">from {REVIEWS.length} reviews</p>
+              <p className="text-gray-500 text-sm">Từ {REVIEWS.length} đánh giá</p>
             </div>
             
           </div>
 
           {/* Filter */}
           <div className="border border-gray-100 rounded-xl p-6 shadow-sm border-dashed">
-            <h3 className="font-semibold text-lg mb-6">Reviews Filter</h3>           
+            <h3 className="font-semibold text-lg mb-6">Lọc đánh giá</h3>           
             <div className="flex items-center justify-between cursor-pointer mb-4">
-              <span className="text-sm font-medium text-gray-600">Rating</span>
+              <span className="text-sm font-medium text-gray-600">Mức đánh giá</span>
               <ChevronDown size={18} className="text-gray-400" />
             </div>
             <div className="flex flex-col gap-3">
@@ -63,9 +62,9 @@ export default function ReviewSection() {
           </div>
 
           {/* Tiêu đề & Tabs Lọc */}
-          <h2 className="text-xl font-semibold mb-4">Review Lists</h2>
+          <h2 className="text-xl font-semibold mb-4">Danh sách đánh giá</h2>
           <div className="flex flex-wrap gap-3 mb-8">
-            {['All Reviews', 'With Photo & Video', 'Only Description'].map((filter) => (
+            {['Tất cả đánh giá', 'Có ảnh & video', 'Chỉ mô tả'].map((filter) => (
                <button 
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
@@ -82,42 +81,42 @@ export default function ReviewSection() {
 
           {/* Danh Sách Đánh Giá */}
           <div className="flex flex-col">
-            {REVIEWS.slice(0, 3).map((review, index) => {
-              // Tìm user tương ứng với review
+            {REVIEWS.slice(0, 3).map((review) => {
               const user = USERS.find(u => u.id === review.user_id);
               
               return (
                 <div key={review.id}>
                   <div className="flex flex-col py-6">
-                    {/* Stars */}
-                    <div className="flex items-center gap-1 mb-3">
-                      <p className='text-gray-500 font-semibold text-base'>{review.rating}</p>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <Star 
-                              key={star} 
-                              size={16} 
-                              className={star <= Math.round(review.rating) ? "text-yellow-500" : "text-gray-300"} 
-                              fill={star <= Math.round(review.rating) ? "currentColor" : "none"} 
-                            />
-                          ))}
-                      </div>
+                    {/* User */}
+                    <div className="flex items-center gap-3 mb-2">
+                      <img 
+                        src={user?.avatar_url || 'https://via.placeholder.com/150'} 
+                        alt={user?.display_name || 'User'} 
+                        className="w-8 h-8 rounded-full object-cover" 
+                      />
+                      <span className="text-sm font-medium text-gray-700">
+                        {user?.display_name || 'Anonymous'}
+                      </span>
                     </div>
                     {/* Content & Date */}
                     <p className="font-medium mb-1">{review.comment}</p>
                     <p className="text-xs text-gray-400 mb-5">{review.date}</p>
                     
-                    {/* User & Actions */}
+                    {/* Stars & Actions */}
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <img 
-                          src={user?.avatar_url || 'https://via.placeholder.com/150'} 
-                          alt={user?.display_name || 'User'} 
-                          className="w-8 h-8 rounded-full object-cover" 
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          {user?.display_name || 'Anonymous'}
-                        </span>
+                      {/* Stars */}
+                      <div className="flex items-center gap-1">
+                        <p className='text-gray-500 font-semibold text-base'>{review.rating}</p>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                              <Star 
+                                key={star} 
+                                size={16} 
+                                className={star <= Math.round(review.rating) ? "text-yellow-500" : "text-gray-300"} 
+                                fill={star <= Math.round(review.rating) ? "currentColor" : "none"} 
+                              />
+                            ))}
+                        </div>
                       </div>
                       
                       {/* Like Dislike */}
@@ -131,16 +130,11 @@ export default function ReviewSection() {
                         </button>
                       </div>
                     </div>
-                  </div>
-                  
-                  {/* Đường gạch ngang đứt giữa các review */}
-                  {index !== REVIEWS.slice(0, 3).length - 1 && (
-                    <hr className="border-t border-dashed border-gray-400" />
-                  )}
+                  </div>          
+                  <hr className="border-t border-dashed border-gray-400" />
                 </div>
               );
             })}
-            <hr className="border-t border-dashed border-gray-400 mt-6" />
           </div>
 
           {/* Phân Trang */}

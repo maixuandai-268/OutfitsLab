@@ -8,73 +8,66 @@ export default function FeaturedSellersPage() {
   const [activeFilter, setActiveFilter] = useState('All Sellers')
 
   const categories = [
-    "All Sellers", "Minimalist Fashion", "Vintage & Retro", 
-    "Denim & Casual", "Knitwear", "Business Casual", "Summer & Beach Wear"
+    "Tất cả cửa hàng", "Tối giản", "Cổ điển", 
+    "Thường ngày", "Dệt kim", "Mùa hè", "Công sở", "Sang trọng", "Thể thao"
   ]
 
   return (
-    <div className="bg-[#fffbf5] text-lg font-sans">
+    <div className="text-lg font-sans">
       
-      {/* --- HEADER SECTION --- */}
-      <div className="bg-[#fff7ec] border-2 border-[#ffe9cc] mb-10">
+      {/* HEADER */}
+      <div className="bg-[#fff7ec] border-2 border-[#ffe9cc] mb-6">
         <div className="max-w-310 mx-auto py-8 md:py-15">
-          <h1 className="text-4xl font-bold mb-4">Featured Sellers</h1>
-          <p className="text-gray-600">Discover amazing designs from talented creators around the world</p>
+          <h1 className="text-4xl font-bold mb-4">Những cửa hàng tiêu biểu</h1>
+          <p className="text-gray-600">Khám phá những thiết kế tuyệt vời từ các nhà sáng tạo tài năng trên khắp thế giới.</p>
         </div>
       </div>
 
-      {/* --- FILTER & SEARCH SECTION --- */}
-      <div className="max-w-310 mx-auto mb-12">
+      <div className="max-w-310 mx-auto mb-7">
         <div className="mb-6">    
           <input 
             type="text" 
-            placeholder="Search sellers..." 
+            placeholder="Tìm cửa hàng..." 
             className="w-full h-14 pl-10 rounded-2xl border-2 border-[#ffe9cc] bg-white focus:outline-none focus:ring-2 focus:ring-[#d19f42] placeholder-gray-400"
           />
         </div>
 
-        {/* Filter */}
-        <p className="text-sm mb-2">Filter by Specialty:</p>
+        <p className="text-base font-bold mb-2">Đặc trưng của cửa hàng:</p>
         <div className="flex flex-wrap items-center gap-3">
-          {categories.map((cat) => (
+          {categories.map((cate) => (
             <button
-              key={cat}
-              onClick={() => setActiveFilter(cat)}
+              key={cate}
+              onClick={() => setActiveFilter(cate)}
               className={`px-4 py-3 rounded-full text-xs font-bold transition-all
-                ${activeFilter === cat 
+                ${activeFilter === cate 
                   ? 'bg-[#d19f42] text-white shadow-md' 
                   : 'bg-[#ffe9cc]/50 text-gray-600 hover:bg-[#ffe9cc]'
                 }`}
             >
-              {cat}
+              {cate}
             </button>
           ))}
         </div>
       </div>
 
-      {/* --- SELLERS GRID --- */}
+      {/* Hiển thị cửa hàng */}
       <div className="max-w-310 mx-auto pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
           {SHOPS.map((shop) => {
             const productCount = PRODUCTS.filter(i => i.shop_id === shop.id).length
             return (
-              <div key={shop.id} className="bg-white rounded-3xl border-3 border-[#ffe9cc] hover:shadow-xl overflow-hidden flex flex-col">
-                
-                {/* Header Background */}
+              <Link key={shop.id} href={`/shop_profile/${shop.id}`} className="bg-white rounded-3xl border-3 border-[#ffe9cc] hover:shadow-xl overflow-hidden">
                 <div className={`h-24 w-full bg-linear-to-tl from-[#d5e9e9] to-[#f4ebd9]`}></div>
 
                 <div className="px-6 pb-6 flex flex-col items-center -mt-12 text-center">
                   
-                  {/* Avatar */}
                   <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-gray-100">
                     <img src={shop.avatar_url} alt={shop.shop_name} className="w-full h-full object-cover" />
                   </div>
 
-                  {/* Shop Name */}
                   <h3 className="mt-4 text-xl font-bold ">{shop.shop_name}</h3>
 
-                  {/* Rating */}
                   <div className="flex items-center gap-1 mt-1 text-sm">
                     <div className="flex text-[#d19f42]">
                       {[1, 2, 3, 4, 5].map(star => (
@@ -85,23 +78,20 @@ export default function FeaturedSellersPage() {
                     <span className="text-gray-500">({shop.reviews} reviews)</span>
                   </div>
 
-                  {/* Specialty Tag */}
                   <span className="mt-3 ml-1 px-3 py-2 bg-[#fff4e6] text-[#d19f42] text-[10px] uppercase font-bold rounded-full">
                     {shop.specialty}
                   </span>
 
-                  {/* Description */}
                   <p className="mt-4 text-sm text-gray-500 line-clamp-2 px-2 h-10">
                     {shop.description}
                   </p>
 
                   <div className="w-full h-px bg-[#ffe9cc] my-5"></div>
 
-                  {/* Stats Row */}
                   <div className="w-full flex justify-between px-10">
                     <div className="text-center">
                       <p className="text-2xl font-bold text-[#d19f42]">{productCount}</p>
-                      <p className="text-xs text-gray-600 font-medium">Products</p>
+                      <p className="text-xs text-gray-600 font-medium">Sản phẩm</p>
                     </div>
                     <div className="text-center">
                        <div className="flex flex-col items-center justify-center h-full">
@@ -112,53 +102,36 @@ export default function FeaturedSellersPage() {
                   </div>
                   <div className="w-full h-px bg-[#ffe9cc] my-5"></div>
 
-                  {/* Visit Button */}
-                  <Link href={`/shop_profile/${shop.id}`} className="w-full">
-                    <button className="w-full py-3 rounded-full bg-[#d19f42] text-white font-bold text-sm hover:bg-[#b88b39] transition-colors flex items-center justify-center gap-2">
-                      Visit Store
+                  <div className="w-full">
+                    <div className="w-full py-3 rounded-full bg-[#d19f42] text-white font-bold text-sm hover:bg-[#b88b39] transition-colors flex items-center justify-center gap-2">
+                      Thăm quan cửa hàng
                       <ExternalLinkIcon className="w-4 h-4" />
-                    </button>
-                  </Link>
+                    </div>
+                  </div>
 
                 </div>
-              </div>
+              </Link>
             )
           })}
 
         </div>
       </div>
 
-      {/* --- CTA FOOTER --- */}
+      {/* FOOTER */}
       <div className="bg-[#fff9f0] py-20 px-4 text-center border-t border-[#ffe9cc]">
          <div className="max-w-2xl mx-auto">
-            <h2 className="text-4xl font-bold mb-4">Ready to Showcase Your Designs?</h2>
+            <h2 className="text-4xl font-bold mb-4">Sẵn sàng để giới thiệu thiết kế của bạn?</h2>
             <p className="text-gray-600 mb-8">
-              Join our thriving community of creators and reach thousands of fashion enthusiasts worldwide.
+              Tham gia cộng đồng sáng tạo sôi động của chúng tôi và tiếp cận hàng ngàn người yêu thời trang trên toàn thế giới.
             </p>
             <button className="px-8 py-4 bg-[#d19f42] text-white font-bold text-lg rounded-full hover:bg-[#b88b39] transition-colors shadow-lg shadow-[#d19f42]/30">
-              Become a Seller
+              Trở thành người bán
             </button>
          </div>
       </div>
 
     </div>
   )
-}
-
-
-// --- HELPER FUNCTIONS & ICONS ---
-
-// Hàm tạo dữ liệu giả cho UI đẹp (vì Mock Data thiếu)
-function getExtraShopData(index: number) {
-  const data = [
-    { reviews: 324 },
-    { reviews: 324 },
-    { reviews: 324, },
-    { reviews: 324, },
-    { reviews: 256 },
-  ]
-  // Lấy data theo index, nếu hết thì lấy cái đầu tiên
-  return data[index % data.length]
 }
 
 function StarIcon({ filled }: { filled: boolean }) {

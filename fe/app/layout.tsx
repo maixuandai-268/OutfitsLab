@@ -30,11 +30,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="vi">
       <body>
         <AuthProvider>
+<<<<<<< HEAD
           <AuthGate>
             <Navbar/>
             {children}
             <Footer/>
           </AuthGate>
+=======
+          <Navbar/>
+          <div className="pt-24">
+            {children}
+          </div>
+        <Footer/>
+>>>>>>> d58f066399960a6e5fa4a830db4fecb7e7529371
         </AuthProvider>
       </body>
     </html>

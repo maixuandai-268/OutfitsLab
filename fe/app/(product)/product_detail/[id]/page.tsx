@@ -23,16 +23,16 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="text-lg font-sans min-h-screen">
-        <div className="max-w-310 mx-auto mt-9 p-11">
+    <div className="">
+        <div className="max-w-310 mx-auto">
           <div className='mb-15'><ProductDetail product={product} /></div>
           <ReviewSection />
         </div>
 
         <section className="">
-          <h2 className="text-3xl font-bold p-6 mb-2">Same Categories</h2>
+          <h2 className="text-3xl font-bold p-6 mb-2">Sản Phẩm Cùng Danh Mục</h2>
           <div className="px-4 sm:px-6 lg:px-8">
-            <ProductCard count={8}/>
+            <ProductCard count={8} columns={5}/>
           </div>
         </section>
     </div>

@@ -7,38 +7,38 @@ import {
 } from "@ant-design/icons";
 
 // Data + config tại chỗ
-type OrderStatus = "Completed" | "Processing" | "Pending" | "Cancelled";
+type OrderStatus = "Hoàn thành" | "Đang tiến hành" | "Chờ xác nhận" | "Đã hủy";
 
 const orders: Array<{ id: string; customer: string; product: string; amount: string; status: OrderStatus; date: string }> = [
-  { id: "#ORD-001", customer: "Alice Johnson", product: "T-Shirt",    amount: "$1,299", status: "Completed",  date: "Mar 10, 2026" },
-  { id: "#ORD-002", customer: "Bob Smith",     product: "Jeans",  amount: "$999",   status: "Processing", date: "Mar 10, 2026" },
-  { id: "#ORD-003", customer: "Carol White",   product: "Hoodie",    amount: "$549",   status: "Pending",    date: "Mar 09, 2026" },
-  { id: "#ORD-004", customer: "David Lee",     product: "Jacket",       amount: "$749",   status: "Completed",  date: "Mar 09, 2026" },
-  { id: "#ORD-005", customer: "Emma Brown",    product: "Sneakers", amount: "$399",   status: "Cancelled",  date: "Mar 08, 2026" },
+  { id: "#ORD-001", customer: "Alice Johnson", product: "T-Shirt",    amount: "$1,299", status: "Hoàn thành",  date: "Mar 10, 2026" },
+  { id: "#ORD-002", customer: "Bob Smith",     product: "Jeans",  amount: "$999",   status: "Đang tiến hành", date: "Mar 10, 2026" },
+  { id: "#ORD-003", customer: "Carol White",   product: "Hoodie",    amount: "$549",   status: "Chờ xác nhận",    date: "Mar 09, 2026" },
+  { id: "#ORD-004", customer: "David Lee",     product: "Jacket",       amount: "$749",   status: "Hoàn thành",  date: "Mar 09, 2026" },
+  { id: "#ORD-005", customer: "Emma Brown",    product: "Sneakers", amount: "$399",   status: "Đã hủy",  date: "Mar 08, 2026" },
 ];
 
 const statusConfig: Record<OrderStatus, { cls: string; icon: React.ReactElement }> = {
-  Completed:  { cls: "bg-emerald-100 text-emerald-700", icon: <CheckCircleOutlined /> },
-  Processing: { cls: "bg-blue-100 text-blue-700",       icon: <ClockCircleOutlined /> },
-  Pending:    { cls: "bg-amber-100 text-amber-700",     icon: <ExclamationCircleOutlined /> },
-  Cancelled:  { cls: "bg-red-100 text-red-700",         icon: <CloseCircleOutlined /> },
+  "Hoàn thành":  { cls: "bg-emerald-100 text-emerald-700", icon: <CheckCircleOutlined /> },
+  "Đang tiến hành": { cls: "bg-blue-100 text-blue-700",       icon: <ClockCircleOutlined /> },
+  "Chờ xác nhận":    { cls: "bg-amber-100 text-amber-700",     icon: <ExclamationCircleOutlined /> },
+  "Đã hủy":  { cls: "bg-red-100 text-red-700",         icon: <CloseCircleOutlined /> },
 };
 
 export default function OrdersTable({ dark } : { dark: boolean }) {
-  const headers = ["Order ID", "Customer", "Product", "Amount", "Status", "Date", ""];
+  const headers = ["ID Đơn hàng", "Khách hàng", "Sản phẩm", "Số lượng", "Trạng thái", "Ngày", ""];
 
   return (
     <Card dark={dark}>
       <div className="flex items-start justify-between mb-5">
-        <CardTitle dark={dark} title="Recent Orders" sub="Latest 5 transactions" />
+        <CardTitle dark={dark} title="Đơn hàng gần đây" sub="5 đơn hàng mới nhất" />
         <div className="flex gap-2">
           <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs border transition-colors ${
             dark ? "border-gray-700 text-gray-400 hover:bg-gray-700" : "border-slate-200 text-slate-500 hover:bg-slate-50"
           }`}>
-            <FilterOutlined /> Filter
+            <FilterOutlined /> Bộ lọc
           </button>
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-500 hover:bg-indigo-600 text-white transition-colors">
-            <DownloadOutlined /> Export
+            <DownloadOutlined /> Xuất
           </button>
         </div>
       </div>

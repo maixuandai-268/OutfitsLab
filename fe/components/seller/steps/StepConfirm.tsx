@@ -3,6 +3,7 @@ interface StepStoreProps {
     storeDescription: string;
     primaryCategory: string;
     onChange: (field: string, value: string) => void;
+    prevStep: () => void;
 }
 export default function StepStore({ storeName, storeDescription, primaryCategory, onChange, prevStep }: StepStoreProps) {
     return (
@@ -36,7 +37,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                     <span className="text-[#D19F42]">Confirmation</span>
                 </div>
             </div>
-            <div className="flex flex-col items-center bg-[#E8FFF0]">
+            <div className="min-h-screen flex flex-col items-center bg-[#E8FFF0]">
                 <div className="w-16 h-16 mt-10 flex items-center justify-center rounded-full bg-teal-600 text-black">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-circle-check-big-icon lucide-circle-check-big"><path d="M21.801 10A10 10 0 1 1 17 3.335" /><path d="m9 11 3 3L22 4" /></svg>
                 </div>

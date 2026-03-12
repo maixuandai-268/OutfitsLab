@@ -124,7 +124,11 @@ export default function SignIn() {
                             type="submit"
                             className="heading w-[400px] h-16 mt-8 bg-gradient-to-r from-[#FF00A8] to-[#990065] text-white font-semibold text-lg rounded-2xl shadow-lg shadow-[#FF00A8]/40 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.985] transition-all duration-200 flex items-center justify-center gap-3"
                         >
+<<<<<<< HEAD
                             Đăng nhập
+=======
+                            Sign In
+>>>>>>> d58f066399960a6e5fa4a830db4fecb7e7529371
                             <span className="text-2xl">→</span>
                         </button>
 

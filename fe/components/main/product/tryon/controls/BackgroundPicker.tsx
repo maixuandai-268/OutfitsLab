@@ -15,10 +15,6 @@ export default function BackgroundPicker() {
   const set = useCustomizer((s) => s.setBackground)
   return (
     <div className="space-y-2">
-      <div className="text-sm font-medium inline-flex items-center gap-2">
-        <BgColorsOutlined className="text-gray-500" />
-        <span>Background</span>
-      </div>
       <div className="grid grid-cols-2 gap-2">
         {PRESETS.map((p) => (
           <button

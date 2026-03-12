@@ -6,14 +6,15 @@ import {
   AreaChartOutlined,
   BankOutlined,
 } from "@ant-design/icons";
+import Link from "antd/es/typography/Link";
 
 const navItems = [
-  { icon: <DashboardOutlined />,    label: "Dashboard" },
-  { icon: <UserOutlined />,         label: "Users"},
-  { icon: <AreaChartOutlined />,     label: "Reports" },
-  { icon: <BankOutlined />,     label: "Seller Applications" },
+  { icon: <DashboardOutlined />,    label: "Bảng điều khiển" },
+  { icon: <UserOutlined />,         label: "Người dùng"},
+  { icon: <AreaChartOutlined />,     label: "Báo cáo" },
+  { icon: <BankOutlined />,     label: "Đơn đăng ký người bán" },
   { icon: <TeamOutlined />,         label: "Team" },
-  { icon: <SettingOutlined />,      label: "Settings" },
+  { icon: <SettingOutlined />,      label: "Cài đặt" },
 ];
 interface SidebarProps {
   dark?: boolean;
@@ -28,7 +29,6 @@ export default function Sidebar({ dark = false,
                                   open = true, 
                                   activeNav = null,
                                   setActiveNav = () => {},
-                                  expandedNav = null,
                                    }: SidebarProps) {
   return (
     <aside
@@ -37,23 +37,15 @@ export default function Sidebar({ dark = false,
         dark ? "bg-gray-800 border-r border-gray-700" : "bg-white border-r border-slate-200"
       }`}
     >
-      {/* Logo */}
-      <div className={`flex items-center gap-3 px-5 py-4 min-h-[64px] border-b ${dark ? "border-gray-700" : "border-slate-100"}`}>
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-black text-base">N</span>
-        </div>
-        {open && (
-          <span className={`text-lg font-bold whitespace-nowrap ${dark ? "text-gray-50" : "text-gray-900"}`}>
-            Next<span className="text-indigo-500">Admin</span>
-          </span>
-        )}
+      <div className={`flex items-center gap-3 px-5 py-4 w-full h-[7%] border-b ${dark ? "border-gray-700" : "border-slate-100"}`}>
+        <Link href="/admin">
+          <img src="/images/logo.png" alt="Logo" />
+        </Link>
       </div>
 
-      {/* Nav items */}
       <nav className="flex-1 overflow-y-auto py-3 px-3">
         {navItems.map((item) => {
           const isActive   = activeNav === item.label;
-          const isExpanded = expandedNav === item.label;
 
           return (
             <div key={item.label}>
@@ -83,8 +75,6 @@ export default function Sidebar({ dark = false,
           );
         })}
       </nav>
-
-      {/* User profile */}
       {open && (
         <div className={`px-4 py-4 border-t ${dark ? "border-gray-700" : "border-slate-100"}`}>
           <div className="flex items-center gap-2.5">
