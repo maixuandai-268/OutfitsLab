@@ -4,138 +4,144 @@ import Link from "next/link";
 import {
   BellOutlined,
   HeartOutlined,
-  MenuOutlined,
-  CloseOutlined,
   UserOutlined,
+  LogoutOutlined,
+  DashboardOutlined,
+  ShopOutlined,
+  SettingOutlined,
+  EditOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
-
-import { Avatar, Dropdown } from "antd";
-import { useState } from "react";
+import { Avatar, Dropdown, MenuProps } from "antd";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const { user, logout } = useAuth();
 
-  const menuItems = [
-    {
-      key: "profile",
-      label: <Link href="/profile">Profile</Link>,
-    },
-  ];
-
-  if (user?.role === "shop") {
-    menuItems.push({
-      key: "shop",
-      label: <Link href="/seller/dashboard">Seller Dashboard</Link>,
-    });
-  }
-
-  if (user?.role === "admin") {
-    menuItems.push(
+  const getMenuItems = (): MenuProps["items"] => {
+    const baseItems: MenuProps["items"] = [
       {
-        key: "admin",
-        label: <Link href="/admin">Admin Dashboard</Link>,
+        key: "profile",
+        icon: <UserOutlined />,
+        label: <Link href="/user_profile">Trang cá nhân</Link>,
       },
       {
-        key: "manage-users",
-        label: <Link href="/admin/users">Manage Users</Link>,
-      }
-    );
-  }
+        key: "write-blog",
+        icon: <EditOutlined />,
+        label: <Link href="/blog">Viết blog</Link>,
+      },
+      { type: "divider" },
+      {
+        key: "my-posts",
+        icon: <BookOutlined />,
+        label: <Link href="/user/posts">Bài viết của tôi</Link>,
+      },
+      {
+        key: "saved-posts",
+        icon: <BookOutlined />,
+        label: <Link href="/user/saved">Outfit đã lưu</Link>,
+      },
+      { type: "divider" },
+      {
+        key: "settings",
+        icon: <SettingOutlined />,
+        label: <Link href="/user_dashboard">Cài đặt</Link>,
+      },
+    ];
 
-  menuItems.push({
-    key: "logout",
-    label: (
-      <span
-        onClick={logout}
-        className="text-red-500 font-medium"
-      >
-        Logout
-      </span>
-    ),
-  });
+    if (user?.role === "shop") {
+      baseItems.push({
+        key: "shop",
+        icon: <ShopOutlined />,
+        label: <Link href="/seller/dashboard">Shop</Link>,
+      });
+    }
+
+    if (user?.role === "admin") {
+      baseItems.push(
+        {
+          key: "admin",
+          icon: <DashboardOutlined />,
+          label: <Link href="/admin">Dashboard</Link>,
+        },
+        {
+          key: "manage-users",
+          icon: <SettingOutlined />,
+          label: <Link href="/admin/users">Quản lý người dùng</Link>,
+        },
+        { type: "divider" }
+      );
+    }
+
+    baseItems.push({
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: <span className="text-red-600 font-medium">Đăng xuất</span>,
+      onClick: logout,
+    });
+
+    return baseItems;
+  };
 
   return (
-    <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-2xl shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-1">
-          <span className="text-[28px] font-bold tracking-[-2px] bg-gradient-to-r from-violet-600 via-fuchsia-500 to-rose-500 bg-clip-text text-transparent">
-            Outfits
-          </span>
-          <span className="text-3xl font-bold text-rose-400 tracking-tight">
-            Lab
-          </span>
+    <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-xl shadow-sm ">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-f">
+        <Link href="/" className="flex items-center gap-1.5">
+          <div className="w-[80px] h-auto  flex items-center justify-center" >
+            <img
+              src="/images/logo.png"
+              alt="OutfitsLab Logo"
+              className="object-cover scale-200 transition-transform hover:scale-225"
+            />
+          </div>
         </Link>
 
-        {/* Menu */}
-        <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-700">
-          <Link href="/">Home</Link>
-          <Link href="product">Collections</Link>
-          <Link href="try-on">Custom-Room</Link>
-          <Link href="SellersList">Shops</Link>
-          <Link href="blog">Community</Link>
-          <Link href="/about">About</Link>
+        <nav className="hidden md:flex items-center gap-10 text-base font-medium text-gray-700">
+          <Link href="/" className="hover:text-rose-500 transition">Home</Link>
+          <Link href="/product" className="hover:text-rose-500 transition">Collections</Link>
+          <Link href="/try-on" className="hover:text-rose-500 transition">Custom-Room</Link>
+          <Link href="/SellersList" className="hover:text-rose-500 transition">Shops</Link>
+          <Link href="/blog" className="hover:text-rose-500 transition">Community</Link>
+          <Link href="/about" className="hover:text-rose-500 transition">About</Link>
         </nav>
 
-        {/* Right side */}
         <div className="hidden md:flex items-center gap-8">
-
-          {/* Icons */}
           <div className="flex items-center gap-7 text-2xl text-gray-600">
-            <BellOutlined className="cursor-pointer hover:text-rose-500 transition" />
-            <HeartOutlined className="cursor-pointer hover:text-rose-500 transition" />
+            <BellOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
+            <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
           </div>
 
-          {/* Auth UI */}
           {!user ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <Link
                 href="/sign-up"
-                className="px-6 py-2.5 font-semibold text-yellow-700 border-2 border-yellow-700 rounded-2xl"
+                className="px-6 py-2.5 font-semibold text-yellow-700 border-2 border-yellow-700 rounded-xl hover:bg-yellow-50 transition"
               >
                 Sign Up
               </Link>
-
               <Link
                 href="/sign-in"
-                className="px-7 py-2.5 font-semibold bg-yellow-700 text-white rounded-2xl"
+                className="px-7 py-2.5 font-semibold bg-yellow-700 text-white rounded-xl hover:bg-yellow-800 transition"
               >
                 Sign In
               </Link>
             </div>
           ) : (
             <Dropdown
-              menu={{ items: menuItems }}
+              menu={{ items: getMenuItems() }}
               placement="bottomRight"
+              trigger={["click"]}
+              arrow
             >
-              <div className="flex items-center gap-3 cursor-pointer">
-
+              <div className="flex items-center gap-3 cursor-pointer group">
                 <Avatar
                   size={40}
                   icon={<UserOutlined />}
                 />
-
-                <span className="font-medium text-gray-700">
-                  {user.displayName}
-                </span>
-
               </div>
             </Dropdown>
           )}
         </div>
-
-        {/* Mobile button */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden text-3xl text-gray-700"
-        >
-          {isMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
-        </button>
-
       </div>
     </header>
   );
