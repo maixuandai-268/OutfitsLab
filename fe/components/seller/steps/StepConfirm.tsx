@@ -3,6 +3,7 @@ interface StepStoreProps {
     storeDescription: string;
     primaryCategory: string;
     onChange: (field: string, value: string) => void;
+    prevStep: () => void;
 }
 export default function StepStore({ storeName, storeDescription, primaryCategory, onChange, prevStep }: StepStoreProps) {
     return (
