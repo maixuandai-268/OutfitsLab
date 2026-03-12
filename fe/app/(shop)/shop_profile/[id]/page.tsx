@@ -31,7 +31,7 @@ export default function ShopProfilePage() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <div>
-               <h2 className="text-4xl font-bold">Featured Products</h2>
+               <h2 className="text-4xl font-bold text-black">Featured Products</h2>
                <p className="text-gray-500 mt-4">{filteredShopProducts.length} items available</p>
             </div>
             <div className="flex gap-4">
