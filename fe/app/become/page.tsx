@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react";
-import StepInfo from "@/components/seller/steps/StepInfo";
-import StepStore from "@/components/seller/steps/StepStore";
-import StepConfirm from "@/components/seller/steps/StepConfirm";
+import StepInfo from "@/components/seller/StepInfo";
+import StepStore from "@/components/seller/StepStore";
+import StepConfirm from "@/components/seller/StepConfirm";
 
 export default function BecomePage() {
 
@@ -22,16 +22,18 @@ export default function BecomePage() {
             {step === 2 && (
                 <StepStore
                     nextStep={nextStep}
-                    prevStep={prevStep}
-                />
+                    prevStep={prevStep} storeName={""} storeDescription={""} primaryCategory={""} onChange={function (field: string, value: string): void {
+                        throw new Error("Function not implemented.");
+                    }} />
             )}
 
             {step === 3 && (
-                <StepConfirm
-                    prevStep={prevStep}
-                />
+                <StepConfirm storeName={""} storeDescription={""} primaryCategory={""} onChange={function (field: string, value: string): void {
+                    throw new Error("Function not implemented.");
+                }} prevStep={function (): void {
+                    throw new Error("Function not implemented.");
+                }} />
             )}
-
         </div>
     );
 }

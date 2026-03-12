@@ -14,7 +14,7 @@ export default function BlogList() {
     return (
         <div className="mt-1 ">
             <h2 className="text-xl font-semibold mb-6">
-                Latest Post
+                Bài đăng mới nhất
             </h2>
             <div className="grid grid-cols-3 gap-6">
                 {currentBlogs.map((_, index) => (
@@ -27,7 +27,7 @@ export default function BlogList() {
                     disabled={currentPage === 1}
                     className="px-4 py-2 border rounded disabled:opacity-40"
                 >
-                    ←
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-chevrons-left-icon lucide-chevrons-left"><path d="m11 17-5-5 5-5" /><path d="m18 17-5-5 5-5" /></svg>
                 </button>
                 {[...Array(totalPages)].map((_, index) => {
                     const page = index + 1
@@ -37,7 +37,7 @@ export default function BlogList() {
                             onClick={() => setCurrentPage(page)}
                             className={`px-4 py-2 border rounded transition
                 ${currentPage === page
-                                    ? "bg-black text-white"
+                                    ? "bg-pink-500 text-white"
                                     : "hover:bg-gray-100"}
               `}
                         >
@@ -51,9 +51,9 @@ export default function BlogList() {
                     disabled={currentPage === totalPages}
                     className="px-4 py-2 border rounded disabled:opacity-40"
                 >
-                    →
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-chevrons-right-icon lucide-chevrons-right"><path d="m6 17 5-5-5-5" /><path d="m13 17 5-5-5-5" /></svg>
                 </button>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
