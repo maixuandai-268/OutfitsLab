@@ -1,29 +1,55 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { notification } from "antd";
 
 export default function SignUp() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [agreed, setAgreed] = useState(false);
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-        const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
 
-        const payload = { ...data };
+    const payload = { ...data };
 
-
-        fetch("http://localhost:3000/api/auth/register", {
+    try {
+        const response = await fetch("http://localhost:3000/api/auth/register", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify(payload),
-        }).then(res => res.json()).then(console.log);
-    };
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || "Đăng ký thất bại");
+        }
+
+        notification.success({
+            message: "Đăng ký thành công",
+            description: "Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập ngay bây giờ.",
+            duration: 4, 
+        });
+
+        setTimeout(() => {
+            window.location.href = "/sign-in";
+        }, 2000);
+
+    } catch (error) {
+        console.error("Registration error:", error);
+
+        notification.error({
+            message: "Đăng ký thất bại",
+            description:
+                error instanceof Error
+                    ? error.message
+                    : "Đã có lỗi xảy ra khi tạo tài khoản. Vui lòng thử lại sau.",
+            duration: 5,
+        });
+    }
+};
 
     return (
         <div className="w-full max-w-md mx-auto px-6 flex flex-col shadow-2xl shadow-[#F5F5FF]/50 rounded-3xl">
@@ -142,7 +168,6 @@ export default function SignUp() {
                                     </svg>
                                 </div>
                                 <input
-                                    type={showPassword ? "text" : "password"}
                                     id="password"
                                     name="password"
                                     placeholder="••••••••"
@@ -166,7 +191,6 @@ export default function SignUp() {
                                     </svg>
                                 </div>
                                 <input
-                                    type={showConfirmPassword ? "text" : "password"}
                                     id="confirmPassword"
                                     name="confirmPassword"
                                     placeholder="••••••••"
