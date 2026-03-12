@@ -6,6 +6,7 @@ import DashboardPage from "@/components/admin/dashboard/DashboardPage";
 import UserProfile from "@/components/admin/userProfile/UserProfile"; // nếu có trang Users
 import SettingsPage from "@/components/admin/settings/SettingsPage";
 import ReportPage from "@/components/admin/report/ReportPage";
+import SellerApplicationPage from "@/components/admin/seller/SellerApplicationPage";
 
 // Khai báo đúng kiểu ThemeCtx (đủ type cho setDark)
 export const ThemeCtx = createContext<{
@@ -33,6 +34,8 @@ export default function App() {
         return <SettingsPage dark={dark} />;     // ví dụ trang Settings
       case "Reports":
         return <ReportPage dark={dark} />;       // trang ReportPage mới
+        case "Seller Applications":
+        return <SellerApplicationPage dark={dark} />;       // tạm thời dùng ReportPage, bạn sẽ tạo SellerApplicationPage sau
       default:
         return (
           <div
