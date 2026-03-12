@@ -10,38 +10,38 @@ type Report= {
   id: string;
   title: string;
   desc: string;
-  severity: "high" | "medium" | "low";
-  ago: string; // “2 hours ago", "1 day ago" ...
+  severity: "Khẩn cấp" | "Trung bình" | "Thấp";
+  ago: string;
 };
 
 const reportSeed: Report[] = [
   {
     id: "ISS-1001",
-    title: "Product Violation",
-    desc: "Seller uploaded prohibited item",
-    severity: "high",
-    ago: "2 hours ago",
+    title: "Sản phẩm bị cấm",
+    desc: "Báo cáo về sản phẩm vi phạm chính sách",
+    severity: "Khẩn cấp",
+    ago: "2 giờ trước",
   },
   {
     id: "ISS-1002",
-    title: "User Complaint",
-    desc: "Counterfeit product report",
-    severity: "high",
-    ago: "5 hours ago",
+    title: "Khiếu nại người dùng",
+    desc: "Báo cáo sản phẩm giả mạo",
+    severity: "Trung bình",
+    ago: "5 giờ trước",
   },
   {
     id: "ISS-1003",
-    title: "Payment Issue",
-    desc: "Failed transaction dispute",
-    severity: "medium",
-    ago: "1 day ago",
+    title: "Vấn đề thanh toán",
+    desc: "Tranh chấp giao dịch thất bại",
+    severity: "Thấp",
+    ago: "1 ngày trước",
   },
   {
     id: "ISS-1004",
-    title: "Quality Review",
-    desc: "Product images don't match description",
-    severity: "medium",
-    ago: "2 days ago",
+    title: "Đánh giá chất lượng",
+    desc: "Hình ảnh sản phẩm không khớp với mô tả",
+    severity: "Trung bình",
+    ago: "2 ngày trước",
   },
 ];
 
@@ -50,7 +50,7 @@ function StatCard({
   title,
   value,
   accent = "indigo",
-  link = "View All",
+  link = "Xem chi tiết",
 }: {
   dark: boolean;
   title: string;
@@ -93,9 +93,9 @@ function StatCard({
 
 function SeverityPill({ level }: { level: Report["severity"] }) {
   const map = {
-    high: "bg-rose-100 text-rose-700",
-    medium: "bg-amber-100 text-amber-700",
-    low: "bg-emerald-100 text-emerald-700",
+    "Khẩn cấp": "bg-rose-100 text-rose-700",
+    "Trung bình": "bg-amber-100 text-amber-700",
+    "Thấp": "bg-emerald-100 text-emerald-700",
   } as const;
   return (
     <span
@@ -146,7 +146,6 @@ function IssueItem({ dark, issue }: { dark: boolean; issue: Report }) {
 }
 
 export default function ReportPage({ dark }: ReportPageProps) {
-  // Có thể tính thống kê từ data thật; tạm thời mock:
   const stats = useMemo(
     () => ({
       pending: 24,
@@ -158,14 +157,12 @@ export default function ReportPage({ dark }: ReportPageProps) {
 
   return (
     <main className={`flex-1 overflow-y-auto p-6 ${dark ? "" : "bg-amber-50/40"}`}>
-      {/* Cards hàng trên */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
-        <StatCard dark={dark} title="Pending Issues" value={stats.pending} accent="amber" />
-        <StatCard dark={dark} title="This Month" value={stats.thisMonth} accent="indigo" />
-        <StatCard dark={dark} title="Resolved" value={stats.resolved} accent="emerald" />
+        <StatCard dark={dark} title="Vấn đề đang chờ" value={stats.pending} accent="amber" />
+        <StatCard dark={dark} title="Tháng này" value={stats.thisMonth} accent="indigo" />
+        <StatCard dark={dark} title="Đã giải quyết" value={stats.resolved} accent="emerald" />
       </div>
 
-      {/* Recent Issues */}
       <section
         className={`rounded-2xl border ${
           dark ? "bg-gray-800 border-gray-700" : "bg-white border-amber-200"
@@ -184,7 +181,7 @@ export default function ReportPage({ dark }: ReportPageProps) {
               dark ? "text-gray-100" : "text-amber-900"
             }`}
           >
-            Recent Issues
+            Các vấn đề gần đây
           </h2>
         </div>
 

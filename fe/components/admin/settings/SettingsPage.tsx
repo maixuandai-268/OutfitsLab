@@ -13,7 +13,7 @@ type SystemSettings = {
 };
 
 type CommissionSettings = {
-  standardRate: string; // lưu dạng string để dễ nhập liệu (%, số thập phân)
+  standardRate: string; 
   premiumDiscount: string;
 };
 
@@ -40,10 +40,10 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
   };
 
   const onSave = async () => {
-    // Giả lập lưu (call API tuỳ bạn)
+    
     const payload = { system: sys, commission: com };
     console.log("Save Settings:", payload);
-    // Show toast đơn giản
+    
     alert("Settings saved!");
   };
 
@@ -58,15 +58,14 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
       <div className="mb-4">
         <h1 className={`text-xl font-bold ${dark ? "text-gray-50" : "text-gray-900"}`}>
           <SettingOutlined className="mr-2" />
-          Settings
+          Cài đặt
         </h1>
-        <p className="text-xs text-gray-400 mt-0.5">System configuration and commission rules.</p>
+        <p className="text-xs text-gray-400 mt-0.5">Quản lý cài đặt hệ thống và hoa hồng</p>
       </div>
 
-      {/* System Settings */}
       <section className={`${cardBase} p-4 mb-4`}>
         <h2 className={sectionTitle}>
-          <span>⚙️ System Settings</span>
+          <span>⚙️ Cài đặt hệ thống</span>
         </h2>
 
         <div className={`mt-3 flex flex-col gap-3`}>
@@ -75,9 +74,9 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className={`text-[13px] font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}>
-                  Maintenance Mode
+                  Chế độ bảo trì
                 </p>
-                <p className={hintText}>Disable user access for system updates</p>
+                <p className={hintText}>Vô hiệu hóa quyền truy cập người dùng để cập nhật hệ thống</p>
               </div>
               <label className="inline-flex items-center gap-2 cursor-pointer">
                 <input
@@ -95,9 +94,9 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className={`text-[13px] font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}>
-                  Email Notifications
+                  Thông báo qua email
                 </p>
-                <p className={hintText}>Send alerts for critical issues</p>
+                <p className={hintText}>Gửi thông báo cho các vấn đề quan trọng</p>
               </div>
               <label className="inline-flex items-center gap-2 cursor-pointer">
                 <input
@@ -115,9 +114,9 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className={`text-[13px] font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}>
-                  New Seller Auto-Approval
+                  Tự động phê duyệt
                 </p>
-                <p className={hintText}>Auto-approve sellers meeting requirements</p>
+                <p className={hintText}>Tự động phê duyệt người bán đáp ứng điều kiện</p>
               </div>
               <label className="inline-flex items-center gap-2 cursor-pointer">
                 <input
@@ -133,14 +132,13 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
         </div>
       </section>
 
-      {/* Commission Settings */}
       <section className={`${cardBase} p-4`}>
-        <h2 className={sectionTitle}>💰 Commission Settings</h2>
+        <h2 className={sectionTitle}>💰 Cài đặt hoa hồng</h2>
 
         <div className="mt-3 grid grid-cols-1 gap-3">
           <div>
             <label className={`block text-xs mb-1 ${dark ? "text-gray-300" : "text-amber-800"}`}>
-              Standard Commission Rate (%)
+              Khuyến mãi tiêu chuẩn (%) - Phí hoa hồng cơ bản áp dụng cho tất cả người bán
             </label>
             <input
               inputMode="decimal"
@@ -157,7 +155,7 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
 
           <div>
             <label className={`block text-xs mb-1 ${dark ? "text-gray-300" : "text-amber-800"}`}>
-              Premium Seller Discount (%)
+              Khuyến mãi cho tài khoản Premium (% giảm trên phí tiêu chuẩn)
             </label>
             <input
               inputMode="decimal"
@@ -173,8 +171,6 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
           </div>
         </div>
       </section>
-
-      {/* Save button */}
       <div className="mt-4">
         <button
           onClick={onSave}
@@ -182,7 +178,7 @@ export default function SettingsPage({ dark }: SettingsPageProps) {
             bg-gradient-to-r from-amber-400 to-amber-700 hover:from-amber-500 hover:to-amber-800
             shadow-sm active:translate-y-[1px]`}
         >
-          Save Settings
+          Lưu thay đổi
         </button>
       </div>
     </main>

@@ -25,7 +25,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col">
+    <div className="bg-gray-50 min-h-screen flex flex-col pt-22">
       
       <ShopHeader shop={shop} owner={owner} />
 

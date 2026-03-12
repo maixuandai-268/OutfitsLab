@@ -23,7 +23,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="text-lg font-sans min-h-screen">
+    <div className="pt-8">
         <div className="max-w-310 mx-auto mt-9 p-11">
           <div className='mb-15'><ProductDetail product={product} /></div>
           <ReviewSection />
