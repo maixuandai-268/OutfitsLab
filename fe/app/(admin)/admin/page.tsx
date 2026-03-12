@@ -3,11 +3,13 @@ import { useState, createContext, Dispatch, SetStateAction } from "react";
 import Sidebar from "@/components/admin/layout/sidebar";
 import Topbar from "@/components/admin/layout/topbar";
 import DashboardPage from "@/components/admin/dashboard/DashboardPage";
-import UserProfile from "@/components/admin/userProfile/UserProfile"; // nếu có trang Users
+import UserProfile from "@/components/admin/userProfile/UserProfile"; 
 import SettingsPage from "@/components/admin/settings/SettingsPage";
 import ReportPage from "@/components/admin/report/ReportPage";
+import SellerApplicationPage from "@/components/admin/sellerApplication/SellerApplicationPage";
+import AdminAccountsPage from "@/components/admin/adminAccounts/AdminAccountsPage";
 
-// Khai báo đúng kiểu ThemeCtx (đủ type cho setDark)
+
 export const ThemeCtx = createContext<{
   dark: boolean;
   setDark: Dispatch<SetStateAction<boolean>>;
@@ -17,22 +19,26 @@ export default function App() {
   const [dark, setDark]               = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Nếu hiện tại bạn không dùng submenu, có thể bỏ expandedNav:
+ 
   const [expandedNav, setExpandedNav] = useState<string | null>(null);
 
   const [activeNav, setActiveNav]     = useState<string | null>("Dashboard");
 
-  // ⬇️ Tạo hàm/chuyển thành biến để quyết định page và TRUYỀN props cho page
+ 
   const renderContent = () => {
     switch (activeNav) {
-      case "Dashboard":
-        return <DashboardPage dark={dark} />;  // truyền prop dark
-      case "Users":
-        return <UserProfile dark={dark} />;      // ví dụ trang Users
-      case "Settings":
-        return <SettingsPage dark={dark} />;     // ví dụ trang Settings
-      case "Reports":
-        return <ReportPage dark={dark} />;       // trang ReportPage mới
+      case "Bảng điều khiển":
+        return <DashboardPage dark={dark} />; 
+      case "Người dùng":
+        return <UserProfile dark={dark} />;     
+      case "Cài đặt":
+        return <SettingsPage dark={dark} />;  
+      case "Báo cáo":
+        return <ReportPage dark={dark} />;      
+      case "Đơn đăng ký người bán":
+        return <SellerApplicationPage dark={dark} />;
+      case "Team":
+        return <AdminAccountsPage dark={dark} />;
       default:
         return (
           <div

@@ -145,22 +145,6 @@ export default function FeaturedSellersPage() {
   )
 }
 
-
-// --- HELPER FUNCTIONS & ICONS ---
-
-// Hàm tạo dữ liệu giả cho UI đẹp (vì Mock Data thiếu)
-function getExtraShopData(index: number) {
-  const data = [
-    { reviews: 324 },
-    { reviews: 324 },
-    { reviews: 324, },
-    { reviews: 324, },
-    { reviews: 256 },
-  ]
-  // Lấy data theo index, nếu hết thì lấy cái đầu tiên
-  return data[index % data.length]
-}
-
 function StarIcon({ filled }: { filled: boolean }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth={filled ? 0 : 2} className="w-4 h-4">

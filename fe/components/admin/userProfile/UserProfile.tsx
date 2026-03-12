@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { SearchOutlined, DownloadOutlined } from "@ant-design/icons";
 
-/** Fake data — có vài record giống ảnh mẫu + thêm dữ liệu để test lọc/sort */
 const seedUsers = [
   {
     id: "U001",
@@ -9,7 +8,7 @@ const seedUsers = [
     email: "linh@example.com",
     joined: "2024-01-15",
     orders: 12,
-    status: "active",
+    status: "Hoat động",
   },
   {
     id: "U002",
@@ -17,7 +16,7 @@ const seedUsers = [
     email: "minh@example.com",
     joined: "2024-01-14",
     orders: 6,
-    status: "active",
+    status: "Hoat động",
   },
   {
     id: "U003",
@@ -25,7 +24,7 @@ const seedUsers = [
     email: "tvb@example.com",
     joined: "2023-11-03",
     orders: 0,
-    status: "inactive",
+    status: "Không hoạt động",
   },
   {
     id: "U004",
@@ -33,7 +32,7 @@ const seedUsers = [
     email: "ngoch@example.com",
     joined: "2025-03-22",
     orders: 3,
-    status: "active",
+    status: "Hoat động",
   },
   {
     id: "U005",
@@ -41,7 +40,7 @@ const seedUsers = [
     email: "hp@example.com",
     joined: "2025-07-19",
     orders: 8,
-    status: "active",
+    status: "Hoat động",
   },
 ];
 
@@ -50,8 +49,8 @@ interface UsersPageProps {
 }
 function StatusPill({ status }: { status: string }) {
   const map: Record<string, string> = {
-    active: "bg-emerald-100 text-emerald-700",
-    inactive: "bg-amber-100 text-amber-700",
+    "Hoat động": "bg-emerald-100 text-emerald-700",
+    "Không hoạt động": "bg-amber-100 text-amber-700",
   };
   return (
     <span
@@ -65,7 +64,7 @@ function StatusPill({ status }: { status: string }) {
 }
 
 function exportCsv(rows: typeof seedUsers, filename = "users.csv") {
-  const headers = ["User", "Email", "Joined", "Orders", "Status"];
+  const headers = ["Người dùng", "Email", "Tham gia", "Đơn hàng", "Trạng thái"];
   const toCsv = (value: string | number | null | undefined) => {
     if (value == null) return "";
     const s = String(value);
@@ -92,10 +91,8 @@ function exportCsv(rows: typeof seedUsers, filename = "users.csv") {
 
 export default function UsersPage({ dark }: UsersPageProps) {
   const [q, setQ] = useState("");
-  // -> Make users editable
   const [users, setUsers] = useState(seedUsers);
 
-  // inline edit state
   const [editId, setEditId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<{ name: string; email: string }>({
     name: "",
@@ -113,10 +110,8 @@ export default function UsersPage({ dark }: UsersPageProps) {
   }, [q, users]);
 
   function handleDelete(id: string) {
-    // optional: confirm before delete
     if (!confirm("Bạn có chắc muốn xóa user này?")) return;
     setUsers((prev) => prev.filter((u) => u.id !== id));
-    // if deleting currently edited user, cancel edit
     if (editId === id) {
       setEditId(null);
       setEditValues({ name: "", email: "" });
@@ -134,7 +129,6 @@ export default function UsersPage({ dark }: UsersPageProps) {
   }
 
   function handleEditSave(id: string) {
-    // basic validation
     if (!editValues.name.trim()) {
       alert("Tên không được để trống");
       return;
@@ -154,15 +148,13 @@ export default function UsersPage({ dark }: UsersPageProps) {
 
   return (
     <main className="flex-1 overflow-y-auto p-6">
-      {/* Header */}
       <div className="mb-4">
-        <h1 className={`text-xl font-bold ${dark ? "text-gray-50" : "text-gray-900"}`}>Users</h1>
+        <h1 className={`text-xl font-bold ${dark ? "text-gray-50" : "text-gray-900"}`}>Người dùng</h1>
         <p className="text-xs text-gray-400 mt-0.5">
-          Manage your users, search and export.
+          Quản lý người dùng, chỉnh sửa thông tin và theo dõi trạng thái hoạt động.
         </p>
       </div>
 
-      {/* Search + Export */}
       <div
         className={`flex items-center gap-3 p-2.5 rounded-xl mb-3 ${
           dark ? "bg-gray-800 border border-gray-700" : "bg-amber-50 border border-amber-200"
@@ -174,7 +166,7 @@ export default function UsersPage({ dark }: UsersPageProps) {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search users by name or email..."
+            placeholder="Tìm kiếm người dùng..."
             className={`w-full pl-9 pr-4 py-2 rounded-xl text-[13px] outline-none border transition-colors ${
               dark
                 ? "bg-gray-900 border-gray-700 text-gray-200 placeholder-gray-500 focus:border-indigo-500"
@@ -187,11 +179,10 @@ export default function UsersPage({ dark }: UsersPageProps) {
           onClick={() => exportCsv(filtered)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors"
         >
-          <DownloadOutlined /> Export
+          <DownloadOutlined /> Xuất
         </button>
       </div>
 
-      {/* Table */}
       <div
         className={`rounded-2xl border ${
           dark ? "border-gray-700 bg-gray-800" : "border-amber-200 bg-amber-50"
@@ -201,7 +192,7 @@ export default function UsersPage({ dark }: UsersPageProps) {
           <table className="w-full border-collapse">
             <thead>
               <tr className={`${dark ? "border-b border-gray-700" : "border-b border-amber-200"}`}>
-                {["User", "Email", "Joined", "Orders", "Status", "Actions"].map((h) => (
+                {["Người dùng", "Email", "Tham gia", "Đơn hàng", "Trạng thái", "Hành động"].map((h) => (
                   <th
                     key={h}
                     className={`px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide ${
@@ -227,7 +218,7 @@ export default function UsersPage({ dark }: UsersPageProps) {
                         : ""
                     } ${dark ? "hover:bg-gray-900/60" : "hover:bg-white/60"} transition-colors`}
                   >
-                    {/* User */}
+                
                     <td className="px-3 py-3.5">
                       <div className="flex items-center gap-2">
                         <div
@@ -251,7 +242,7 @@ export default function UsersPage({ dark }: UsersPageProps) {
                       </div>
                     </td>
 
-                    {/* Email */}
+             
                     <td className={`px-3 py-3.5 text-[13px] ${dark ? "text-gray-300" : "text-gray-700"}`}>
                       {isEditing ? (
                         <input
@@ -265,22 +256,22 @@ export default function UsersPage({ dark }: UsersPageProps) {
                       )}
                     </td>
 
-                    {/* Joined */}
+          
                     <td className="px-3 py-3.5 text-[13px] text-gray-400">
                       {u.joined}
                     </td>
 
-                    {/* Orders */}
+   
                     <td className={`px-3 py-3.5 text-[13px] font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>
                       {u.orders}
                     </td>
 
-                    {/* Status */}
+   
                     <td className="px-3 py-3.5">
                       <StatusPill status={u.status} />
                     </td>
 
-                    {/* Actions */}
+     
                     <td className="px-3 py-3.5 gap-2">
                       {isEditing ? (
                         <div className="flex items-center gap-2">
