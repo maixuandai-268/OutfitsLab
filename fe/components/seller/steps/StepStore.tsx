@@ -1,14 +1,25 @@
+import { useState } from "react";
+
 interface StepStoreProps {
     storeName: string;
     storeDescription: string;
     primaryCategory: string;
     onChange: (field: string, value: string) => void;
+    nextStep: () => void;
+    prevStep: () => void;
 }
 
-export default function StepStore({ storeName, storeDescription, primaryCategory, onChange, nextStep, prevStep }: StepStoreProps) {
-    const [showPassword, setShowPassword] = useState(false);
+export default function StepStore({
+    storeName,
+    storeDescription,
+    primaryCategory,
+    onChange,
+    nextStep,
+    prevStep
+}: StepStoreProps) {
+
     const [rememberMe, setRememberMe] = useState(false);
-export default function StepStore({ storeName, storeDescription, primaryCategory, onChange }: StepStoreProps) {
+
     return (
         <div className="mt-0.5 bg-white">
             <div className="w-full flex flex-col">
@@ -21,7 +32,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                 </p>
             </div>
 
-            <div className=" w-full h-[89px] border border-[#FFE9CC] bg-white flex flex-col justify-center">
+            <div className="w-full h-[89px] border border-[#FFE9CC] bg-white flex flex-col justify-center">
                 <div className="ml-[473px] flex items-center gap-1">
 
                     <div className="w-[40px] h-[40px] rounded-full bg-[#FFF4E6] text-white flex items-center justify-center">1</div>
@@ -29,138 +40,107 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
 
                     <div className="ml-4 mr-4 w-[32px] h-[2px] bg-[#FFE9CC]"></div>
 
-
                     <div className="w-[40px] h-[40px] rounded-full bg-[#D19F42] text-white flex items-center justify-center">2</div>
                     <span className="text-[#D19F42]">Store Details</span>
 
                     <div className="ml-4 mr-4 w-[32px] h-[2px] bg-[#FFE9CC]"></div>
-
 
                     <div className="w-[40px] h-[40px] rounded-full bg-[#008080] text-white flex items-center justify-center">3</div>
                     <span className="text-[#262626]">Confirmation</span>
                 </div>
             </div>
 
-            <div className="h-fullborder border-[#FFE9CC] bg-[#FFFBF5] p-4">
+            <div className="h-full border border-[#FFE9CC] bg-[#E8FFF0] p-4">
                 <div className="flex justify-center items-center mt-10">
                     <div className="w-[832px] border border-[#FFE9CC] rounded-[24px] bg-white p-10">
 
                         <h1 className="font-semibold text-[24px]">Shop Details</h1>
 
-                        <div className="mt-4 ">
-                            <label htmlFor="Name" className="font-semibold text-[14px]">Store Name</label>
-                            <input type="name"
+                        <div className="mt-4">
+                            <label className="font-semibold text-[14px]">Store Name</label>
+                            <input
+                                type="text"
+                                value={storeName}
+                                onChange={(e) => onChange("storeName", e.target.value)}
                                 placeholder="My Awesome Fashion Store"
-                                className="w-full h-[50px] border border-[#FFE9CC] rounded-2xl flex flex-col justify-center bg-[#FFFBF5] pl-10 pr-4" />
-                            <h1 className="mt-2 text-gray-500 text-[12px]">This is how customers will see your store</h1>
+                                className="w-full h-[50px] border border-[#FFE9CC] rounded-2xl bg-[#FFFBF5] pl-4 pr-4"
+                            />
+                            <p className="mt-2 text-gray-500 text-[12px]">
+                                This is how customers will see your store
+                            </p>
                         </div>
 
                         <div className="mt-4">
-                            <label htmlFor="Store Description" className="text-[14px] font-semibold">Store Description</label>
-                            <input type="text"
+                            <label className="text-[14px] font-semibold">Store Description</label>
+                            <textarea
+                                value={storeDescription}
+                                onChange={(e) => onChange("storeDescription", e.target.value)}
                                 placeholder="Describe your store..."
-                                className="w-full h-[146px] border border-[#FFE9CC] rounded-2xl bg-[#FFFBF5] pl-4 pb-22" />
-                            <h1 className="mt-2 text-gray-500 text-[12px]">500 characters</h1>
+                                className="w-full h-[146px] border border-[#FFE9CC] rounded-2xl bg-[#FFFBF5] p-4"
+                            />
+                            <p className="mt-2 text-gray-500 text-[12px]">500 characters</p>
                         </div>
 
                         <div className="mt-4">
-                            <label htmlFor="Primary Category" className="text-[14px] font-semibold">Primary Category</label>
+                            <label className="text-[14px] font-semibold">Primary Category</label>
+
                             <div className="relative w-full">
                                 <select
                                     value={primaryCategory}
-                                    onChange={(e) => onChange('primaryCategory', e.target.value)}
-                                    className="w-full h-[50px] border border-[#FFE9CC] rounded-2xl bg-[#d9d9d9] pl-2 pr-8 appearance-none cursor-pointer"
+                                    onChange={(e) => onChange("primaryCategory", e.target.value)}
+                                    className="w-full h-[50px] border border-[#FFE9CC] rounded-2xl bg-[#d9d9d9] pl-4 pr-8 appearance-none cursor-pointer"
                                 >
                                     <option value="" disabled>Choose option...</option>
-                                    <option value="clothing">Lựa chọn 1</option>
-                                    <option value="accessories">Lựa chọn 2</option>
-                                    <option value="shoes">Lựa chọn 3</option>
-                                    <option value="bags">Lựa chọn 4</option>
+                                    <option value="clothing">Clothing</option>
+                                    <option value="accessories">Accessories</option>
+                                    <option value="shoes">Shoes</option>
+                                    <option value="bags">Bags</option>
                                 </select>
+
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                                     ▼
                                 </span>
                             </div>
                         </div>
-                        {/* dòng 4 */}
+
+                        {/* Store Logo */}
                         <div className="mt-4">
                             <label className="text-[14px] font-semibold">Store Logo</label>
+
                             <div className="w-full h-[152px] mt-2 border-2 border-[#FFE9CC] rounded-xl bg-[#FFF4E6] flex flex-col items-center justify-center cursor-pointer">
-                                <span className="text-xl">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-upload-icon lucide-upload"><path d="M12 3v12" /><path d="m17 8-5-5-5 5" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></svg>
-                                </span>
                                 <p className="text-[14px] font-medium">
                                     Click to upload or drag and drop
                                 </p>
                                 <p className="text-[12px] text-gray-600">
-                                    PNG, JPG Max 5MB, Square recommended)
+                                    PNG, JPG Max 5MB, Square recommended
                                 </p>
-
-                            </div>
-                        </div>
-                        {/*  dòng 5 */}
-                        <div className="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label htmlFor="Password" className="block mb-2 text-sm font-semibold text-left text-[#2C2C2C]">
-                                    Password
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="password"
-                                        id="Password"
-                                        name="Password"
-                                        placeholder="••••••••"
-                                        className="w-full h-14 pl-5 pr-5 rounded-2xl border border-[#FFE9CC] bg-[#FFFBF5] outline-none text-base transition-all"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <label htmlFor="ConfirmPassword" className="block mb-2 text-sm font-semibold text-left text-[#2C2C2C]">
-                                    Confirm Password
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="password"
-                                        id="ConfirmPassword"
-                                        name="ConfirmPassword"
-                                        placeholder="••••••••"
-                                        className="w-full h-14 pl-5 pr-5 rounded-2xl border border-[#FFE9CC] bg-[#FFFBF5] outline-none text-base transition-all"
-                                        required
-                                    />
-                                </div>
                             </div>
                         </div>
 
-                        {/* dòng 6  */}
-                        <div className="mt-6 p-4 bg-[#FFF4E6] rounded-2xl flex items-center">
+                        {/* Terms */}
+                        <div className="mt-4 p-4 bg-[#FFF4E6] rounded-2xl flex items-center">
 
                             <input
+                                id="remember"
                                 type="checkbox"
                                 checked={rememberMe}
                                 onChange={(e) => setRememberMe(e.target.checked)}
-                                className="w-4 h-4 border border-[#666666] mr-2"
+                                className="w-4 h-4 border border-[#666666] mr-2 cursor-pointer"
                             />
 
-                            <p className="text-[14px] text-[#4d4d4d]">
+                            <label
+                                htmlFor="remember"
+                                className="text-[14px] text-[#4d4d4d] cursor-pointer"
+                            >
                                 I agree to the
-                                <span className="text-[#D19F42] cursor-pointer ml-1">
-                                    Terms of Service
-                                </span>
+                                <span className="text-[#D19F42] ml-1">Terms of Service</span>
                                 <span className="mx-1">and</span>
-                                <span className="text-[#D19F42] cursor-pointer">
-                                    Seller Agreement
-                                </span>
-                            </p>
+                                <span className="text-[#D19F42]">Seller Agreement</span>
+                            </label>
 
                         </div>
 
-                        {/* dòng 6 */}
-
-
-
                         {/* Buttons */}
-
                         <div className="flex justify-between mt-6">
 
                             <button
@@ -176,7 +156,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                                 disabled={!rememberMe}
                                 onClick={nextStep}
                                 className={`w-[220px] h-[50px] rounded-full text-white font-medium 
-        ${rememberMe ? "bg-[#D19F42]" : "bg-[#E5CFA2] cursor-not-allowed"}`}
+                                ${rememberMe ? "bg-[#D19F42]" : "bg-[#E5CFA2] cursor-not-allowed"}`}
                             >
                                 Create Store
                             </button>
@@ -186,7 +166,6 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
-
