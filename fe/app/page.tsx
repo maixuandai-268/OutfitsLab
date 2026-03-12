@@ -8,7 +8,11 @@ import SellerHero from '@/components/main/homepage/SellerHero'
 export default function Page() {
   return (
     <main className="">
+
       <div className="w-full max-w-[95rem] mx-auto flex-col gap-16 md:gap-20 sm:px-6 lg:px-8 pt-26">
+
+      <div className=" w-full max-w-[95rem] mx-auto flex-col gap-16 md:gap-20 sm:px-6 lg:px-8 pt-26">
+ main
         <Hero />
         <Mission />
         <Features />
@@ -16,5 +20,7 @@ export default function Page() {
         <FashionCTA />
       </div>
     </main>
+
+ main
   )
 }

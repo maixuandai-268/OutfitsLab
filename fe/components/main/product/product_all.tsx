@@ -1,18 +1,4 @@
 "use client";
-<<<<<<< HEAD
-
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Button, Tooltip } from 'antd';
-import { 
-  HeartOutlined, 
-  HeartFilled, 
-  ShoppingCartOutlined, 
-  ShopOutlined 
-} from '@ant-design/icons';
-
-=======
->>>>>>> 3d0f7c29a39a072e2bece01cfe55e2ee3c8433e9
 import React, { useMemo, useState, useCallback } from "react";
 import { Sidebar } from "./sidebar";
 import {
@@ -27,7 +13,6 @@ import {
   MoreOutlined,
 } from "@ant-design/icons";
 
-/* ===================== Types ===================== */
 export interface Filters {
   categories: string[];
   colors: string[];
@@ -222,7 +207,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   );
 };
 
-/* ===================== Pagination Component ===================== */
 type PaginationProps = {
   current: number;
   totalPages: number;
@@ -358,7 +342,6 @@ export const ProductGrid: React.FC<{
   );
 };
 
-/* ===================== Container (đã bỏ useEffect reset page) ===================== */
 export default function ProductAll() {
   // State filter
   const [filters, setFilters] = useState<Filters>({
@@ -653,7 +636,6 @@ export default function ProductAll() {
   );
 }
 
-/* ===================== Dữ liệu ảo nhiều (36 item) ===================== */
 export const MOCK_PRODUCTS: Product[] = [
   // Shirts
   {
