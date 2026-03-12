@@ -14,20 +14,20 @@ export default function SettingsPage() {
 
   return (
     <div className="">
-      <h2 className="text-2xl font-bold mb-5">Store Settings</h2>
+      <h2 className="text-2xl font-bold mb-5">Cài Đặt Cửa Hàng</h2>
       <div className="bg-white border border-[#d19f42] rounded-4xl px-7 py-10 gap-7">
-        <p className="text-lg font-bold mb-5"><SettingOutlined /> Basic information</p>
-        <p>Store Name</p>
+        <p className="text-lg font-bold mb-5"><SettingOutlined /> Thông Tin Cơ Bản</p>
+        <p>Tên cửa hàng</p>
         <input 
             type="text"  
             className="w-full rounded-xl border border-[#d19f42] mb-5 mt-2 py-2 pl-7 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e2cca5]"
           />
 
-        <p>Store Desciption</p>
+        <p>Mô tả cửa hàng</p>
         <textarea 
           className="w-full rounded-xl border border-[#d19f42] mb-5 mt-2 h-40 p-3 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e2cca5]"
         />
-        <p>Contact Email</p>
+        <p>Email</p>
         <input 
           type="text" 
           className="w-full rounded-xl border border-[#d19f42] mt-2 py-2 pl-7 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e2cca5]"
@@ -35,11 +35,11 @@ export default function SettingsPage() {
       </div>
 
       <div className="bg-white border border-[#d19f42] rounded-4xl my-7 px-7 py-10 gap-7">
-         <h2 className="text-2xl font-bold mb-5"><DockerOutlined /> Shipping & Policies</h2>
-         <p className="text-lg font-bold">Shipping Regions</p>
-         <input type="checkbox" name="hobby" value="vietnam"/> Vietnam <br></br>
-         <input type="checkbox" name="hobby" value="asia"/> Asia <br></br>
-         <input type="checkbox" name="hobby" value="worldwide"/> Worldwide
+         <h2 className="text-2xl font-bold mb-5"><DockerOutlined /> Giao Hàng & Chính Sách</h2>
+         <p className="text-lg font-bold mb-2">Khu vực giao hàng</p>
+         <input type="checkbox" name="hobby" value="vietnam"/> Việt Nam <br></br>
+         <input type="checkbox" name="hobby" value="asia"/> Châu Á <br></br>
+         <input type="checkbox" name="hobby" value="worldwide"/> Toàn cầu
       </div>
 
       <div className="flex gap-5">

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { PRODUCTS } from '@/app/(shop)/shopData';
 
 interface ProductCardProps {
@@ -12,7 +13,7 @@ export const ProductCard = ({ count = 3, columns = 3 }: ProductCardProps) => {
             style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
         >
             {PRODUCTS.slice(0, count).map(item => (
-                <div key={item.id} className="relative pb-14">
+                <Link key={item.id} href={`/product_detail/${item.id}`} className="hover:scale-110 relative pb-14 block">
                     <div>
                         <img src={item.image_url} alt={item.name} className="w-full h-40 object-cover"/>
                         <p className="text-sm font-semibold m-1">{item.name}</p>
@@ -20,14 +21,14 @@ export const ProductCard = ({ count = 3, columns = 3 }: ProductCardProps) => {
                     <div className="absolute bottom-0 w-full">
                         <p className="text-base font-bold m-1">${item.price}</p>
                         <div className="flex justify-between mb-1 m-1">
-                            <p className="flex-1 text-xs text-gray-500">{item.sold} Sold</p>
+                            <p className="flex-1 text-xs text-gray-500">{item.sold} Đã bán</p>
                             <div className="flex-1 flex items-center gap-1 justify-end">
                                 <StarIcon className="text-xs text-yellow-500 w-5 h-5" filled={true} /> 
                                 <p className="text-xs">{item.rating}</p>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Link>
             ))}
         </div>
     );

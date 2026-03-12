@@ -20,16 +20,16 @@ export default function ReviewSection() {
                       <Star key={star} size={20} className="text-yellow-500" fill="currentColor" />
                   ))}
               </div>
-              <p className="text-gray-500 text-sm">from {REVIEWS.length} reviews</p>
+              <p className="text-gray-500 text-sm">Từ {REVIEWS.length} đánh giá</p>
             </div>
             
           </div>
 
           {/* Filter */}
           <div className="border border-gray-100 rounded-xl p-6 shadow-sm border-dashed">
-            <h3 className="font-semibold text-lg mb-6">Reviews Filter</h3>           
+            <h3 className="font-semibold text-lg mb-6">Lọc đánh giá</h3>           
             <div className="flex items-center justify-between cursor-pointer mb-4">
-              <span className="text-sm font-medium text-gray-600">Rating</span>
+              <span className="text-sm font-medium text-gray-600">Mức đánh giá</span>
               <ChevronDown size={18} className="text-gray-400" />
             </div>
             <div className="flex flex-col gap-3">
@@ -62,9 +62,9 @@ export default function ReviewSection() {
           </div>
 
           {/* Tiêu đề & Tabs Lọc */}
-          <h2 className="text-xl font-semibold mb-4">Review Lists</h2>
+          <h2 className="text-xl font-semibold mb-4">Danh sách đánh giá</h2>
           <div className="flex flex-wrap gap-3 mb-8">
-            {['All Reviews', 'With Photo & Video', 'Only Description'].map((filter) => (
+            {['Tất cả đánh giá', 'Có ảnh & video', 'Chỉ mô tả'].map((filter) => (
                <button 
                   key={filter}
                   onClick={() => setActiveFilter(filter)}

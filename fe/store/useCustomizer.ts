@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 export type Gender = 'female' | 'male'
-export type Part = 'skin' | 'top' | 'bottom' | 'shoes'
+export type Part = 'skin' | 'hat' | 'top' | 'bottom' | 'shoes'
 export type Size = 'XS'|'S'|'M'|'L'|'XL'
 export type Pattern = 'none'|'stripes'|'polka'|'plaid'
 export type BackgroundPreset = 'neutral'|'studio'|'shadow'|'gradientWarm'|'gradientCool'
@@ -14,7 +14,7 @@ interface CustomizerState {
   modelId: ModelId
   autoRotate: boolean
   colors: Record<Part, Hex>
-  patterns: { top: Pattern; bottom: Pattern }
+  patterns: { top: Pattern; bottom: Pattern; hat: Pattern; shoes: Pattern }
   background: BackgroundPreset
   size: Size
   activeGarments: Partial<Record<GarmentSlot, string>>
@@ -22,7 +22,7 @@ interface CustomizerState {
   setGender: (g: Gender) => void
   setModelId: (id: ModelId) => void
   setColor: (p: Part, c: Hex) => void
-  setPattern: (p: 'top'|'bottom', pattern: Pattern) => void
+  setPattern: (p: 'top'|'bottom'|'hat'|'shoes', pattern: Pattern) => void
   setBackground: (b: BackgroundPreset) => void
   setSize: (s: Size) => void
   setGarment: (slot: GarmentSlot, url: string | null) => void
@@ -33,8 +33,8 @@ export const useCustomizer = create<CustomizerState>((set) => ({
   gender: 'female',
   modelId: 'avatar_female',
   autoRotate: true,
-  colors: { skin:'#f7c7a3', top:'#d9534f', bottom:'#506680', shoes:'#222222' },
-  patterns: { top:'none', bottom:'none' },
+  colors: { skin:'#f7c7a3', hat:'#f7c7a3', top:'#d9534f', bottom:'#506680', shoes:'#222222' },
+  patterns: { top:'none', bottom:'none', hat:'none', shoes:'none' },
   background: 'neutral',
   size: 'M',
   activeGarments: {},

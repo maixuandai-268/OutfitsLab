@@ -76,7 +76,7 @@ export default function Navbar() {
           <Link href="/">Home</Link>
           <Link href="product">Collections</Link>
           <Link href="try-on">Custom-Room</Link>
-          <Link href="SellersList">Shops</Link>
+          <Link href="/SellersList">Shops</Link>
           <Link href="blog">Community</Link>
           <Link href="/about">About</Link>
         </nav>
