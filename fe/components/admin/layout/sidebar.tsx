@@ -1,27 +1,17 @@
 "use client";
 import {
   DashboardOutlined,
-<<<<<<< HEAD
-  UserOutlined, BarChartOutlined, PieChartOutlined, TeamOutlined,
-  SettingOutlined, LogoutOutlined,
-=======
   UserOutlined, TeamOutlined,
   SettingOutlined, LogoutOutlined,
   AreaChartOutlined,
   BankOutlined,
->>>>>>> 3d0f7c29a39a072e2bece01cfe55e2ee3c8433e9
 } from "@ant-design/icons";
 
 const navItems = [
   { icon: <DashboardOutlined />,    label: "Dashboard" },
   { icon: <UserOutlined />,         label: "Users"},
-<<<<<<< HEAD
-  { icon: <BarChartOutlined />,     label: "Analytics" },
-  { icon: <PieChartOutlined />,     label: "Charts" },
-=======
   { icon: <AreaChartOutlined />,     label: "Reports" },
   { icon: <BankOutlined />,     label: "Seller Applications" },
->>>>>>> 3d0f7c29a39a072e2bece01cfe55e2ee3c8433e9
   { icon: <TeamOutlined />,         label: "Team" },
   { icon: <SettingOutlined />,      label: "Settings" },
 ];

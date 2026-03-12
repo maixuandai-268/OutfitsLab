@@ -8,7 +8,6 @@ import SellerHero from '@/components/main/homepage/SellerHero'
 export default function Page() {
   return (
     <main className="">
-<<<<<<< HEAD
       <div className=" w-full max-w-[95rem] mx-auto flex-col gap-16 md:gap-20 sm:px-6 lg:px-8 pt-26">
         <Hero />
         <Mission />
@@ -18,16 +17,5 @@ export default function Page() {
       </div>
     </main>
 
-=======
-        <div className=" w-full max-w-[95rem] mx-auto flex-col gap-16 md:gap-20 sm:px-6 lg:px-8 pt-26">
-          <Hero />
-          <Mission />
-          <Features />
-          <SellerHero />
-          <FashionCTA />
-        </div>
-    </main>
-    </>
->>>>>>> 3d0f7c29a39a072e2bece01cfe55e2ee3c8433e9
   )
 }

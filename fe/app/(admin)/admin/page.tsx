@@ -5,10 +5,7 @@ import Topbar from "@/components/admin/layout/topbar";
 import DashboardPage from "@/components/admin/dashboard/DashboardPage";
 import UserProfile from "@/components/admin/userProfile/UserProfile"; // nếu có trang Users
 import SettingsPage from "@/components/admin/settings/SettingsPage";
-<<<<<<< HEAD
-=======
 import ReportPage from "@/components/admin/report/ReportPage";
->>>>>>> 3d0f7c29a39a072e2bece01cfe55e2ee3c8433e9
 
 // Khai báo đúng kiểu ThemeCtx (đủ type cho setDark)
 export const ThemeCtx = createContext<{
@@ -34,11 +31,8 @@ export default function App() {
         return <UserProfile dark={dark} />;      // ví dụ trang Users
       case "Settings":
         return <SettingsPage dark={dark} />;     // ví dụ trang Settings
-<<<<<<< HEAD
-=======
       case "Reports":
         return <ReportPage dark={dark} />;       // trang ReportPage mới
->>>>>>> 3d0f7c29a39a072e2bece01cfe55e2ee3c8433e9
       default:
         return (
           <div
