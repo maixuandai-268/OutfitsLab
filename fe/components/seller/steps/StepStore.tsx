@@ -1,6 +1,3 @@
-"use client";
-
-
 import { useState } from "react";
 
 interface StepStoreProps {
@@ -45,7 +42,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                 </div>
             </div>
 
-            <div className="h-fullborder border-[#FFE9CC] bg-[#FFFBF5] p-4">
+            <div className="h-full border border-[#FFE9CC] bg-[#E8FFF0] p-4">
                 <div className="flex justify-center items-center mt-10">
                     <div className="w-[832px] border border-[#FFE9CC] rounded-[24px] bg-white p-10">
 
@@ -53,7 +50,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
 
                         <div className="mt-4 ">
                             <label htmlFor="Name" className="font-semibold text-[14px]">Store Name</label>
-                            <input type="name"
+                            <input type="text"
                                 placeholder="My Awesome Fashion Store"
                                 className="w-full h-[50px] border border-[#FFE9CC] rounded-2xl flex flex-col justify-center bg-[#FFFBF5] pl-10 pr-4" />
                             <h1 className="mt-2 text-gray-500 text-[12px]">This is how customers will see your store</h1>
@@ -91,7 +88,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                             <label className="text-[14px] font-semibold">Store Logo</label>
                             <div className="w-full h-[152px] mt-2 border-2 border-[#FFE9CC] rounded-xl bg-[#FFF4E6] flex flex-col items-center justify-center cursor-pointer">
                                 <span className="text-xl">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-upload-icon lucide-upload"><path d="M12 3v12" /><path d="m17 8-5-5-5 5" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-upload-icon lucide-upload"><path d="M12 3v12" /><path d="m17 8-5-5-5 5" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></svg>
                                 </span>
                                 <p className="text-[14px] font-medium">
                                     Click to upload or drag and drop
@@ -135,17 +132,21 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                                 </div>
                             </div>
                         </div>
-                        {/* dòng 6  */}
-                        <div className="mt-6 p-4 bg-[#FFF4E6] rounded-2xl flex items-center">
+                        {/* dòng 6 */}
+                        <div className="mt-4 p-4 bg-[#FFF4E6] rounded-2xl flex items-center">
 
                             <input
+                                id="remember"
                                 type="checkbox"
                                 checked={rememberMe}
                                 onChange={(e) => setRememberMe(e.target.checked)}
-                                className="w-4 h-4 border border-[#666666] mr-2"
+                                className="w-4 h-4 border border-[#666666] mr-2 cursor-pointer"
                             />
 
-                            <p className="text-[14px] text-[#4d4d4d]">
+                            <label
+                                htmlFor="remember"
+                                className="text-[14px] text-[#4d4d4d] cursor-pointer"
+                            >
                                 I agree to the
                                 <span className="text-[#D19F42] cursor-pointer ml-1">
                                     Terms of Service
@@ -154,15 +155,11 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                                 <span className="text-[#D19F42] cursor-pointer">
                                     Seller Agreement
                                 </span>
-                            </p>
+                            </label>
 
                         </div>
 
-
-                        {/* Buttons */}
-
                         <div className="flex justify-between mt-6">
-
                             <button
                                 type="button"
                                 onClick={prevStep}
@@ -170,7 +167,6 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                             >
                                 Back
                             </button>
-
                             <button
                                 type="button"
                                 disabled={!rememberMe}
@@ -180,9 +176,7 @@ export default function StepStore({ storeName, storeDescription, primaryCategory
                             >
                                 Create Store
                             </button>
-
                         </div>
-
                     </div>
                 </div>
             </div>

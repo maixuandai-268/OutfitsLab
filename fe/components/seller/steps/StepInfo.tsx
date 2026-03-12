@@ -31,8 +31,8 @@ export default function StepInfo({ nextStep }: StepInfoProps) {
                 </div>
             </div>
 
-            <div className="h-fullborder border-[#FFE9CC] bg-[#E8FFF0] p-4">
-                <div className="flex justify-center items-center mt-10">
+            <div className="h-fullborder border-[#FFE9CC] bg-[#E8FFF0] p-4 max-h-full">
+                <div className="flex justify-center items-center mt-10 ">
                     <div className="w-[832px] h-[566] border border-[#FFE9CC] rounded-[24px] bg-white p-10">
 
                         <h1 className="font-semibold text-[24px]">Your Information</h1>
