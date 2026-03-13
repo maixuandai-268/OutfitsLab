@@ -1,20 +1,25 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    PassportModule,
     JwtModule.register(
         {
-            secret : 'OutfitsLab_Key',
+            secret : 'OutfitsLab_Key', //nhớ sủa để lại trong biến môi trường
             signOptions : {expiresIn : '1d'}
         }
     )
 ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService,JwtStrategy],
+  exports : [JwtModule]
 })
 export class AuthModule {}

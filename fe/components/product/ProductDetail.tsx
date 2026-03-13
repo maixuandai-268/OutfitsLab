@@ -42,7 +42,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
     <div className="flex flex-col md:flex-row gap-8"> 
 			 <div className="w-full md:w-1/2 px-4"> {/*Ảnh sản phẩm */}
 					<img src={product.image_url} alt={product.name} className="rounded-lg w-full min-h-150 max-h-150 object-cover shadow-4xl"/>
-					<p className="font-semibold mt-6">Best mix style with</p>
+					<p className="font-semibold mt-6">Kết hợp tốt nhất với</p>
 					<div className="mt-4">
 						<ProductCard count={3} columns={3} />
 					</div>
@@ -51,10 +51,10 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 				<p className="text-base mb-1 text-gray-500">{product.type}</p>
 				<h1 className="text-3xl font-bold mb-5">{product.name}</h1>
 					<div className="flex items-center gap-4 mb-5">
-						<p className="text-base text-gray-500">{product.sold} Sold</p>
+						<p className="text-base text-gray-500">{product.sold} Đã bán</p>
 						<div className="flex items-center gap-1">
 							<StarIcon className="text-yellow-500 w-5 h-5" filled={true} />
-							<p className="text-sm">{product.rating} ({product.reviews} Reviews)</p>
+							<p className="text-sm">{product.rating} ({product.reviews} Đánh giá)</p>
 						</div>
 					</div>	
         <div className="flex items-center gap-2 mb-6">
@@ -62,7 +62,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
           <p className="text-3xl font-black">${discountPrice.toFixed(2)}</p>
         </div>
 				<div className="bg-gray-200 mx-auto mb-6 h-px w-full"></div>
-				<p className="font-semibold mb-3">Color</p>
+				<p className="font-semibold mb-3">Màu sắc</p>
 				{/* Available Colors */}
 				<div className='flex flex-col items-start mb-6'>
 					<div className="grid grid-cols-6 md:grid-cols-8 gap-2">
@@ -85,8 +85,8 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 					</div>
 				</div>
 				<div className="flex items-center mb-3">
-					<p className="font-semibold mr-9">Size</p>
-					<p className="underline cursor-pointer">View Size Guide</p>
+					<p className="font-semibold mr-9">Kích cỡ</p>
+					<p className="underline cursor-pointer">Xem bảng size</p>
 				</div>
 				
 				{/* Available Sizes */}
@@ -107,10 +107,10 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 				<div className="flex gap-4 pt-8">
 					<button
 						type="button"
-						className="px-6 py-3 bg-[#fa649a] text-white font-bold rounded-full flex items-center justify-center hover:bg-[#b88a36] transition-colors duration-200 shadow-md hover:shadow-lg"
+						className="px-6 py-3 bg-[#fa649a] text-white font-bold rounded-full flex items-center justify-center hover:bg-[#f52873] transition-colors duration-200 shadow-md hover:shadow-lg"
 					>
 						<MagicWand className="w-5 h-5 mr-2 shrink-0" />
-						Try-On Now!
+						Thử đồ ngay!
 					</button>
 					
 					<button
@@ -125,7 +125,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
             />
 					</button>
 				</div>
-				<p className="font-semibold mt-8">Description:</p>
+				<p className="font-semibold mt-8">Mô tả:</p>
 				<p className='text-justify'>{description}</p>
 
 			</div>

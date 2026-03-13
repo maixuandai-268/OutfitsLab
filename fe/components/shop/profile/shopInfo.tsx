@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { HeartIcon, MessageCircleIcon } from 'lucide-react';
+import { HeartIcon, MessageCircleIcon, MapPinIcon } from 'lucide-react';
 
 interface Shop {
   id: number;
@@ -7,6 +6,8 @@ interface Shop {
   avatar_url: string;
   description: string;
   rating: number;
+  reviews: number;
+  location: string;
 }
 
 interface ShopInfoProps {
@@ -14,14 +15,12 @@ interface ShopInfoProps {
 }
 
 export const ShopInfo = ({ shop }: ShopInfoProps) => {
-  const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <div className="bg-white border-b-2 border-[#ffe9cc]">
+    <div className="bg-[#fffbf7] border-b-2 border-[#ffe9cc]">
         <img src="/images/shopBackground.png" alt="ShopBackground" className="w-full h-30 md:h-55 object-cover" />
         <div className="max-w-310 mx-auto px-6 py-8 md:py-15">
           <div className="flex flex-col md:flex-row gap-12">
-            {/* Avatar */} 
             <div className="flex items-end">
               <div className="w-40 h-40 rounded-2xl border-4 border-gray-100 shadow-xl overflow-hidden">
                 <img 
@@ -32,13 +31,10 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
               </div>
             </div>
 
-            {/* Shop Info */}
             <div className=" w-full">
               <div className="flex flex-col items-start">
-                  {/* Shop Name */}
                   <h1 className="text-4xl font-bold mb-2">{shop.shop_name}</h1>
                   
-                  {/* Rating & Location */}
                   <div className="flex flex-wrap items-center gap-3 text-gray-500 mb-6">
                     <div className="flex items-center">
                       <div className="flex text-[#d19f42]">                         
@@ -49,23 +45,21 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
                       ))}
                       </div>
                       <span className="ml-1">{shop.rating}</span>
-                      <span className="ml-1">({shop.rating} reviews)</span>
+                      <span className="ml-1">({shop.reviews} Đánh Giá)</span>
                     </div>
                     <span className="hidden md:inline">•</span>
-                    <span className="">5,420 followers</span>
+                    <span className="">5,420 Người Yêu Thích</span>
                     <span className="hidden md:inline">•</span>
                     <div className="flex items-center">
-                      {/* <MapPinIcon /> */}
-                      <span>Los Angeles, CA</span>
+                      <MapPinIcon />
+                      <span>{shop.location}</span>
                     </div>
                   </div>
 
-                  {/* Description */}
                   <p className="text-gray-600 text-justify mb-5 max-w-2xl">
                     {shop.description}
                   </p>
 
-                  {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-5">
                       <span className="px-3 py-1 bg-[#fff4e6] text-[#d19f42] text-sm rounded-full">Minimalist Fashion</span>
                       <span className="px-3 py-1 bg-[#fff4e6] text-[#d19f42] text-sm rounded-full">Sustainable Materials</span>
@@ -74,17 +68,16 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex items-end w-full md:w-auto mt-4 md:mt-0">
               <div className="flex flex-col gap-3 w-full">
-                <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-8 py-2 rounded-full border-3 border-[#d19f42] text-[#d19f42] font-semibold hover:bg-[#fff9f0]">
-                  <HeartIcon className="w-6 h-6 text-black" />
-                  Favorite
+                <button className="cursor-pointer w-50 flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 border-[#d19f42] font-semibold hover:bg-[#fff9f0]">
+                  <HeartIcon className="w-6 h-6 " />
+                  Yêu thích
                 </button>
 
-                <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-8 py-2 rounded-full border-3 text-white bg-[#d19f42] font-semibold hover:bg-[#c28e2d]">
+                <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 text-white bg-[#d19f42] font-semibold hover:bg-[#c28e2d]">
                   <MessageCircleIcon className="w-6 h-6 text-white" />
-                  Contact
+                  Liên lạc
                 </button>
               </div>
             </div>

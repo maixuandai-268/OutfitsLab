@@ -6,6 +6,7 @@ import "@/styles/admin.css";
 import Navbar from "@/components/main/navbar";
 import Footer from "@/components/footer";
 import { AuthProvider } from "@/context/AuthContext";
+import AuthGate from "@/components/auth/AuthGate";
 
 
 const geistSans = Geist({
@@ -27,16 +28,22 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      <body
-      >
+      <body>
         <AuthProvider>
-          <Navbar/>
+
+          {/*  <AuthGate>
+            <Navbar />
+            {children}
+            <Footer />
+          </AuthGate> */}
+
+          <Navbar />
           <div className="pt-24">
             {children}
           </div>
-        <Footer/>
+          <Footer />
+
         </AuthProvider>
-        
       </body>
     </html>
   );

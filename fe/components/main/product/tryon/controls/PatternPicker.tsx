@@ -15,7 +15,7 @@ const OPTIONS: ReadonlyArray<{ key: Pattern; label: string; icon: ReactNode }> =
   { key: 'plaid',   label: 'Plaid',      icon: <AppstoreOutlined /> },
 ]
 
-export function PatternPicker({ target }: { target: 'top' | 'bottom' }) {
+export function PatternPicker({ target }: { target: 'top' | 'bottom' | 'hat' | 'shoes' }) {
   const value = useCustomizer((s) => s.patterns[target])
   const setPattern = useCustomizer((s) => s.setPattern)
 

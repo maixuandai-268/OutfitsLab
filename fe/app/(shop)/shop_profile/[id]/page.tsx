@@ -24,24 +24,24 @@ export default function ShopProfilePage() {
   const filteredShopProducts = PRODUCTS.filter((product) => product.shop_id === shopId)
 
   return (
-    <div className="bg-[#fffbf7] text-lg font-sans">
+    <div className=" text-lg font-sans">
       <ShopInfo shop={shop} />
       <div className="max-w-310 mx-auto mt-15 pb-35">
         <AboutShop shop={shop} />
         <div>
           <div className="flex items-center justify-between mb-6">
             <div>
-               <h2 className="text-4xl font-bold text-black">Featured Products</h2>
-               <p className="text-gray-500 mt-4">{filteredShopProducts.length} items available</p>
+               <h2 className="text-4xl font-bold text-black">Sản phẩm tiêu biểu</h2>
+               <p className="text-gray-500 mt-4">{filteredShopProducts.length} sản phẩm có sẵn</p>
             </div>
             <div className="flex gap-4">
             <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-6 py-2 rounded-full border-3 bg-white border-[#d19f42] text-[#d19f42] font-semibold hover:bg-[#fff9f0]">
                <ShareIcon className="w-6 h-6 text-black" />
-               View All
+               Xem tất cả
             </button>
             <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-6 py-2 rounded-full border-3 bg-white border-[#d19f42] text-[#d19f42] font-semibold hover:bg-[#fff9f0]">
                <ShareIcon className="w-6 h-6 text-black" />
-               Share Store
+               Chia sẻ
             </button>
             </div>
           </div>
@@ -64,8 +64,8 @@ export default function ShopProfilePage() {
       </div>
       
       <div className="flex flex-col justify-center items-center border-y-2 border-[#ffe9cc] bg-[#fff6ea] p-15">
-          <h2 className="text-3xl font-bold mb-5">Have Question?</h2>
-          <p className="text-gray-500 mb-7">Get in touch with {shop.shop_name} directly for custom orders or inquiries.</p>
+          <h2 className="text-3xl font-bold mb-5">Có Thắc Mắc ?</h2>
+          <p className="text-gray-500 mb-7">Liên lạc trực tiếp với {shop.shop_name} để đặt hàng hoặc hỏi đáp theo yêu cầu.</p>
           <div className="flex gap-15">
             <button className="cursor-pointer flex items-center justify-center bg-[#d19f42] gap-2 w-50 py-4 rounded-full border-3 border-[#d19f42] text-white font-semibold hover:bg-[#c28e2d]">
               Send Message
