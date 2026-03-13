@@ -94,6 +94,7 @@ export default function SignIn() {
                                     </svg>
                                 </div>
                                 <input
+                                    type="password"
                                     id="password"
                                     name="password"
                                     placeholder="••••••••"

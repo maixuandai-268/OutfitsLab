@@ -22,7 +22,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
 
                 <div className="p-4">
                     <span className="text-xs text-white bg-pink-500 rounded px-2 py-1">
-                        Thời trang
+                        {blog.category}
                     </span>
                     <h3
                         className="font-semibold mt-2 hover:text-red-300">
@@ -30,7 +30,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
                     </h3>
                     <div className="flex items-center gap-3 mt-4 text-sm text-gray-500">
                         <img
-                            src="/images/avatar1.png"
+                            src={blog.avatar}
                             className="w-8 h-8 rounded-full"
                         />
                         <span>{blog.author}</span>
