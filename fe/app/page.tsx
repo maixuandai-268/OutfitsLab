@@ -1,4 +1,4 @@
-// app/page.tsx
+
 import Hero from '@/components/main/homepage/Hero'
 import Mission from '@/components/main/homepage/Mission'
 import Features from '@/components/main/homepage/Features'
@@ -17,5 +17,5 @@ export default function Page() {
         <FashionCTA />
       </div>
     </main>
-  )
+  );
 }
