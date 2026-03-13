@@ -2,8 +2,8 @@
 'use client'
 
 import { useParams } from 'next/navigation';
-import ShopHeader from '@/components/shop/dashboard/ShopHeader';
-import ShopNav from '@/components/shop/dashboard/ShopNav';
+import ShopHeader from '@/components/shop/dashboard/ShopDasHeader';
+import ShopNav from '@/components/shop/dashboard/ShopDasNav';
 import { USERS, SHOPS } from '../../shopData';
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {

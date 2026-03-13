@@ -24,7 +24,7 @@ interface ShopProductCardProps {
 export const ShopProductCard = ({ product, shop }: ShopProductCardProps) => {
 
   return (
-    <Link key={product.id} href={`/product_detail/${product.id}`} className="bg-white rounded-b-xl border-3 border-[#ffe9cc] hover:shadow-xl">  
+    <Link key={product.id} href={`/product_detail/${product.id}`} className="bg-white rounded-b-xl hover:scale-105 shadow-xl">  
     
       <div className="relative h-64 border-b border-gray-300 bg-gray-100">
         <img 

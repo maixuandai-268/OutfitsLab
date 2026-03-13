@@ -16,19 +16,19 @@ export default function FeaturedSellersPage() {
     <div className="text-lg font-sans">
       
       {/* HEADER */}
-      <div className="bg-[#fff7ec] border-2 border-[#ffe9cc] mb-6">
+      {/* <div className="bg-[#fff7ec] border-2 border-gray-200 mb-6">
         <div className="max-w-310 mx-auto py-8 md:py-15">
           <h1 className="text-4xl font-bold mb-4">Những cửa hàng tiêu biểu</h1>
           <p className="text-gray-600">Khám phá những thiết kế tuyệt vời từ các nhà sáng tạo tài năng trên khắp thế giới.</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="max-w-310 mx-auto mb-7">
         <div className="mb-6">    
           <input 
             type="text" 
             placeholder="Tìm cửa hàng..." 
-            className="w-full h-14 pl-10 rounded-2xl border-2 border-[#ffe9cc] bg-white focus:outline-none focus:ring-2 focus:ring-[#d19f42] placeholder-gray-400"
+            className="w-full h-14 pl-10 rounded-2xl border-2 border-gray-200 bg-white focus:outline-none focus:ring-2 placeholder-gray-400"
           />
         </div>
 
@@ -40,8 +40,8 @@ export default function FeaturedSellersPage() {
               onClick={() => setActiveFilter(cate)}
               className={`px-4 py-3 rounded-full text-xs font-bold transition-all
                 ${activeFilter === cate 
-                  ? 'bg-[#d19f42] text-white shadow-md' 
-                  : 'bg-[#ffe9cc]/50 text-gray-600 hover:bg-[#ffe9cc]'
+                  ? 'bg-black text-white shadow-md' 
+                  : 'bg-gray-200/50 text-gray-600 hover:bg-gray-200'
                 }`}
             >
               {cate}
@@ -57,7 +57,7 @@ export default function FeaturedSellersPage() {
           {SHOPS.map((shop) => {
             const productCount = PRODUCTS.filter(i => i.shop_id === shop.id).length
             return (
-              <Link key={shop.id} href={`/shop_profile/${shop.id}`} className="bg-white rounded-3xl border-3 border-[#ffe9cc] hover:shadow-xl overflow-hidden">
+              <Link key={shop.id} href={`/shop_profile/${shop.id}`} className="bg-white rounded-3xl border-3 border-gray-200 hover:shadow-xl overflow-hidden">
                 <div className={`h-24 w-full bg-linear-to-tl from-[#d5e9e9] to-[#f4ebd9]`}></div>
 
                 <div className="px-6 pb-6 flex flex-col items-center -mt-12 text-center">
@@ -78,7 +78,7 @@ export default function FeaturedSellersPage() {
                     <span className="text-gray-500">({shop.reviews} reviews)</span>
                   </div>
 
-                  <span className="mt-3 ml-1 px-3 py-2 bg-[#fff4e6] text-[#d19f42] text-[10px] uppercase font-bold rounded-full">
+                  <span className="mt-3 ml-1 px-3 py-1 bg-black/60 text-white text-[10px] uppercase font-bold rounded-full">
                     {shop.specialty}
                   </span>
 
@@ -86,11 +86,11 @@ export default function FeaturedSellersPage() {
                     {shop.description}
                   </p>
 
-                  <div className="w-full h-px bg-[#ffe9cc] my-5"></div>
+                  <div className="w-full h-px bg-gray-200 my-5"></div>
 
                   <div className="w-full flex justify-between px-10">
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-[#d19f42]">{productCount}</p>
+                      <p className="text-2xl font-bold text-black">{productCount}</p>
                       <p className="text-xs text-gray-600 font-medium">Sản phẩm</p>
                     </div>
                     <div className="text-center">
@@ -100,10 +100,10 @@ export default function FeaturedSellersPage() {
                        </div>
                     </div>
                   </div>
-                  <div className="w-full h-px bg-[#ffe9cc] my-5"></div>
+                  <div className="w-full h-px bg-gray-200 my-5"></div>
 
                   <div className="w-full">
-                    <div className="w-full py-3 rounded-full bg-[#d19f42] text-white font-bold text-sm hover:bg-[#b88b39] transition-colors flex items-center justify-center gap-2">
+                    <div className="w-full py-3 rounded-full bg-black text-white font-bold text-sm hover:bg-[#313131] transition-colors flex items-center justify-center gap-2">
                       Thăm quan cửa hàng
                       <ExternalLinkIcon className="w-4 h-4" />
                     </div>
@@ -118,13 +118,13 @@ export default function FeaturedSellersPage() {
       </div>
 
       {/* FOOTER */}
-      <div className="bg-[#fff9f0] py-20 px-4 text-center border-t border-[#ffe9cc]">
+      <div className="bg-gray-50 py-10 px-4 text-center border-y border-gray-200">
          <div className="max-w-2xl mx-auto">
             <h2 className="text-4xl font-bold mb-4">Sẵn sàng để giới thiệu thiết kế của bạn?</h2>
             <p className="text-gray-600 mb-8">
               Tham gia cộng đồng sáng tạo sôi động của chúng tôi và tiếp cận hàng ngàn người yêu thời trang trên toàn thế giới.
             </p>
-            <button className="px-8 py-4 bg-[#d19f42] text-white font-bold text-lg rounded-full hover:bg-[#b88b39] transition-colors shadow-lg shadow-[#d19f42]/30">
+            <button className="px-8 py-4 bg-black text-white font-bold text-lg rounded-full hover:bg-[#313131]">
               Trở thành người bán
             </button>
          </div>
