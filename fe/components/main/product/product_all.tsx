@@ -190,6 +190,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
+          aria-label="Select items per page"
           className="rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F2C58B]"
         >
           <option value={12}>12</option>
