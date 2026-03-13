@@ -7,7 +7,6 @@ export default function SizePicker() {
   const set = useCustomizer((s) => s.setSize)
   return (
     <div className="space-y-2">
-      <div className="text-sm font-medium">Size</div>
       <div className="flex flex-wrap gap-2">
         {SIZES.map((s) => (
           <button

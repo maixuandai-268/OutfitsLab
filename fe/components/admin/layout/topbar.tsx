@@ -24,17 +24,6 @@ export default function Topbar({ dark, setDark, onMenuToggle }: TopbarProps) {
         <MenuOutlined className="text-lg" />
       </button>
 
-      <div className="relative flex-1 max-w-sm">
-        <SearchOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-        <input
-          placeholder="Search..."
-          className={`w-full pl-9 pr-4 py-2 rounded-xl text-[13px] outline-none border transition-colors ${
-            dark
-              ? "bg-gray-900 border-gray-700 text-gray-200 placeholder-gray-500 focus:border-indigo-500"
-              : "bg-slate-50 border-slate-200 text-gray-700 placeholder-slate-400 focus:border-indigo-400"
-          }`}
-        />
-      </div>
 
       <div className="flex-1" />
 

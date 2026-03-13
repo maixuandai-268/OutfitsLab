@@ -8,10 +8,10 @@ export default function ShopNav({ shopId }: { shopId: number }) {
   const pathname = usePathname();
 
   const nav = [
-    { href: `/shop_dashboard/${shopId}`, label: "Overview", icon: BarChartOutlined, exact: true },
-    { href: `/shop_dashboard/${shopId}/products`, label: "Products", icon: InboxOutlined },
-    { href: `/shop_dashboard/${shopId}/analytics`, label: "Analytics", icon: TeamOutlined },
-    { href: `/shop_dashboard/${shopId}/settings`, label: "Settings", icon: SettingOutlined },
+    { href: `/shop_dashboard/${shopId}`, label: "Tổng Quan", icon: BarChartOutlined, exact: true },
+    { href: `/shop_dashboard/${shopId}/products`, label: "Sản Phẩm", icon: InboxOutlined },
+    { href: `/shop_dashboard/${shopId}/analytics`, label: "Phân Tích", icon: TeamOutlined },
+    { href: `/shop_dashboard/${shopId}/settings`, label: "Cài Đặt", icon: SettingOutlined },
   ];
 
   return (

@@ -122,7 +122,7 @@ export default function ModelViewer() {
   const bodyUrl = BODY_MODELS[modelId]
 
   return (
-    <div className="relative rounded-xl h-[400px] bg-white p-2 shadow">
+    <div className="relative rounded-xl w-full h-100 md:h-115 lg:h-133 overflow-hidden">
       <Canvas shadows camera={{ position: [0, 1.2, 3.2], fov: 40 }} dpr={[1, 2]}>
         <color attach="background" args={[bgColor]} />
         <Suspense fallback={null}>

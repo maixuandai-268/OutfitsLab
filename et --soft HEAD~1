@@ -1,0 +1,182 @@
+[33ma93b36f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mduyet[m[33m, [m[1;31morigin/duyet[m[33m)[m duyet
+[33m912213f[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #80 from gordonrampay/duyet
+[33m61dff9e[m Merge branch 'main' into duyet
+[33m77569f4[m duyet
+[33m28fd9e3[m Merge pull request #79 from gordonrampay/mxd
+[33m4f7ee25[m conflict
+[33m5ddbf84[m update user modules
+[33md58f066[m Merge pull request #78 from gordonrampay/duyet
+[33m9889680[m duyet
+[33mfdaca3c[m Merge pull request #77 from gordonrampay/trung
+[33m1664920[m Việt hóa
+[33m297745f[m Merge pull request #76 from gordonrampay/tu
+[33m9c21d6d[m fix: resolve merge conflict in package.json
+[33m30dda8e[m change productall add 3d
+[33mc94a2b9[m Merge branch 'main' of https://github.com/gordonrampay/OutfitsLab into tu
+[33m08c8fe1[m Lưu lại thay đổi trước khi pull
+[33md0495b8[m Merge pull request #75 from gordonrampay/duyet
+[33m90397d1[m Merge branch 'main' into duyet
+[33m16535e8[m duyet
+[33m7ff8461[m Merge pull request #74 from gordonrampay/NgVanCong
+[33md8de461[m Merge branch 'main' into NgVanCong
+[33ma90b31b[m fix Tiếng việt
+[33m50bf253[m add
+[33mb983383[m Merge pull request #73 from gordonrampay/trung
+[33m2517eb8[m update
+[33ma5a3e72[m Fix package.json by resolving 'three' version conflict
+[33m61d8bde[m Merge pull request #72 from gordonrampay/duyet
+[33mb103757[m Merge branch 'main' into duyet
+[33m3fda80b[m duyet
+[33mcdee18a[m Merge pull request #71 from gordonrampay/mxd
+[33m6f79ec1[m add model
+[33ma864af8[m fix
+[33mfdc7aad[m add model 3d
+[33m972b4b4[m fix merge conflict page
+[33m4843ef4[m Merge pull request #70 from gordonrampay/duyet
+[33mbc70095[m fix merge conflict StepStore
+[33m340f0eb[m duyet update
+[33m7c7f73e[m update admin page
+[33m3d0f7c2[m Merge pull request #69 from gordonrampay/NgVanCong
+[33mf3daa42[m fix product & update admin page
+[33m89c82a2[m Merge pull request #68 from gordonrampay/duyet
+[33ma48018a[m Merge branch 'main' into duyet
+[33m6f4b108[m duyet
+[33m1d8c163[m Merge pull request #66 from gordonrampay/mxd
+[33m60d96ab[m Merge branch 'main' into mxd
+[33me192a5e[m Merge pull request #67 from gordonrampay/tu
+[33m4019fe9[m change home product
+[33m0fdac59[m change home product
+[33m707b3df[m Merge pull request #65 from gordonrampay/trung
+[33m0e5e2b1[m update user auth
+[33m037ce35[m Product UI
+[33m1a46975[m Merge pull request #64 from gordonrampay/NgVanCong
+[33m4c780af[m add admin page
+[33mbf2b4f1[m Merge pull request #63 from gordonrampay/duyet
+[33m1a31d84[m duyet
+[33m490669b[m Merge pull request #62 from gordonrampay/NgVanCong
+[33m1d6332e[m fix homepage + product
+[33md996d09[m Merge pull request #61 from gordonrampay/trung
+[33m3fa9702[m Product Info UI
+[33me6776b5[m Merge pull request #60 from gordonrampay/trung
+[33mf499f84[m Merge branch 'main' into trung
+[33m1862d6b[m Shops List, Add Product form
+[33m57d2c3d[m Merge pull request #59 from gordonrampay/duyet
+[33m821230b[m duyet
+[33m0c11641[m Merge pull request #58 from gordonrampay/tu
+[33m37e2177[m thêm chức năng admin
+[33m9c9a98b[m Merge pull request #57 from gordonrampay/NgVanCong
+[33m66977ac[m add module seller
+[33md1138e2[m Merge pull request #56 from gordonrampay/mxd
+[33mec0e473[m update module user
+[33ma87d7b8[m fix be
+[33m616de9b[m Merge pull request #55 from gordonrampay/tu
+[33m87b0ff1[m be blog
+[33m24dd418[m be admin
+[33m4ae92b5[m fix conflict User entity
+[33me1c8213[m Resolve merge conflicts in app.module.ts
+[33m865c04a[m Merge pull request #54 from gordonrampay/duyet
+[33m2e976c6[m duyet
+[33md25d37c[m duyet
+[33m29cb83c[m[33m ([m[1;32mmain[m[33m)[m Merge pull request #53 from gordonrampay/duyet
+[33m2f4d228[m duyet
+[33md89f40b[m Merge pull request #52 from gordonrampay/tu
+[33md8adffb[m blog
+[33m3225fc0[m Merge pull request #51 from gordonrampay/tu
+[33mdfacb4c[m  module blog
+[33m4312d61[m Merge pull request #50 from gordonrampay/duyet
+[33m062545e[m update blog module
+[33m36385cd[m Merge branch 'main' into duyet
+[33m44627e2[m duyet
+[33m83fe453[m duyet
+[33m78bb2c7[m Merge pull request #49 from gordonrampay/mxd
+[33mb261d8d[m update module user 03/06
+[33mad8b1f8[m update module user 06/03
+[33mfdb4d5a[m Merge pull request #48 from gordonrampay/trung
+[33mc9096f2[m shop module
+[33md3e03bf[m Merge pull request #47 from gordonrampay/NgVanCong
+[33m8ae6d2f[m Add about page
+[33m9df1e2b[m Merge pull request #46 from gordonrampay/duyet
+[33m8ca026c[m duyet
+[33md25f187[m Merge pull request #45 from gordonrampay/NgVanCong
+[33me6987ba[m Merge branch 'main' into NgVanCong
+[33m5cf4b98[m update api report
+[33mdbdddc0[m user-be
+[33m89b5e3c[m Merge pull request #44 from gordonrampay/trung
+[33m702994b[m Update
+[33mf55afff[m user-be
+[33m51bed1d[m Merge pull request #42 from gordonrampay/mxd
+[33mf6293d5[m update module user,auth 06/02
+[33m9a91460[m update
+[33m1e1e7bb[m Merge pull request #41 from gordonrampay/duyet
+[33mfe45309[m duyet
+[33me0fab69[m duyet
+[33m7539f87[m Merge pull request #40 from gordonrampay/NgVanCong
+[33m37255f7[m Merge pull request #39 from gordonrampay/tu
+[33m4c2c934[m update homepage
+[33m06b2213[m Merge pull request #38 from gordonrampay/mxd
+[33m1c51e57[m user_profile
+[33mb840e2e[m build db user 2/2
+[33mb7a0be1[m Merge pull request #37 from gordonrampay/trung
+[33m591964c[m shop dashboard ui
+[33mb545dae[m update homepage
+[33mdffb86c[m Merge pull request #36 from gordonrampay/duyet
+[33m81e4fd9[m duyet
+[33m955adcd[m Merge pull request #35 from gordonrampay/tu
+[33m24c7ca7[m Merge branch 'main' into tu
+[33m380dfa7[m user-profile ui
+[33m5500f4c[m Merge pull request #34 from gordonrampay/trung
+[33mbe82cab[m Merge branch 'main' into trung
+[33me282fdc[m shop profile ui
+[33m6db7927[m Merge pull request #32 from gordonrampay/NgVanCong
+[33m7f9b48c[m update try-on 2.0
+[33m4d8f680[m update try-on
+[33meebabcd[m Merge pull request #33 from gordonrampay/mxd
+[33m86b6ad4[m update UI admin 30/01
+[33mf337beb[m update try-on
+[33m2a763f3[m Merge branch 'main' of https://github.com/gordonrampay/OutfitsLab into mxd
+[33m7ff1559[m update fe+be 30/01
+[33m325a2b1[m Merge pull request #31 from gordonrampay/mxd
+[33m8342935[m Merge branch 'main' into mxd
+[33mc355d1d[m update ui admin
+[33m68fd507[m Merge pull request #30 from gordonrampay/NgVanCong
+[33m45f7c65[m update product
+[33maeb68db[m initial commit 2
+[33m7358803[m initial commit
+[33m9026a1b[m initial commit
+[33m652fb90[m Merge pull request #29 from gordonrampay/tu
+[33m2c6dc49[m 123
+[33m06bec09[m Merge pull request #28 from gordonrampay/trung
+[33mb31ddb8[m Seller UI
+[33m393d629[m Merge pull request #27 from gordonrampay/tu
+[33m35f4feb[m tu
+[33m7ec26df[m Merge pull request #26 from gordonrampay/trung
+[33me730c61[m update
+[33mffd650f[m Merge pull request #25 from gordonrampay/duyet
+[33m32f1ca8[m duyet
+[33m28d3556[m Remove outfit-wed folder
+[33m4648c0c[m Merge pull request #24 from gordonrampay/NgVanCong
+[33m8c4ab63[m update 1
+[33m8ff6d41[m update
+[33m06b9bb3[m Update đặc tả uc
+[33mb60d79c[m Merge pull request #23 from gordonrampay/NgVanCong
+[33m3aaf207[m update đặc tả UC user
+[33m1a5424c[m Merge pull request #22 from gordonrampay/duyet
+[33mae5437c[m Merge branch 'main' of https://github.com/gordonrampay/OutfitsLab
+[33m940ca73[m Merge pull request #21 from gordonrampay/tu
+[33mee1a012[m tu
+[33m5ecabad[m duyet
+[33m3cfde6f[m update
+[33m6c0febf[m Merge pull request #20 from gordonrampay/trung
+[33m2d5d805[m Admin Sequence
+[33m13b5a5e[m update
+[33m7b495e3[m Merge pull request #18 from gordonrampay/NgVanCong
+[33me747237[m update
+[33m37e7b00[m update PTTKHT
+[33mf666625[m Merge pull request #17 from gordonrampay/mxd
+[33mf5a35d4[m update pttk
+[33m03098c8[m update pttk
+[33ma730353[m Merge pull request #16 from gordonrampay/trung
+[33mda1310a[m update
+[33mcfef1da[m Merge pull request #15 from gordonrampay/tu
+[33mda81879[m update
+[33m4eac175[m Merge pull request #1

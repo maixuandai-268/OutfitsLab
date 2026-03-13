@@ -34,13 +34,13 @@ const storeViewsData = [
 export default function AnalyticsPage() {
   return (
     <div className="space-y-7">
-      <h2 className="text-2xl font-bold mb-5">Store Analytics</h2>
+      <h2 className="text-2xl font-bold mb-5">Phân tích cửa hàng</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
         
         <div className="bg-white border border-[#d19f42] rounded-4xl px-7 py-10">
           <p className="text-lg font-bold mb-8">
-            <BarChartOutlined /> Revenue Trend
+            <BarChartOutlined /> Doanh thu cửa hàng theo tuần
           </p>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -56,7 +56,7 @@ export default function AnalyticsPage() {
 
         <div className="bg-white border border-[#d19f42] rounded-4xl px-7 py-10">
           <p className="text-lg font-bold mb-8">
-            <LineChartOutlined /> Store Views
+            <LineChartOutlined /> Lượt xem cửa hàng theo tháng
           </p>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -72,29 +72,29 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="bg-white border border-[#d19f42] rounded-4xl px-7 py-10">
-        <p className="text-lg font-bold mb-7"><PieChartOutlined /> Performance Summary</p>
+        <p className="text-lg font-bold mb-7"><PieChartOutlined /> Tổng quan hiệu suất</p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="border-l-4 border-[#d19f42] pl-5">
-            <p className="text-sm font-bold text-gray-400 uppercase">Conversion Rate</p>
+            <p className="text-sm font-bold text-gray-400 uppercase">Tỷ lệ chuyển đổi</p>
             <h4 className="text-4xl font-black text-slate-800 mt-2">3.5%</h4>
-            <p className="text-green-600 text-sm font-bold mt-1">+0.8% vs last month</p>
+            <p className="text-green-600 text-sm font-bold mt-1">+0.8% so với tháng trước</p>
           </div>
 
           <div className="border-l-4 border-[#46a39f] pl-5">
-            <p className="text-sm font-bold text-gray-400 uppercase">Avg Order Value</p>
+            <p className="text-sm font-bold text-gray-400 uppercase">Giá trị đơn hàng trung bình</p>
             <h4 className="text-4xl font-black text-slate-800 mt-2">$78.50</h4>
-            <p className="text-green-600 text-sm font-bold mt-1">+$12 vs last month</p>
+            <p className="text-green-600 text-sm font-bold mt-1">+$12 so với tháng trước</p>
           </div>
         </div>
       </div>
 
       <div className="flex gap-5">
         <button className="text-white bg-[#d19f42] px-7 py-3 rounded-xl font-bold border border-[#d19f42] hover:bg-white hover:text-[#d19f42] transition-all shadow-lg shadow-orange-100">
-          Export Report (.PDF)
+          Xuất Báo Cáo (.PDF)
         </button>
         <button className="text-[#d19f42] bg-white px-7 py-3 rounded-xl font-bold border border-[#d19f42] hover:bg-orange-50 transition-all">
-          Refresh Data
+          Làm Mới Dữ Liệu
         </button>
       </div>
     </div>
