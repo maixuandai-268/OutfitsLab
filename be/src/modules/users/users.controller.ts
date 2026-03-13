@@ -20,10 +20,7 @@ export class UserController {
     return this.userService.update(user.sub, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@GetUser() user) {
-    return this.userService.remove(user.sub);
-  }
+ 
 
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
