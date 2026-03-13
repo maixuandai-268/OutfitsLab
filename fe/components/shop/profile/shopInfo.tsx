@@ -17,7 +17,7 @@ interface ShopInfoProps {
 export const ShopInfo = ({ shop }: ShopInfoProps) => {
 
   return (
-    <div className="bg-[#fffbf7] border-b-2 border-[#ffe9cc]">
+    <div className="">
         <img src="/images/shopBackground.png" alt="ShopBackground" className="w-full h-30 md:h-55 object-cover" />
         <div className="max-w-310 mx-auto px-6 py-8 md:py-15">
           <div className="flex flex-col md:flex-row gap-12">
@@ -61,27 +61,26 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
                   </p>
 
                   <div className="flex flex-wrap gap-2 mb-5">
-                      <span className="px-3 py-1 bg-[#fff4e6] text-[#d19f42] text-sm rounded-full">Minimalist Fashion</span>
-                      <span className="px-3 py-1 bg-[#fff4e6] text-[#d19f42] text-sm rounded-full">Sustainable Materials</span>
-                      <span className="px-3 py-1 bg-[#fff4e6] text-[#d19f42] text-sm rounded-full">Custom Designs</span>
+                      <span className="px-3 py-1 bg-black text-white text-sm rounded-full">Minimalist Fashion</span>
+                      <span className="px-3 py-1 bg-black text-white text-sm rounded-full">Sustainable Materials</span>
+                      <span className="px-3 py-1 bg-black text-white text-sm rounded-full">Custom Designs</span>
                   </div>
               </div>
             </div>
 
             <div className="flex items-end w-full md:w-auto mt-4 md:mt-0">
               <div className="flex flex-col gap-3 w-full">
-                <button className="cursor-pointer w-50 flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 border-[#d19f42] font-semibold hover:bg-[#fff9f0]">
+                <button className="cursor-pointer md:w-50 flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 border-black font-semibold hover:bg-[#fff9f0]">
                   <HeartIcon className="w-6 h-6 " />
                   Yêu thích
                 </button>
 
-                <button className="cursor-pointer flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 text-white bg-[#d19f42] font-semibold hover:bg-[#c28e2d]">
+                <button className="cursor-pointer md:w-50 flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 text-white bg-black font-semibold hover:bg-[#3b3b3b]">
                   <MessageCircleIcon className="w-6 h-6 text-white" />
                   Liên lạc
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       </div>
