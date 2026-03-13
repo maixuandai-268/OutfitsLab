@@ -168,6 +168,7 @@ export default function SignUp() {
                                     </svg>
                                 </div>
                                 <input
+                                    type="password"
                                     id="password"
                                     name="password"
                                     placeholder="••••••••"
@@ -191,6 +192,7 @@ export default function SignUp() {
                                     </svg>
                                 </div>
                                 <input
+                                    type="password"
                                     id="confirmPassword"
                                     name="confirmPassword"
                                     placeholder="••••••••"
