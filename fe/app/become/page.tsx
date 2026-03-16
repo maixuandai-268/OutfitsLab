@@ -5,10 +5,13 @@ import { useState } from "react";
 import StepInfo from "@/components/seller/StepInfo";
 import StepStore from "@/components/seller/StepStore";
 import StepConfirm from "@/components/seller/StepConfirm";
-
+import { useSearchParams } from "next/navigation";
 export default function BecomePage() {
 
-    const [step, setStep] = useState(1);
+    const searchParams = useSearchParams();
+    const initialStep = parseInt(searchParams.get("step") || "1");
+
+    const [step, setStep] = useState(initialStep);
 
     const [formData, setFormData] = useState({
         firstName: "",
