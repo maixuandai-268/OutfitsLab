@@ -1,40 +1,60 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not } from 'typeorm';
+
 import { AdminUserEntity } from './entities/admin-user.entity';
 import { AdminShopEntity } from './entities/admin-shop.entity';
 import { ApproveSellerDto, UpdateUserStatusDto } from './dto/approve-seller.dto';
+
+// ===== CHỈNH SỬA dữ liệu thật =====
+import { User } from '../users/user.entity';
+import { Shop } from '../shops/shop.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateShopDto } from './dto/update-shop.dto';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectRepository(AdminUserEntity)
-    private userRepo: Repository<AdminUserEntity>,
+    private readonly adminUserRepo: Repository<AdminUserEntity>,
     @InjectRepository(AdminShopEntity)
-    private shopRepo: Repository<AdminShopEntity>,
+    private readonly adminShopRepo: Repository<AdminShopEntity>,
+
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+    @InjectRepository(Shop)
+    private readonly realShopRepo: Repository<Shop>,
   ) {}
 
   async updateUserStatus(dto: UpdateUserStatusDto) {
-    return await this.userRepo.update(dto.userId, { is_active: dto.is_active });
+    return await this.adminUserRepo.update(dto.userId, { is_active: dto.is_active });
   }
 
   async getPendingSellers() {
-    return await this.shopRepo.find({ where: { status: 'pending' } });
+    return await this.adminShopRepo.find({ where: { status: 'pending' } });
   }
 
   async getAllSellers() {
-    return await this.shopRepo.find();
+    return await this.adminShopRepo.find();
   }
 
   async getSellersByStatus(status: string) {
-    return await this.shopRepo.find({ where: { status } });
+    return await this.adminShopRepo.find({ where: { status } });
   }
 
   async processSeller(dto: ApproveSellerDto) {
-    const shop = await this.shopRepo.findOne({ where: { id: dto.sellerId } });
+    const shop = await this.adminShopRepo.findOne({ where: { id: dto.sellerId } });
     if (!shop) throw new NotFoundException('Shop không tồn tại');
 
-    await this.shopRepo.update(dto.sellerId, { 
+    await this.adminShopRepo.update(dto.sellerId, { 
       status: dto.status, 
       reject_reason: dto.status === 'rejected' ? (dto.reason || '') : ''
     });
@@ -43,8 +63,8 @@ export class AdminService {
   }
 
   async getDashboardStats() {
-    const totalUsers = await this.userRepo.count();
-    const totalSellers = await this.shopRepo.count({ where: { status: 'approved' } });
+    const totalUsers = await this.adminUserRepo.count();
+    const totalSellers = await this.adminShopRepo.count({ where: { status: 'approved' } });
     
     return {
       summary: [
@@ -67,5 +87,83 @@ export class AdminService {
         errorRate: '0.02%'
       }
     };
+  }
+
+  private sanitizeUser<T extends Partial<User>>(user: T): Omit<T, 'password'> {
+    const { password, ...rest } = user as any;
+    return rest;
+  }
+
+  async listUsers() {
+    const users = await this.userRepo.find();
+    return users.map(u => this.sanitizeUser(u));
+  }
+
+  async getUserById(id: number) {
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) throw new NotFoundException('Không tìm thấy người dùng');
+    return this.sanitizeUser(user);
+  }
+
+  async updateUser(id: number, dto: UpdateUserDto) {
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) throw new NotFoundException('Không tìm thấy người dùng');
+
+    if (dto.email) {
+      const existed = await this.userRepo.findOne({ where: { email: dto.email, id: Not(id) } });
+      if (existed) throw new ConflictException('Email đã tồn tại');
+    }
+
+    if (dto.avatarUrl) {
+      const existedAvatar = await this.userRepo.findOne({ where: { avatarUrl: dto.avatarUrl, id: Not(id) } });
+      if (existedAvatar) throw new ConflictException('avatarUrl đã tồn tại');
+    }
+
+    Object.assign(user, dto);
+    const saved = await this.userRepo.save(user);
+    return this.sanitizeUser(saved);
+  }
+
+  async deleteUser(id: number) {
+    const res = await this.userRepo.delete(id);
+    if (!res.affected) throw new NotFoundException('Không tìm thấy người dùng');
+    return { success: true };
+  }
+
+  async listShops() {
+    return this.realShopRepo.find();
+  }
+
+  async getShopById(id: number) {
+    const shop = await this.realShopRepo.findOne({ where: { id } });
+    if (!shop) throw new NotFoundException('Không tìm thấy shop');
+    return shop;
+  }
+
+  async updateShop(id: number, dto: UpdateShopDto) {
+    const shop = await this.realShopRepo.findOne({ where: { id } });
+    if (!shop) throw new NotFoundException('Không tìm thấy shop');
+
+    if (dto.ownerId) {
+      const owner = await this.userRepo.findOne({ where: { id: dto.ownerId } });
+      if (!owner) throw new NotFoundException('ownerId không hợp lệ');
+    }
+
+    if (typeof dto.rating !== 'undefined' && dto.rating !== null) {
+      const val = Number(dto.rating);
+      if (Number.isNaN(val) || val < 0 || val > 9.9) {
+        throw new ConflictException('rating phải nằm trong khoảng 0.0–9.9');
+      }
+      dto.rating = Math.round(val * 10) / 10;
+    }
+
+    Object.assign(shop, dto);
+    return this.realShopRepo.save(shop);
+  }
+
+  async deleteShop(id: number) {
+    const res = await this.realShopRepo.delete(id);
+    if (!res.affected) throw new NotFoundException('Không tìm thấy shop');
+    return { success: true };
   }
 }

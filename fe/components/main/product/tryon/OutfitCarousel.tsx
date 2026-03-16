@@ -65,7 +65,6 @@ export default function OutfitCarousel() {
         ref={scrollerRef}
         className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none]"
       >
-        {/* Ẩn scrollbar trên WebKit */}
         <style jsx>{`div::-webkit-scrollbar { display: none; }`}</style>
 
         {ITEMS.map((i) => (
