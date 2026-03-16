@@ -8,6 +8,7 @@ import SettingsPage from "@/components/admin/settings/SettingsPage";
 import ReportPage from "@/components/admin/report/ReportPage";
 import SellerApplicationPage from "@/components/admin/sellerApplication/SellerApplicationPage";
 import AdminAccountsPage from "@/components/admin/adminAccounts/AdminAccountsPage";
+import BlogAdminPage from "@/components/admin/blog/BlogAdminPage";
 
 
 export const ThemeCtx = createContext<{
@@ -39,6 +40,8 @@ export default function App() {
         return <SellerApplicationPage dark={dark} />;
       case "Team":
         return <AdminAccountsPage dark={dark} />;
+      case "Blog":
+        return <BlogAdminPage dark={dark} />;
       default:
         return (
           <div
