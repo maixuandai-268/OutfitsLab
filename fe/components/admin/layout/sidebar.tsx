@@ -15,6 +15,7 @@ const navItems = [
   { icon: <BankOutlined />,     label: "Đơn đăng ký người bán" },
   { icon: <TeamOutlined />,         label: "Team" },
   { icon: <SettingOutlined />,      label: "Cài đặt" },
+  { icon: <DashboardOutlined />,    label: "Blog" },
 ];
 interface SidebarProps {
   dark?: boolean;

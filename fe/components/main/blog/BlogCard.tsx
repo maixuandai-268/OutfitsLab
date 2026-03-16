@@ -1,43 +1,55 @@
 interface BlogCardProps {
     blog: {
-        id: number
-        title: string
-        author: string
-        image: string
+        id: number;
+        title: string;
+        author: string;
+        image: string;
+        category?: string;
+        avatar?: string;
+        date?: string;
     }
 }
+
 export default function BlogCard({ blog }: BlogCardProps) {
     return (
-        <div className="bg-white rounded-xl shadow-sm hover:-translate-y-3 transition duration-300 cursor-pointer">
-            <a href="https://icondenim.com/blogs/shop-thoi-trang/top-15-shop-ao-local-brand-nam"
-                target="_blank"
-                rel="noopener noreferrer">
-                <div className="m-3 rounded-xl h-48 overflow-hidden">
-                    <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="w-full rounded-xl object-cover"
-                    />
+        <div className="bg-white rounded-xl shadow-sm hover:-translate-y-3 transition duration-300 cursor-pointer border border-gray-100 overflow-hidden h-full flex flex-col">
+            {/* Ảnh bài viết */}
+            <div className="m-3 rounded-xl h-48 overflow-hidden bg-gray-50">
+                <img
+                    src={blog.image || "/images/placeholder.jpg"}
+                    alt={blog.title}
+                    className="w-full h-full object-cover rounded-xl transition-transform duration-500 hover:scale-110"
+                />
+            </div>
+
+            <div className="p-4 pt-1 flex-1 flex flex-col">
+                {/* Danh mục */}
+                <div>
+                    <span className="text-[10px] font-bold text-white bg-pink-500 rounded px-2 py-1 uppercase tracking-wider">
+                        {blog.category || "Tin tức"}
+                    </span>
                 </div>
 
-                <div className="p-4">
-                    <span className="text-xs text-white bg-pink-500 rounded px-2 py-1">
-                        {blog.category}
-                    </span>
-                    <h3
-                        className="font-semibold mt-2 hover:text-red-300">
-                        {blog.title}
-                    </h3>
-                    <div className="flex items-center gap-3 mt-4 text-sm text-gray-500">
-                        <img
-                            src={blog.avatar}
-                            className="w-8 h-8 rounded-full"
-                        />
-                        <span>{blog.author}</span>
-                        <span>{blog.date}</span>
+                {/* Tiêu đề */}
+                <h3 className="font-bold mt-3 text-gray-900 line-clamp-2 hover:text-pink-600 transition-colors flex-1">
+                    {blog.title}
+                </h3>
+
+                {/* Thông tin tác giả */}
+                <div className="flex items-center gap-3 mt-4 text-sm text-gray-500 border-t pt-3 border-gray-50">
+                    {blog.avatar ? (
+                        <img src={blog.avatar} className="w-8 h-8 rounded-full object-cover shadow-sm" alt="ava" />
+                    ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white text-[10px] font-black uppercase">
+                            {blog.author?.[0] || "A"}
+                        </div>
+                    )}
+                    <div className="flex flex-col">
+                        <span className="font-bold text-gray-800 text-[12px] leading-none">{blog.author}</span>
+                        <span className="text-[10px] text-gray-400 mt-1">{blog.date}</span>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
     );
 }
