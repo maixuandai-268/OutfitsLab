@@ -1,20 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import StepInfo from "./StepInfo";
+import StepStore from "./StepStore";
+import StepConfirm from "./StepConfirm";
 
-import StepInfo from "@/components/seller/StepInfo";
-import StepStore from "@/components/seller/StepStore";
-import StepConfirm from "@/components/seller/StepConfirm";
-
-export default function BecomePage() {
+export default function BecomeSeller() {
 
     const [step, setStep] = useState(1);
 
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
+        fullName: "",
         email: "",
-        phone: "",
 
         storeName: "",
         storeDescription: "",
@@ -30,18 +27,14 @@ export default function BecomePage() {
     };
 
     const nextStep = () => setStep((prev) => prev + 1);
-
     const prevStep = () => setStep((prev) => prev - 1);
 
     return (
-        <div className="min-h-screen">
-
+        <>
             {step === 1 && (
                 <StepInfo
-                    firstName={formData.firstName}
-                    lastName={formData.lastName}
+                    fullName={formData.fullName}
                     email={formData.email}
-                    phone={formData.phone}
                     onChange={handleChange}
                     nextStep={nextStep}
                 />
@@ -61,13 +54,10 @@ export default function BecomePage() {
 
             {step === 3 && (
                 <StepConfirm
-                    firstName={formData.firstName}
-                    email={formData.email}
-                    storeName={formData.storeName}
+                    formData={formData}
                     prevStep={prevStep}
                 />
             )}
-
-        </div>
+        </>
     );
 }
