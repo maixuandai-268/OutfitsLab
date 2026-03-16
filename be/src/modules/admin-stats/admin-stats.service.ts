@@ -52,7 +52,6 @@ export class AdminStatsService {
     };
   }
 
-  // ── Private helpers ──────────────────────────────────────
 
   private resolveDateRange(query: QueryStatsDto): { from: Date; to: Date } {
     if (query.from && query.to) {
@@ -72,7 +71,7 @@ export class AdminStatsService {
       case StatsPeriod.YEAR:
         from.setFullYear(from.getFullYear() - 1);
         break;
-      default: // MONTH
+      default: 
         from.setMonth(from.getMonth() - 1);
     }
 
