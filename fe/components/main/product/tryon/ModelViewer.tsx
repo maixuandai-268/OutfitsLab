@@ -12,7 +12,6 @@ import { BODY_MODELS } from '@/lib/assetsCatalog'
 import { RedoOutlined, PauseCircleOutlined, PlayCircleOutlined } from '@ant-design/icons'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib' // <-- type cho ref
 
-/* ---------------- Local types ---------------- */
 type Hex = `#${string}`
 type Colors = { skin: Hex; top: Hex; bottom: Hex; shoes: Hex }
 type PatternKey = 'none' | 'stripes' | 'polka' | 'plaid'
@@ -28,7 +27,6 @@ type EnvPreset =
   | 'apartment' | 'city' | 'dawn' | 'forest' | 'lobby'
   | 'night' | 'park' | 'studio' | 'sunset' | 'warehouse'
 
-/* ---------------- Apply materials ---------------- */
 
 function applyToMaterial(
   src: THREE.Material,
@@ -109,7 +107,7 @@ function Garment({ url }: { url: string }) {
 
 export default function ModelViewer() {
   const { autoRotate, background, modelId, activeGarments } = useCustomizer()
-  const controlsRef = useRef<OrbitControlsImpl | null>(null) // <-- ref controls
+  const controlsRef = useRef<OrbitControlsImpl | null>(null) 
 
   const bgColor: string =
     background === 'neutral' ? '#ebebeb'
@@ -145,7 +143,7 @@ export default function ModelViewer() {
         </Suspense>
 
         <OrbitControls
-          ref={controlsRef}              // <-- quan trọng
+          ref={controlsRef}              
           enablePan={false}
           enableDamping
           dampingFactor={0.08}
@@ -157,8 +155,6 @@ export default function ModelViewer() {
           autoRotateSpeed={0.8}
         />
       </Canvas>
-
-      {/* Tool buttons (ngoài Canvas) */}
       <div className="absolute bottom-3 right-3 z-10 flex items-center gap-2">
         <AutoRotateBtn />
         <ResetViewBtn onReset={() => controlsRef.current?.reset()} /> {/* <-- gọi reset() */}
@@ -167,7 +163,6 @@ export default function ModelViewer() {
   )
 }
 
-/* ---------------- Small controls ---------------- */
 
 function AutoRotateBtn() {
   const { autoRotate, toggleAutoRotate } = useCustomizer()
