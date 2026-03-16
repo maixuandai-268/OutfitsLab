@@ -14,6 +14,9 @@ type User = {
   displayName: string;
   avatarUrl?: string;
   role: "user" | "admin" | "shop";
+  bio?: string;
+  phone?: string;
+  password?: string;
 };
 
 type AuthContextType = {
@@ -23,6 +26,7 @@ type AuthContextType = {
   logout: () => void;
   loading: boolean;
 };
+
 
 const AuthContext = createContext<AuthContextType | null>(null);
 

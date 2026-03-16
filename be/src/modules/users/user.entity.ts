@@ -28,6 +28,9 @@ export class User {
   @Column({nullable : true})
   bio : string;
 
+  @Column({nullable : true})
+  phone : string;
+
   @Column({default : 1})
   isActive : boolean;
 

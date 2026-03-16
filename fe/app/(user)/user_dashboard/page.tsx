@@ -1,16 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState } from 'react';
-import { 
-  MailOutlined, 
-  PhoneOutlined, 
-  EnvironmentOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
-  StarFilled, 
-  ExportOutlined, 
-  MessageOutlined, 
-  HeartOutlined, 
-  CheckCircleFilled, 
+import {
+  MailOutlined,
+  PhoneOutlined,
+  EnvironmentOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  StarFilled,
+  ExportOutlined,
+  MessageOutlined,
+  HeartOutlined,
+  CheckCircleFilled,
   RightOutlined,
   SafetyCertificateOutlined
 } from '@ant-design/icons';
@@ -19,7 +20,47 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('about');
-  const {user} = useAuth();
+  const { user, token, logout } = useAuth();
+  const [userInfo, setUserInfo] = useState({
+    displayName: user?.displayName || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    bio: user?.bio || "",
+    password: user?.password || ""
+  });
+
+  const handleUpdate = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/users/update", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          displayName: userInfo.displayName,
+          phone: userInfo.phone,
+          bio: userInfo.bio,
+          email: userInfo.email,
+          password: userInfo.password
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error();
+      }
+
+      notification.success({
+        message: "Cập nhật thành công",
+        description: "Thông tin của bạn đã được cập nhật.",
+      });
+
+    } catch {
+      notification.error({
+        message: "Cập nhật thất bại",
+      });
+    }
+  };
 
   const handleRemove = async () => {
     if (!confirm('Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác!')) {
@@ -61,30 +102,29 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 pb-20 font-sans text-left text-zinc-900">
+    <div className="min-h-screen bg-zinc-50 pb-20 font-sans text-left text-zinc-900 pt-18">
       <div className="bg-white border-b border-zinc-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-8 pt-12 pb-8">
           <div className="flex flex-col md:flex-row items-start gap-8">
             <div className="relative shrink-0">
               <div className="w-32 h-32 rounded-full bg-[#fa649a] border-[6px] border-white shadow-xl flex items-center justify-center text-6xl">
-                👩‍🦰
+                <img src={user?.avatarUrl} alt="Ảnh hồ sơ" />
               </div>
             </div>
 
             <div className="flex-1 w-full">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-1">
-                  <h1 className="text-4xl font-extrabold tracking-tight">Linh Trang</h1>
+                  <h1 className="text-4xl font-extrabold tracking-tight">{userInfo.displayName}</h1>
                   <div className="flex flex-col gap-1 mt-3">
-                    <p className="flex items-center gap-2 text-slate-500 text-sm font-medium"><MailOutlined className="text-xs"/> linh.trang@example.com</p>
-                    <p className="flex items-center gap-2 text-slate-500 text-sm font-medium"><PhoneOutlined className="text-xs"/> +84 123 456 789</p>
-                    <p className="flex items-center gap-2 text-slate-500 text-sm font-medium"><EnvironmentOutlined className="text-xs"/> Thành phố Hồ Chí Minh, Việt Nam</p>
+                    <p className="flex items-center gap-2 text-slate-500 text-sm font-medium"><MailOutlined className="text-xs" /> {userInfo.email}</p>
+                    <p className="flex items-center gap-2 text-slate-500 text-sm font-medium"><PhoneOutlined className="text-xs" /> {userInfo.phone}</p>
                   </div>
                 </div>
               </div>
 
               <p className="text-slate-500 text-sm mt-4 leading-relaxed max-w-2xl font-medium">
-                Người đam mê thời trang và sáng tạo outfit | Yêu thích kết hợp phong cách vintage cùng hiện đại
+                {userInfo.bio}
               </p>
 
               <div className="flex flex-wrap gap-10 mt-8 pt-6 border-t border-zinc-100">
@@ -108,9 +148,8 @@ export default function ProfilePage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-4 text-sm font-bold transition-all border-b-4 ${
-                activeTab === tab.id ? "border-[#fa649a] text-[#fa649a]" : "border-transparent text-slate-400 hover:text-slate-500"
-              }`}
+              className={`pb-4 text-sm font-bold transition-all border-b-4 ${activeTab === tab.id ? "border-[#fa649a] text-[#fa649a]" : "border-transparent text-slate-400 hover:text-slate-500"
+                }`}
             >
               {tab.name}
             </button>
@@ -118,7 +157,12 @@ export default function ProfilePage() {
         </div>
 
         <div className="mt-10">
-          {activeTab === 'about' && <AboutSection onDelete={handleRemove} />}
+          {activeTab === 'about' && <AboutSection
+            userInfo={userInfo}
+            setUserInfo={setUserInfo}
+            onSave={handleUpdate}
+            onDelete={handleRemove}
+          />}
           {activeTab === 'saved-outfits' && <OutfitsSection />}
           {activeTab === 'liked-shops' && <ShopsSection />}
         </div>
@@ -127,17 +171,20 @@ export default function ProfilePage() {
   );
 }
 
-function AboutSection({ onDelete }: { onDelete: () => void }) {
-  const [userInfo, setUserInfo] = useState({
-    fullName: "Linh Trang",
-    email: "linh.trang@example.com",
-    phone: "+84 123 456 789",
-    location: "Thành phố Hồ Chí Minh, Việt Nam"
-  });
+function AboutSection({
+  userInfo,
+  setUserInfo,
+  onSave,
+  onDelete
+}: any) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserInfo(prev => ({ ...prev, [name]: value }));
+
+    setUserInfo((prev:any) => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -146,21 +193,22 @@ function AboutSection({ onDelete }: { onDelete: () => void }) {
         <div className="bg-white rounded-3xl border border-zinc-200 p-8 shadow-xl">
           <div className="flex justify-between items-center mb-10">
             <h2 className="text-2xl font-extrabold tracking-tight">Cài đặt tài khoản</h2>
-            <button onClick={() => alert('Đã lưu!')} className="bg-[#fa649a] text-white px-6 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#fa649a]/90 transition-all shadow-md">
+            <button onClick={onSave} className="bg-[#fa649a] text-white px-6 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#fa649a]/90 transition-all shadow-md">
               Lưu thay đổi
             </button>
           </div>
-          
+
           <div className="flex flex-col gap-6 max-w-2xl">
             {[
-              { label: "Họ và tên", name: "fullName", value: userInfo.fullName },
+              { label: "Họ và tên", name: "displayName", value: userInfo.displayName },
+              { label: "Mật khẩu", name: "password", value: userInfo.password, type: "password" },
               { label: "Địa chỉ email", name: "email", value: userInfo.email, type: "email" },
-              { label: "Số điện thoại", name: "phone", value: userInfo.phone },
-              { label: "Địa điểm", name: "location", value: userInfo.location }
+              { label: "Bio", name: "bio", value: userInfo.bio},
+              { label: "Phone", name: "phone", value: userInfo.phone, type: "tel" }
             ].map((input) => (
               <div key={input.name} className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.15em]">{input.label}</label>
-                <input 
+                <input
                   type={input.type || "text"}
                   name={input.name}
                   value={input.value}
@@ -178,7 +226,7 @@ function AboutSection({ onDelete }: { onDelete: () => void }) {
             <h4 className="text-rose-600 font-extrabold text-base">Khu vực nguy hiểm</h4>
             <p className="text-rose-400 text-xs font-medium">Một khi bạn xóa tài khoản, sẽ không thể khôi phục lại.</p>
           </div>
-          <button 
+          <button
             onClick={onDelete}
             className="bg-rose-600 text-white px-6 py-3 rounded-2xl font-bold text-sm flex items-center gap-2 hover:bg-rose-700 transition-all"
           >
@@ -204,7 +252,7 @@ function AboutSection({ onDelete }: { onDelete: () => void }) {
           <div className="space-y-4 text-sm font-bold">
             <div className="flex justify-between">
               <span className="text-slate-400">Trạng thái</span>
-              <span className="text-emerald-500 flex items-center gap-1"><CheckCircleFilled className="text-sm"/> Đã xác thực</span>
+              <span className="text-emerald-500 flex items-center gap-1"><CheckCircleFilled className="text-sm" /> Đã xác thực</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Tổng đơn hàng</span>
@@ -279,7 +327,7 @@ function ShopsSection() {
             <p className="text-xs font-bold text-slate-400">bởi {shop.author}</p>
             <p className="text-sm text-slate-500 font-medium max-w-xl">{shop.desc}</p>
             <div className="flex gap-8 pt-4 border-t border-zinc-100 mt-4">
-              <div className="flex items-center gap-1.5 font-bold text-sm text-slate-600"><StarFilled className="text-yellow-400"/> {shop.rating} <span className="text-slate-300 font-medium">({shop.reviews})</span></div>
+              <div className="flex items-center gap-1.5 font-bold text-sm text-slate-600"><StarFilled className="text-yellow-400" /> {shop.rating} <span className="text-slate-300 font-medium">({shop.reviews})</span></div>
               <div className="text-sm font-bold text-slate-600"><span className="text-slate-300 font-medium uppercase text-[10px] mr-2">Người theo dõi</span> {shop.followers}</div>
             </div>
           </div>
