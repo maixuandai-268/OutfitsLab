@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export class ApproveSellerDto {
   sellerId: string; 
   status: 'approved' | 'rejected'; 

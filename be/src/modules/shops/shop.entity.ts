@@ -1,11 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { 
   Entity, 
   PrimaryGeneratedColumn, 
   Column, 
   CreateDateColumn, 
-  UpdateDateColumn, 
-  ManyToOne, 
-  JoinColumn 
+  UpdateDateColumn,  
 } from 'typeorm';
 
 @Entity('shops')
