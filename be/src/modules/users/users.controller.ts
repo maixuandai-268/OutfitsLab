@@ -14,7 +14,7 @@ export class UserController {
   constructor(private readonly userService: UsersService) { }
 
   @UseGuards(AuthGuard('jwt'))
-  // @Patch('user') // hoàn thiện sửa người dùng
+  @Patch('update') 
   update(@GetUser() user,
     @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(user.sub, updateUserDto);

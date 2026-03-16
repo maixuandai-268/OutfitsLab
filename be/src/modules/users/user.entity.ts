@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, UpdateDateColumn } from 'typeorm';
 /* eslint-disable prettier/prettier */
 
@@ -26,6 +28,9 @@ export class User {
 
   @Column({nullable : true})
   bio : string;
+
+  @Column({nullable : true})
+  phone : string;
 
   @Column({default : 1})
   isActive : boolean;

@@ -8,7 +8,6 @@ import { useAuth } from "@/context/AuthContext";
 export default function SignIn() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const { login } = useAuth();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -52,11 +51,23 @@ export default function SignIn() {
         <div className="w-full max-w-md mx-auto px-6 flex flex-col shadow-2xl shadow-[#F5F5FF]/50 rounded-3xl">
             <div className="mt-4 flex justify-center pb-12">
                 <div className="text-center">
+                    <div className="h-[74px] flex items-center justify-center">
+                        <Link href={"/product"}>
+                            <img
+                                src="/images/logo.png"
+                                alt="OutfitsLab"
+                                width={300}
+                                height={60}
+                                className="object-contain" />
+                        </Link>
+
+                    </div>
+
                     <h1 className="heading mt-4 text-3xl font-bold">
-                        Chào mừng đến OutfitsLab
+                        Welcome back
                     </h1>
                     <p className="heading text-gray-500 text-[16px] mb-6">
-                        Đăng nhập để tiếp tục đến với OutfitsLab
+                        Sign In to continue to OutfitsLab
                     </p>
 
                     <form
@@ -64,7 +75,7 @@ export default function SignIn() {
                         className="mt-10 flex flex-col items-center">
                         <div className="w-[400px] text-left">
                             <label className="heading block mb-2 text-[14px] font-bold">
-                                Email
+                                Email Address
                             </label>
                             <div className="relative">
                                 <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#2C2C2C]">
@@ -84,7 +95,7 @@ export default function SignIn() {
                         </div>
                         <div className="w-[400px] text-left mt-4">
                             <label className="heading block mb-2 text-[14px] font-bold">
-                                Mật khẩu
+                                Password
                             </label>
                             <div className="relative">
                                 <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#2C2C2C]">
@@ -94,7 +105,6 @@ export default function SignIn() {
                                     </svg>
                                 </div>
                                 <input
-                                    type="password"
                                     id="password"
                                     name="password"
                                     placeholder="••••••••"
@@ -104,22 +114,9 @@ export default function SignIn() {
                             </div>
                         </div>
 
-
-                        <div className="mt-6 flex w-[400px] items-center">
-                            <input
-                                type="checkbox"
-                                id="remember"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                                className="w-4 h-4 border border-[#666666]"
-                            />
-                            <label
-                                htmlFor="remember"
-                                className="ml-2 text-[14px] text-[#4d4d4d]">
-                                Ghi nhớ mật khẩu
-                            </label>
-                            <p className="ml-auto text-[14px] text-[#FF00A8] cursor-pointer hover:underline">
-                                Quên mật khẩu?
+                        <div className="mt-6 flex w-[400px] items-center justify-center">
+                            <p className=" text-[14px] text-[#FF00A8] cursor-pointer hover:underline">
+                                Forgot password?
                             </p>
                         </div>
 
@@ -127,10 +124,7 @@ export default function SignIn() {
                             type="submit"
                             className="heading w-[400px] h-16 mt-8 bg-gradient-to-r from-[#FF00A8] to-[#990065] text-white font-semibold text-lg rounded-2xl shadow-lg shadow-[#FF00A8]/40 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.985] transition-all duration-200 flex items-center justify-center gap-3"
                         >
-
                             Đăng nhập
-
-
                             <span className="text-2xl">→</span>
                         </button>
 
@@ -142,7 +136,7 @@ export default function SignIn() {
                             <div className="w-[400px] border-t border-[#FA649A]"></div>
                         </div>
                         <div className="relative flex justify-center">
-                            <span className="bg-white px-8 text-sm text-[#4D4D4D]">Đăng nhập với</span>
+                            <span className="bg-white px-8 text-sm text-[#4D4D4D]">Or sign up with</span>
                         </div>
                     </div>
 
@@ -164,30 +158,27 @@ export default function SignIn() {
                     </div>
                     <p className="mt-8 mb-6 text-[14px] text-[#4D4D4D] text-base">
                         Không có tài khoản?{" "}
-
                         <a href="/sign-up"
                             className="heading ml-1 text-[#FA649A] hover:underline">
-                            Tạo tài khoản
+                            Create one
                         </a>
                     </p>
 
                     <section className="flex flex-col items-center py-10">
                         <div className="w-[400px] border border-[#FFF0F5] bg-[#FFF5F7] rounded-[16px] p-6">
                             <h1 className="text-[#4d4d4d] text-[14px]">
-                                Bạn có muốn trở thành người bán trên OutfitsLab?
+                                Want to sell on OutfitsLab?
                             </h1>
                             <Link href="/become">
                                 <button className="heading mt-4 w-[200px] h-14 rounded-full hover:bg-pink-300 bg-pink-500 text-white">
-                                    Bắt đầu bán hàng
+                                    Become a Seller
                                 </button>
                             </Link>
                         </div>
                     </section>
-
                 </div>
-
             </div>
-
         </div>
     );
 }
+
