@@ -10,6 +10,7 @@ interface StepConfirmProps {
     prevStep: () => void;
     onSubmit: () => Promise<void>;
     loading: boolean;
+    shopId?: number | null;
 }
 
 export default function StepConfirm({
@@ -18,21 +19,20 @@ export default function StepConfirm({
     storeName,
     prevStep,
     onSubmit,
-    loading
+    loading,
+    shopId
 }: StepConfirmProps) {
     const [isSuccess, setIsSuccess] = useState(false);
 
-    // Hàm xử lý khi nhấn nút xác nhận cuối cùng
     const handleFinalSubmit = async () => {
         try {
-            await onSubmit(); // Gọi hàm từ page.tsx gửi lên Backend
-            setIsSuccess(true); // Nếu không lỗi thì hiện màn hình thành công
+            await onSubmit(); 
+            setIsSuccess(true); 
         } catch (error) {
             console.error("Lỗi khi tạo shop:", error);
         }
     };
 
-    // --- TRƯỜNG HỢP 1: MÀN HÌNH CHÚC MỪNG (Sau khi tạo thành công) ---
     if (isSuccess) {
         return (
             <div className="bg-white mt-0.5">
@@ -58,11 +58,14 @@ export default function StepConfirm({
                     </div>
 
                     <div className="flex flex-col gap-4 mt-6 w-[420px]">
-                        <Link href="/dashboard" className="bg-[#D19F42] hover:bg-[#BD8928] text-white py-3 rounded-full font-medium text-center transition-all">
+                        <Link href={`/shop_dashboard/${shopId}`} className="bg-[#D19F42] hover:bg-[#BD8928] text-white py-3 rounded-full font-medium text-center transition-all">
                             Truy cập vào Dashboard Shop
                         </Link>
-                        <Link href="/" className="border border-[#D19F42] text-[#D19F42] py-3 rounded-full font-medium hover:bg-orange-50 text-center transition-all">
-                            Quay lại Trang Chủ
+                        <Link 
+                            href="/" 
+                            className="bg-[#D19F42] hover:bg-[#BD8928] text-white py-3 rounded-full font-medium text-center transition-all"
+                        >
+                            Về trang chủ chờ Admin phê duyệt
                         </Link>
                     </div>
                 </div>
@@ -70,7 +73,6 @@ export default function StepConfirm({
         );
     }
 
-    // --- TRƯỜNG HỢP 2: MÀN HÌNH XÁC NHẬN (Trước khi tạo) ---
     return (
         <div className="bg-white mt-0.5">
             <div className="w-full flex flex-col px-[348px] py-6">
@@ -78,7 +80,6 @@ export default function StepConfirm({
                 <p className="text-[16px] text-[#4d4d4d]">Vui lòng kiểm tra kỹ thông tin trước khi mở cửa hàng.</p>
             </div>
 
-            {/* Progress Bar Step 3 */}
             <div className="w-full h-[89px] bg-white flex justify-center items-center">
                 <div className="flex items-center gap-1">
                     <div className="w-[40px] h-[40px] rounded-full bg-[#FFF4E6] flex items-center justify-center text-[#D19F42]">✓</div>

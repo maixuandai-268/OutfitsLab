@@ -1,69 +1,85 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Shop } from './shop.entity';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
-import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ShopsService {
   constructor(
     @InjectRepository(Shop)
-    private shopsRepository: Repository<Shop>,
-    private usersService: UsersService,
-  ) { }
+    private readonly shopsRepository: Repository<Shop>,
+  ) {}
 
-  // Tìm đến hàm create trong ShopsService
-async create(userId: number, createShopDto: any): Promise<Shop> {
-  const existingShop = await this.shopsRepository.findOne({ where: { ownerId: userId } });
-  if (existingShop) throw new BadRequestException('Bạn đã sở hữu một cửa hàng rồi.');
+  // 1. Tạo Shop mới (Dùng cho trang Become)
+  async create(userId: number, createShopDto: CreateShopDto) {
+    try {
+      const newShop = this.shopsRepository.create({
+        ...createShopDto,
+        ownerId: userId,
+        status: 'pending',
+        rating: 0,
+      });
+      return await this.shopsRepository.save(newShop);
+    } catch (error) {
+      console.error('Lỗi khi tạo shop:', error);
+      throw new InternalServerErrorException('Không thể tạo cửa hàng, vui lòng thử lại.');
+    }
+  }
 
-  const newShop = this.shopsRepository.create({
-    shop_name: createShopDto.storeName, 
-    description: createShopDto.storeDescription,
-    contact_email: createShopDto.email,
-    ownerId: userId,
+  // 2. Lấy tất cả danh sách Shop (Dùng cho Admin)
+  async findAll() {
+    return await this.shopsRepository.find({
+      order: { created_at: 'DESC' },
+    });
+  }
+
+  // 3. Tìm 1 Shop cụ thể theo ID
+  async findOne(id: number) {
+    const shop = await this.shopsRepository.findOne({ where: { id } });
+    if (!shop) throw new NotFoundException(`Không tìm thấy shop với ID ${id}`);
+    return shop;
+  }
+
+  // 4. Tìm Shop theo ID người dùng (Dùng cho Dashboard của Seller)
+  async findByUserId(userId: number) {
+  const shops = await this.shopsRepository.find({ 
+    where: { ownerId: userId },
+    order: { id: 'DESC' } 
   });
-  
-  const savedShop = await this.shopsRepository.save(newShop);
-  await this.usersService.update(userId, { role: 'shop' } as any);
-  return savedShop;
+  return shops; 
 }
 
-  async update(shopId: number, updateShopDto: UpdateShopDto): Promise<Shop> {
-    const shop = await this.shopsRepository.findOne({ where: { id: shopId } });
-    if (!shop) throw new NotFoundException('Không tìm thấy cửa hàng này.');
+  // 5. Cập nhật thông tin Shop chung
+  async update(id: number, updateShopDto: UpdateShopDto) {
+    const shop = await this.findOne(id);
     Object.assign(shop, updateShopDto);
     return await this.shopsRepository.save(shop);
   }
 
-  async findOne(id: number): Promise<Shop> {
-    const shop = await this.shopsRepository.findOne({
-      where: { id },
-      select: {
-        id: true,
-        shop_name: true,
-        avatar_url: true,
-        description: true,
-        rating: true,
-        location: true,
-        created_at: true,
-      },
-    });
-    if (!shop) throw new NotFoundException(`Cửa hàng với ID ${id} không tồn tại.`);
-    return shop;
+  // 6. Xóa Shop
+  async remove(id: number) {
+    const shop = await this.findOne(id);
+    return await this.shopsRepository.remove(shop);
   }
 
-  async findAll(): Promise<Shop[]> {
-    return await this.shopsRepository.find({
-      select: { id: true, shop_name: true, avatar_url: true, rating: true, location: true },
-      take: 20,
-    });
+  // 7. Lấy danh sách các shop đang chờ duyệt
+  async findPending() {
+    return await this.shopsRepository.find({ where: { status: 'pending' } });
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.shopsRepository.delete(id);
-    if (result.affected === 0) throw new NotFoundException(`Cửa hàng với ID ${id} không tồn tại.`);
+  // 8. Phê duyệt Shop (Chuyển sang approved)
+  async approve(id: number) {
+    const shop = await this.findOne(id);
+    shop.status = 'approved';
+    return await this.shopsRepository.save(shop);
+  }
+
+  // 9. Từ chối hoặc Chặn Shop (Chuyển sang Blocked)
+  async reject(id: number) {
+    const shop = await this.findOne(id);
+    shop.status = 'rejected';
+    return await this.shopsRepository.save(shop);
   }
 }

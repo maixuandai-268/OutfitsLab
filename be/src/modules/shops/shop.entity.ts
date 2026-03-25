@@ -9,6 +9,9 @@ import {
 
 @Entity('shops')
 export class Shop {
+  @Column({ default: 'pending' })
+  status: 'pending' | 'approved' | 'rejected';
+
   @PrimaryGeneratedColumn()
   id: number;
 

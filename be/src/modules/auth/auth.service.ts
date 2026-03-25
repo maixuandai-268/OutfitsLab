@@ -7,13 +7,19 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Shop } from '../shops/shop.entity'; 
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService : JwtService
-    ) {}
+    private readonly jwtService: JwtService,
+    
+    @InjectRepository(Shop)
+    private readonly shopsRepository: Repository<Shop>,
+  ) {}
 
   async register(data: any) {
     const { email, password, displayName } = data;
@@ -29,29 +35,41 @@ export class AuthService {
       email,
       password: hashedPassword,
       displayName,
+      role: 'user', 
     });
   }
 
-  async login(dto : LoginDto) {
+  async login(dto: LoginDto) {
+    const user = await this.usersService.findByEmailWithPassword(dto.email);
+    if (!user) {
+      throw new UnauthorizedException('Sai email hoặc mật khẩu');
+    }
 
-  const user = await this.usersService.findByEmailWithPassword(dto.email);
-  if (!user) {
-    throw new UnauthorizedException('Sai email hoặc mật khẩu');
+    const isMatch = await bcrypt.compare(dto.password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Sai email hoặc mật khẩu');
+    }
+
+    const userShop = await this.shopsRepository.findOne({ 
+      where: { ownerId: user.id } 
+    });
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role, 
+      shopId: userShop ? userShop.id : null 
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName,
+        shopId: userShop ? userShop.id : null 
+      }
+    };
   }
-
-  const isMatch = await bcrypt.compare(dto.password, user.password);
-  if (!isMatch) {
-    throw new UnauthorizedException('Sai email hoặc mật khẩu');
-  }
-
-  const payload = {
-    sub : user.id,
-    email : user.email,
-    role : user.role
-  };
-
-  return{
-    access_token : this.jwtService.sign(payload)
-  };
-}
 }
