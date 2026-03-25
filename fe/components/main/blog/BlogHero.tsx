@@ -31,7 +31,6 @@ export default function BlogHero() {
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                 </div>
 
-                {/* Card nội dung nổi lên */}
                 <div className="absolute left-6 md:left-12 -bottom-12 bg-white/95 backdrop-blur-md p-8 rounded-[2rem] shadow-2xl w-[90%] md:w-[480px] border border-white/50 animate-in slide-in-from-bottom-5 duration-500">
                     <span className="text-[10px] font-black bg-rose-500 text-white px-4 py-1.5 rounded-lg uppercase tracking-[0.2em]">
                         {blog.category}
@@ -49,7 +48,6 @@ export default function BlogHero() {
                 </div>
             </div>
 
-            {/* Điều hướng Slider */}
             <div className="flex items-center justify-center gap-8 mt-24">
                 <button onClick={() => setIndex((prev) => (prev - 1 + heroBlogs.length) % heroBlogs.length)} className="p-3 rounded-full border hover:bg-gray-100 transition shadow-sm bg-white">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>

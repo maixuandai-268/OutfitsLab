@@ -13,7 +13,6 @@ interface BlogCardProps {
 export default function BlogCard({ blog }: BlogCardProps) {
     return (
         <div className="bg-white rounded-xl shadow-sm hover:-translate-y-3 transition duration-300 cursor-pointer border border-gray-100 overflow-hidden h-full flex flex-col">
-            {/* Ảnh bài viết */}
             <div className="m-3 rounded-xl h-48 overflow-hidden bg-gray-50">
                 <img
                     src={blog.image || "/images/placeholder.jpg"}
@@ -23,19 +22,14 @@ export default function BlogCard({ blog }: BlogCardProps) {
             </div>
 
             <div className="p-4 pt-1 flex-1 flex flex-col">
-                {/* Danh mục */}
                 <div>
                     <span className="text-[10px] font-bold text-white bg-pink-500 rounded px-2 py-1 uppercase tracking-wider">
                         {blog.category || "Tin tức"}
                     </span>
                 </div>
-
-                {/* Tiêu đề */}
                 <h3 className="font-bold mt-3 text-gray-900 line-clamp-2 hover:text-pink-600 transition-colors flex-1">
                     {blog.title}
-                </h3>
-
-                {/* Thông tin tác giả */}
+                </h3>   
                 <div className="flex items-center gap-3 mt-4 text-sm text-gray-500 border-t pt-3 border-gray-50">
                     {blog.avatar ? (
                         <img src={blog.avatar} className="w-8 h-8 rounded-full object-cover shadow-sm" alt="ava" />

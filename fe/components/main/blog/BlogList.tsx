@@ -17,11 +17,9 @@ export default function BlogList() {
     const postsPerPage = 6;
 
     useEffect(() => {
-        // Lấy dữ liệu từ Admin đã lưu trong LocalStorage
         const savedData = localStorage.getItem("outfitslab_full_storage");
         if (savedData) {
             const adminBlogs = JSON.parse(savedData);
-            // Gộp: Bài từ Admin lên đầu, sau đó đến bài mẫu
             setAllBlogs([...adminBlogs, ...staticBlogs]);
         }
     }, []);
@@ -40,8 +38,6 @@ export default function BlogList() {
                     <BlogCard key={blog.id} blog={blog} />
                 ))}
             </div>
-
-            {/* Phân trang */}
             <div className="flex justify-center items-center gap-2 mt-16">
                 <button 
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
