@@ -15,24 +15,19 @@ export class ShopsService {
   ) { }
 
   // Tìm đến hàm create trong ShopsService
-async create(userId: number, createShopDto: CreateShopDto): Promise<Shop> {
-  // 1. Kiểm tra xem user này đã có shop chưa
+async create(userId: number, createShopDto: any): Promise<Shop> {
   const existingShop = await this.shopsRepository.findOne({ where: { ownerId: userId } });
-  if (existingShop) {
-    throw new BadRequestException('Bạn đã sở hữu một cửa hàng rồi.');
-  }
+  if (existingShop) throw new BadRequestException('Bạn đã sở hữu một cửa hàng rồi.');
 
-  // 2. Tạo shop mới gắn với userId
   const newShop = this.shopsRepository.create({
-    ...createShopDto,
-    ownerId: userId, // Đảm bảo Entity Shop của bạn có cột ownerId
+    shop_name: createShopDto.storeName, 
+    description: createShopDto.storeDescription,
+    contact_email: createShopDto.email,
+    ownerId: userId,
   });
   
   const savedShop = await this.shopsRepository.save(newShop);
-
-  // 3. Cập nhật role của User thành 'shop'
   await this.usersService.update(userId, { role: 'shop' } as any);
-
   return savedShop;
 }
 

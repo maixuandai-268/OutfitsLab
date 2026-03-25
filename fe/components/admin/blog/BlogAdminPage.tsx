@@ -5,9 +5,9 @@ interface Blog {
   id: number;
   title: string;
   content: string;
-  image: string;      // Thêm ảnh
-  category: string;   // Thêm danh mục
-  author: string;     // Thêm tác giả
+  image: string;      
+  category: string;   
+  author: string;    
   date: string;
 }
 
@@ -16,7 +16,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState<number | null>(null);
   
-  // State cho Form
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState("");
