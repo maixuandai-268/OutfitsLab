@@ -24,6 +24,9 @@ export class Product {
   @Column({ nullable: true })
   image: string;
 
+  @Column({ nullable: true })
+  shop_id: number;
+
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 

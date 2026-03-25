@@ -1,248 +1,145 @@
 "use client";
-import { useMemo, useState } from "react";
-import {
-  CheckOutlined,
-  CloseOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { useEffect, useMemo, useState } from "react";
+import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
 
-type Status = "Chờ xét duyệt" | "Đã duyệt" | "Blocked";
-
-interface SellerApplication {
-  id: string;
-  name: string;
-  owner: string;
-  email: string;
-  submitted: string; 
-  docs: number;
-  status: Status;
+interface Shop {
+  id: number;
+  shop_name: string;
+  contact_email: string;
+  status: "pending" | "approved" | "Blocked";
+  description: string;
+  created_at: string;
+  ownerId: number;
 }
 
-interface SellerApplicationsPageProps {
-  dark: boolean;
-}
+export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
+  const [apps, setApps] = useState<Shop[]>([]);
+  const [tab, setTab] = useState("Tất cả");
+  const [loading, setLoading] = useState(true);
 
-const seed: SellerApplication[] = [
-  {
-    id: "APP-1001",
-    name: "Fashion Studio Pro",
-    owner: "Nguyễn Tuấn",
-    email: "tuanfashion@example.com",
-    submitted: "2024-01-16",
-    docs: 3,
-    status: "Chờ xét duyệt",
-  },
-  {
-    id: "APP-1002",
-    name: "Vintage Closet",
-    owner: "Trần Huỳnh",
-    email: "vintage@example.com",
-    submitted: "2024-01-15",
-    docs: 4,
-    status: "Chờ xét duyệt",
-  },
-  {
-    id: "APP-1003",
-    name: "Modern Threads",
-    owner: "Lê Quỳnh",
-    email: "modern@example.com",
-    submitted: "2024-01-14",
-    docs: 2,
-    status: "Chờ xét duyệt",
-  },
-];
-
-type TabKey = "Tất cả" | "Chờ xét duyệt" | "Đã duyệt" | "Blocked";
-
-export default function SellerApplicationsPage({ dark }: SellerApplicationsPageProps) {
-  const [tab, setTab] = useState<TabKey>("Tất cả");
-  const [apps, setApps] = useState<SellerApplication[]>(seed);
-
-  const filtered = useMemo(() => {
-    if (tab === "Tất cả") return apps;
-    if (tab === "Chờ xét duyệt") return apps.filter((a) => a.status === "Chờ xét duyệt");
-    if (tab === "Đã duyệt") return apps.filter((a) => a.status === "Đã duyệt");
-    return apps.filter((a) => a.status === "Blocked");
-  }, [tab, apps]);
-
-  const onApprove = (id: string) =>
-    setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status: "Đã duyệt" } : a)));
-
-  const onReject = (id: string) =>
-    setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status: "Blocked" } : a)));
-
-  const onView = (app: SellerApplication) => {
-    alert(`View details:\n\n${app.name}\nOwner: ${app.owner}\nEmail: ${app.email}\nSubmitted: ${app.submitted}\nDocs: ${app.docs}`);
+  const fetchShops = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:3000/api/shops");
+      const data = await res.json();
+      setApps(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Lỗi fetch:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const wrapBg = dark ? "" : "bg-amber-50/40";
+  useEffect(() => {
+    fetchShops();
+  }, []);
+
+  const onApprove = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/shops/${id}/approve`, {
+        method: "PATCH",
+      });
+      if (res.ok) {
+        alert("Đã phê duyệt shop thành công!");
+        fetchShops();
+      }
+    } catch (error) {
+      alert("Lỗi khi kết nối server phê duyệt.");
+    }
+  };
+
+  const onReject = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/shops/${id}/reject`, {
+        method: "PATCH",
+      });
+      if (res.ok) {
+        alert("Đã từ chối shop!");
+        fetchShops();
+      }
+    } catch (error) {
+      alert("Lỗi khi kết nối server từ chối.");
+    }
+  };
+
+  const filtered = useMemo(() => {
+    const statusMap: any = { 
+      "Chờ xét duyệt": "pending", 
+      "Đã duyệt": "approved", 
+      "Từ chối": "rejected", 
+    };
+    if (tab === "Tất cả") return apps;
+    return apps.filter((a) => a.status === statusMap[tab]);
+  }, [tab, apps]);
+
+  if (loading) return <div className="p-10 text-center font-medium">Đang tải dữ liệu từ hệ thống...</div>;
 
   return (
-    <main className={`flex-1 overflow-y-auto p-6 ${wrapBg}`}>
-      <FiltersRow dark={dark} tab={tab} setTab={setTab} counts={{
-        "Tất cả": apps.length,
-        "Chờ xét duyệt": apps.filter(a => a.status === "Chờ xét duyệt").length,
-        "Đã duyệt": apps.filter(a => a.status === "Đã duyệt").length,
-        "Blocked": apps.filter(a => a.status === "Blocked").length,
-      }} />
-
-      <div className="mt-4 flex flex-col gap-4">
-        {filtered.map((app) => (
-          <ApplicationCard
-            key={app.id}
-            dark={dark}
-            app={app}
-            onApprove={() => onApprove(app.id)}
-            onReject={() => onReject(app.id)}
-            onView={() => onView(app)}
-          />
+    <main className={`flex-1 p-6 ${dark ? "bg-gray-900" : "bg-amber-50/40"}`}>
+      <h1 className={`text-2xl font-bold mb-6 ${dark ? "text-white" : "text-gray-800"}`}>Quản lý đăng ký Seller</h1>
+      
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        {["Tất cả", "Chờ xét duyệt", "Đã duyệt", "Từ chối"].map(t => (
+          <button 
+            key={t} 
+            onClick={() => setTab(t)}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all ${
+              tab === t ? "bg-teal-700 text-white border-teal-700" : "bg-white text-gray-600 border-gray-200"
+            }`}
+          >
+            {t}
+          </button>
         ))}
+      </div>
 
-        {filtered.length === 0 && (
-          <div className={`rounded-2xl border p-6 text-sm text-center ${dark ? "bg-gray-800 border-gray-700 text-gray-400" : "bg-white border-amber-200 text-amber-900/70"}`}>
-            Không có mục nào trong bộ lọc này.
+      <div className="flex flex-col gap-4">
+        {filtered.map((app) => (
+          <div key={app.id} className={`rounded-2xl border p-5 shadow-sm ${dark ? "bg-gray-800 border-gray-700" : "bg-white border-amber-200"}`}>
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"}`}>{app.shop_name}</h3>
+                <p className="text-sm text-gray-500">Chủ ID: {app.ownerId} • Email: {app.contact_email}</p>
+                <p className={`text-sm mt-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>{app.description || "Không có mô tả shop."}</p>
+              </div>
+              <StatusBadge status={app.status} />
+            </div>
+            
+            <div className="border-t pt-4 flex flex-wrap justify-between items-center gap-3">
+              <span className="text-xs text-gray-400 font-medium">
+                Gửi lúc: {new Date(app.created_at).toLocaleString('vi-VN')}
+              </span>
+              <div className="flex gap-2">
+                {app.status === "pending" && (
+                  <>
+                    <button onClick={() => onApprove(app.id)} className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors">
+                      <CheckOutlined /> Phê duyệt
+                    </button>
+                    <button onClick={() => onReject(app.id)} className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors">
+                      <CloseOutlined /> Từ chối
+                    </button>
+                  </>
+                )}
+                <button className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors">
+                  <EyeOutlined /> Xem hồ sơ
+                </button>
+              </div>
+            </div>
           </div>
+        ))}
+        {filtered.length === 0 && (
+          <div className="text-center py-20 text-gray-400 italic">Không tìm thấy yêu cầu nào trong mục này.</div>
         )}
       </div>
     </main>
   );
 }
 
-
-function FiltersRow({
-  dark,
-  tab,
-  setTab,
-  counts,
-}: {
-  dark: boolean;
-  tab: TabKey;
-  setTab: (k: TabKey) => void;
-  counts: Record<TabKey, number>;
-}) {
-  const pills: { key: TabKey; label: string }[] = [
-    { key: "Tất cả", label: "Tất cả" },
-    { key: "Chờ xét duyệt", label: "Chờ xét duyệt" },
-    { key: "Đã duyệt", label: "Đã duyệt" },
-    { key: "Blocked", label: "Blocked" },
-  ];
-
-  return (
-    <div className="flex items-center gap-2 flex-wrap">
-      {pills.map((p) => {
-        const active = p.key === tab;
-        const base =
-          "px-3 py-1.5 rounded-full text-sm font-medium transition-colors border";
-        const cls = active
-          ? "bg-teal-700 text-white border-teal-700"
-          : dark
-          ? "text-gray-300 border-gray-700 hover:bg-gray-800"
-          : "text-amber-800 border-amber-200 hover:bg-white";
-        return (
-          <button
-            key={p.key}
-            type="button"
-            onClick={() => setTab(p.key)}
-            className={`${base} ${cls}`}
-            aria-pressed={active}
-            title={`${p.label} (${counts[p.key]})`}
-          >
-            {p.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function ApplicationCard({
-  dark,
-  app,
-  onApprove,
-  onReject,
-  onView,
-}: {
-  dark: boolean;
-  app: SellerApplication;
-  onApprove: () => void;
-  onReject: () => void;
-  onView: () => void;
-}) {
-  const cardBase = `rounded-2xl border ${
-    dark ? "bg-gray-800 border-gray-700" : "bg-white border-amber-200"
-  }`;
-  const headerLine = dark ? "border-gray-700/80" : "border-amber-200";
-  const subText = "text-xs text-gray-400";
-
-  return (
-    <div className={`${cardBase}`}>
-      <div className={`px-4 pt-3 pb-2 flex items-start justify-between`}>
-        <div>
-          <p className={`text-[15px] font-semibold ${dark ? "text-gray-100" : "text-gray-900"}`}>
-            {app.name}
-          </p>
-          <div className="mt-0.5">
-            <p className="text-[12.5px] text-gray-500">
-              Owner: {app.owner}
-            </p>
-            <p className="text-[12.5px] text-gray-500">{app.email}</p>
-          </div>
-        </div>
-        <StatusBadge status={app.status} />
-      </div>
-
-      <div className={`border-t ${headerLine}`} />
-
-      <div className="px-4 py-2.5 flex items-center justify-between gap-3">
-        <p className={`${subText}`}>
-          Submitted: {app.submitted} • Docs: {app.docs}
-        </p>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onApprove}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500 hover:bg-emerald-600 text-white"
-            title="Approve"
-          >
-            <CheckOutlined /> Phê duyệt
-          </button>
-          <button
-            type="button"
-            onClick={onReject}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-500 hover:bg-rose-600 text-white"
-            title="Reject"
-          >
-            <CloseOutlined /> Từ chối
-          </button>
-          <button
-            type="button"
-            onClick={onView}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
-              dark
-                ? "bg-gray-700 hover:bg-gray-600 text-gray-100"
-                : "bg-slate-700 hover:bg-slate-800 text-white"
-            }`}
-            title="View Details"
-          >
-            <EyeOutlined /> Xem chi tiết
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: Status }) {
-  const map: Record<Status, string> = {
-    "Chờ xét duyệt": "bg-amber-100 text-amber-700",
-    "Đã duyệt": "bg-emerald-100 text-emerald-700",
-    "Blocked": "bg-slate-200 text-slate-700",
+function StatusBadge({ status }: { status: string }) {
+  const badgeMap: any = {
+    pending: ["CHỜ DUYỆT", "bg-amber-100 text-amber-700"],
+    approved: ["ĐÃ DUYỆT", "bg-emerald-100 text-emerald-700"],
+    rejected: ["TỪ CHỐI", "bg-rose-100 text-rose-700"]
   };
-  const label = status === "Chờ xét duyệt" ? "Chờ xét duyệt" : status === "Đã duyệt" ? "Đã duyệt" : "Blocked";
-  return (
-    <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${map[status]}`}>
-      {label}
-    </span>
-  );
+  const [label, style] = badgeMap[status] || ["N/A", "bg-gray-100"];
+  return <span className={`px-3 py-1 rounded-lg text-[10px] font-black ${style}`}>{label}</span>;
 }

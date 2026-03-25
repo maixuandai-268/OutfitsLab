@@ -37,6 +37,11 @@ export default function Navbar() {
         label: <Link href="/user/posts">Bài viết của tôi</Link>,
       },
       {
+        key: "my-shops",
+        icon: <ShopOutlined />,
+        label: <Link href="/my_shops">Shop của tôi</Link>,
+      },
+      {
         key: "saved-posts",
         icon: <BookOutlined />,
         label: <Link href="/user/saved">Outfit đã lưu</Link>,
@@ -49,61 +54,67 @@ export default function Navbar() {
       },
     ];
 
+    // Hiển thị thêm Dashboard nếu user đã là Seller thực thụ
     if (user?.role === "shop") {
       baseItems.push({
-        key: "shop",
-        icon: <ShopOutlined />,
-        label: <Link href="/seller/dashboard">Shop</Link>,
+        key: "shop-dashboard",
+        icon: <DashboardOutlined />,
+        label: <Link href="/seller/dashboard">Bảng điều khiển Shop</Link>,
       });
     }
 
+    // Hiển thị menu cho Admin
     if (user?.role === "admin") {
       baseItems.push(
+        { type: "divider" },
         {
           key: "admin",
           icon: <DashboardOutlined />,
-          label: <Link href="/admin">Dashboard</Link>,
+          label: <Link href="/admin">Admin Dashboard</Link>,
         },
         {
           key: "manage-users",
           icon: <SettingOutlined />,
           label: <Link href="/admin/users">Quản lý người dùng</Link>,
-        },
-        { type: "divider" }
+        }
       );
     }
 
-    baseItems.push({
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: <span className="text-red-600 font-medium">Đăng xuất</span>,
-      onClick: logout,
-    });
+    // Nút Đăng xuất luôn ở dưới cùng
+    baseItems.push(
+      { type: "divider" },
+      {
+        key: "logout",
+        icon: <LogoutOutlined />,
+        label: <span className="text-red-600 font-medium">Đăng xuất</span>,
+        onClick: logout,
+      }
+    );
 
     return baseItems;
   };
 
   return (
     <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-xl shadow-sm ">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-f">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-full">
         <Link href="/" className="flex items-center gap-1.5">
-          <div className="w-[80px] h-auto  flex items-center justify-center" >
+          <div className="w-[80px] h-auto flex items-center justify-center">
             <img
               src="/images/logo.png"
               alt="OutfitsLab Logo"
-              className="object-cover scale-200 transition-transform hover:scale-225"
+              className="object-cover scale-150 transition-transform hover:scale-175"
             />
           </div>
         </Link>
 
-        {/* Menu */}
+        {/* Menu điều hướng chính */}
         <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-700">
-          <Link href="/">Home</Link>
-          <Link href="product">Collections</Link>
-          <Link href="try-on">Custom-Room</Link>
-          <Link href="/SellersList">Shops</Link>
-          <Link href="blog">Community</Link>
-          <Link href="/about">About</Link>
+          <Link href="/" className="hover:text-yellow-700 transition-colors">Home</Link>
+          <Link href="/product" className="hover:text-yellow-700 transition-colors">Collections</Link>
+          <Link href="/try-on" className="hover:text-yellow-700 transition-colors">Custom-Room</Link>
+          <Link href="/SellersList" className="hover:text-yellow-700 transition-colors">Shops</Link>
+          <Link href="/blog" className="hover:text-yellow-700 transition-colors">Community</Link>
+          <Link href="/about" className="hover:text-yellow-700 transition-colors">About</Link>
         </nav>
 
         <div className="hidden md:flex items-center gap-8">
