@@ -94,14 +94,29 @@ function BodyModel({ url }: { url: string }) {
   return <primitive object={gltf.scene} />
 }
 
-function Garment({ url }: { url: string }) {
+function Garment({ 
+  url, 
+  scale = [1, 1, 1], 
+  position = [0, 0, 0],
+  rotation = [0, 0, 0] 
+}: { 
+  url: string; 
+  scale?: [number, number, number]; 
+  position?: [number, number, number];
+  rotation?: [number, number, number]; // [X, Y, Z] tính bằng Độ (Degrees)
+}) {
   const gltf: GLTF = useLoader(GLTFLoader, url)
   const { colors, patterns } = useCustomizer()
   const c: Colors = colors as Colors
   const p: Patterns = patterns as Patterns
 
+  // Chuyển đổi từ Độ (Degrees) sang Radian cho Three.js
+  const rotationInRadians = useMemo(() => {
+    return rotation.map(deg => deg * (Math.PI / 180)) as [number, number, number]
+  }, [rotation])
+
   useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
-  return <primitive object={gltf.scene} />
+  return <primitive object={gltf.scene} scale={scale} position={position} rotation={rotationInRadians} />
 }
 
 
@@ -126,9 +141,30 @@ export default function ModelViewer() {
         <Suspense fallback={null}>
           <group position={[0, -0.9, 0]}>
             <BodyModel url={bodyUrl} />
-            {activeGarments.top    && <Garment url={activeGarments.top} />}
-            {activeGarments.bottom && <Garment url={activeGarments.bottom} />}
-            {activeGarments.shoes  && <Garment url={activeGarments.shoes} />}
+            {activeGarments.top && (
+              <Garment 
+                url={activeGarments.top} 
+                scale={[0.68, 0.71, 0.9]}
+                position={[0.022, 0.84, -0.03]}
+                rotation={[0, 344, 0]}
+
+               
+              />
+            )}
+            {activeGarments.bottom && (
+              <Garment 
+                url={activeGarments.bottom} 
+                scale={[1, 1, 1]} 
+                position={[0, 0, 0]} 
+              />
+            )}
+            {activeGarments.shoes && (
+              <Garment 
+                url={activeGarments.shoes} 
+                scale={[1, 1, 1]} 
+                position={[0, 0, 0]} 
+              />
+            )}
 
             <ContactShadows
               position={[0, -0.9, 0]}
