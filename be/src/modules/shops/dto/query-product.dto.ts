@@ -5,12 +5,26 @@ import { Type } from 'class-transformer';
 import { ProductStatus } from '../product.entity';
 
 export class QueryProductDto {
-  @ApiPropertyOptional({
-    description: 'Tìm kiếm theo tên sản phẩm',
-  })
+  @ApiPropertyOptional({ description: 'ID cửa hàng' })
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  shop_id?: number; // Đã tách riêng ra đây
+
+  @ApiPropertyOptional({ description: 'Tìm kiếm theo tên sản phẩm' })
   @IsOptional()
   @IsString()
   search?: string;
+
+  @ApiPropertyOptional({
+    description: 'Lọc theo ID cửa hàng',
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  shopId?: number;
+
 
   @ApiPropertyOptional({
     description: 'Lọc theo trạng thái',
@@ -20,61 +34,40 @@ export class QueryProductDto {
   @IsEnum(ProductStatus)
   status?: ProductStatus;
 
-  @ApiPropertyOptional({
-    description: 'Giá tối thiểu',
-    example: 10,
-  })
+  @ApiPropertyOptional({ description: 'Giá tối thiểu', example: 10 })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Type(() => Number)
   minPrice?: number;
 
-  @ApiPropertyOptional({
-    description: 'Giá tối đa',
-    example: 200,
-  })
+  @ApiPropertyOptional({ description: 'Giá tối đa', example: 200 })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Type(() => Number)
   maxPrice?: number;
 
-  @ApiPropertyOptional({
-    description: 'Số trang (bắt đầu từ 1)',
-    example: 1,
-    default: 1,
-  })
+  @ApiPropertyOptional({ description: 'Số trang', default: 1 })
   @IsOptional()
   @IsNumber()
   @Min(1)
   @Type(() => Number)
   page?: number = 1;
 
-  @ApiPropertyOptional({
-    description: 'Số lượng sản phẩm mỗi trang',
-    example: 10,
-    default: 10,
-  })
+  @ApiPropertyOptional({ description: 'Số lượng mỗi trang', default: 10 })
   @IsOptional()
   @IsNumber()
   @Min(1)
   @Type(() => Number)
   limit?: number = 10;
 
-  @ApiPropertyOptional({
-    description: 'Sắp xếp theo trường',
-    enum: ['name', 'price', 'salesCount', 'createdAt'],
-  })
+  @ApiPropertyOptional({ description: 'Sắp xếp theo trường' })
   @IsOptional()
   @IsString()
   sortBy?: string = 'createdAt';
 
-  @ApiPropertyOptional({
-    description: 'Thứ tự sắp xếp',
-    enum: ['ASC', 'DESC'],
-    default: 'DESC',
-  })
+  @ApiPropertyOptional({ description: 'Thứ tự sắp xếp', enum: ['ASC', 'DESC'] })
   @IsOptional()
   @IsEnum(['ASC', 'DESC'])
   sortOrder?: 'ASC' | 'DESC' = 'DESC';

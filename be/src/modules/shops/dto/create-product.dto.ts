@@ -1,7 +1,4 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsString,
@@ -12,11 +9,20 @@ import {
   Min,
   MaxLength,
   MinLength,
+  IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ProductStatus } from '../product.entity';
 
 export class CreateProductDto {
+  @ApiProperty({
+    description: 'ID cửa hàng sở hữu sản phẩm',
+  })
+  @IsNumber({}, { message: 'ID cửa hàng phải là số' })
+  @IsNotEmpty({ message: 'ID cửa hàng không được để trống' })
+  @Type(() => Number)
+  shopId: number;
+
   @ApiProperty({
     description: 'Tên sản phẩm',
     minLength: 2,
@@ -28,38 +34,46 @@ export class CreateProductDto {
   @MaxLength(255, { message: 'Tên sản phẩm không được vượt quá 255 ký tự' })
   name: string;
 
-  @ApiPropertyOptional({
-    description: 'URL ảnh sản phẩm',
-  })
+  @ApiPropertyOptional({ description: 'URL ảnh sản phẩm' })
   @IsOptional()
   @IsString({ message: 'Ảnh phải là chuỗi URL' })
   image?: string;
 
-  @ApiProperty({
-    description: 'Giá bán sản phẩm',
-    minimum: 0,
-  })
+  @ApiProperty({ description: 'Giá bán sản phẩm', minimum: 0 })
   @IsNumber({}, { message: 'Giá bán phải là số' })
   @IsNotEmpty({ message: 'Giá bán không được để trống' })
   @Min(0, { message: 'Giá bán không được âm' })
   @Type(() => Number)
   price: number;
 
-  @ApiPropertyOptional({
-    description: 'Mô tả sản phẩm',
-  })
+  @ApiPropertyOptional({ description: 'Mô tả sản phẩm' })
   @IsOptional()
   @IsString({ message: 'Mô tả phải là chuỗi' })
   description?: string;
 
-  @ApiPropertyOptional({
-    description: 'Trạng thái sản phẩm',
-    enum: ProductStatus,
-    default: ProductStatus.ACTIVE,
-  })
+  @ApiProperty({ description: 'Loại sản phẩm (TOP, BOTTOM...)' })
+  @IsString()
+  @IsNotEmpty({ message: 'Loại sản phẩm không được để trống' })
+  type: string;
+
+  @ApiProperty({ description: 'ID cửa hàng' })
+  @IsNumber({}, { message: 'shop_id phải là số' }) // Thêm kiểm tra rõ ràng
+  @IsNotEmpty({ message: 'shop_id không được để trống' }) // BẮT BUỘC phải có cái này
+  @Type(() => Number)
+  shop_id: number;
+
+  @ApiPropertyOptional({ description: 'Danh sách kích cỡ' })
   @IsOptional()
-  @IsEnum(ProductStatus, {
-    message: `Trạng thái phải là một trong: ${Object.values(ProductStatus).join(', ')}`,
-  })
+  @IsArray({ message: 'sizes phải là một mảng' })
+  sizes?: string[];
+
+  @ApiPropertyOptional({ description: 'Danh sách mã màu' })
+  @IsOptional()
+  @IsArray({ message: 'colors phải là một mảng' })
+  colors?: string[];
+
+  @ApiPropertyOptional({ enum: ProductStatus, default: ProductStatus.ACTIVE })
+  @IsOptional()
+  @IsEnum(ProductStatus, { message: 'Trạng thái không hợp lệ' })
   status?: ProductStatus;
 }

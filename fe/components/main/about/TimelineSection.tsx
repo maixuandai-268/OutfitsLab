@@ -1,29 +1,32 @@
 'use client';
 import React from 'react';
-import SectionTitle from './SectionTitle';
-import TimelineItem from './TimelineItem';
 import { FlagOutlined, StarFilled, ClockCircleOutlined } from '@ant-design/icons';
-import Card from './Card';
 
 const TimelineSection: React.FC = () => {
   const items = [
-    { year: '2023', text: 'Khởi động CustomOutfit3D', icon: <FlagOutlined /> },
-    { year: '2024', text: 'Ra mắt demo try-on realtime', icon: <ClockCircleOutlined /> },
-    { year: '2025', text: 'Onboard brand đầu tiên & pilot KOLs', icon: <StarFilled /> },
+    { year: '2023', text: 'Khởi động dự án CustomOutfit3D', icon: <FlagOutlined /> },
+    { year: '2024', text: 'Ra mắt công nghệ Demo Try-On Realtime', icon: <ClockCircleOutlined /> },
+    { year: '2025', text: 'Onboard thương hiệu đầu tiên & KOLs thử nghiệm', icon: <StarFilled /> },
   ];
 
   return (
-    <section className="space-y-4">
-      <SectionTitle title="Our Journey" />
-      <Card>
-        <ol className="relative border-l border-gray-200 space-y-4 pl-4">
+    <section className="bg-white py-24 md:py-32">
+      <div className="max-w-4xl mx-auto px-6">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 text-center">Chặng đường</h2>
+        <h3 className="text-4xl font-extrabold text-gray-900 mb-16 text-center">Hành trình chúng tôi đã qua</h3>
+        <div className="relative border-l-2 border-gray-100 pl-8 ml-4 md:ml-0 space-y-12">
           {items.map((it) => (
-            <TimelineItem key={it.year} year={it.year} text={it.text} icon={it.icon} />
+            <div key={it.year} className="relative">
+              <span className="absolute -left-[43px] top-1 w-10 h-10 rounded-full bg-white border-2 border-gray-100 flex items-center justify-center text-gray-400">
+                {it.icon}
+              </span>
+              <h4 className="text-2xl font-bold text-gray-900 mb-2">{it.year}</h4>
+              <p className="text-lg text-gray-500 font-medium">{it.text}</p>
+            </div>
           ))}
-        </ol>
-      </Card>
+        </div>
+      </div>
     </section>
   );
 };
-
 export default TimelineSection;

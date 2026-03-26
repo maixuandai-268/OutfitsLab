@@ -1,21 +1,35 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const heroBlogs = [
-    { id: 1, category: "Thời trang", title: "Thời trang nam 4.0: Sau 'ăn ngon, mặc đẹp' sẽ là 'ăn sạch, mặc xanh'", author: "Nguyễn Văn A", date: "21 Thg 2, 2025", image: "/images/Shop.png", avatar: "/images/avatar/ava.png" },
-    { id: 2, category: "Đời sống", title: "Local Brand Có Hoodie Đẹp Nhất ở Sài Gòn Thời Điểm Hiện Tại", author: "Đặng Anh Tuấn", date: "25 Thg 10, 2025", image: "/images/blog/blog5.jpg", avatar: "/images/avatar/ava5.png" },
-    { id: 3, category: "Thể thao", title: "Các phong cách thời trang nam HOT nhất 2025: Tìm gu chuẩn", author: "Bùi Hải Nam", date: "16 Thg 10, 2025", image: "/images/blog/blog6.jpg", avatar: "/images/avatar/ava6.png" },
-];
-
 export default function BlogHero() {
     const [index, setIndex] = useState(0);
+    const [heroBlogs, setHeroBlogs] = useState<any[]>([]);
 
     useEffect(() => {
+        const fetchBlogs = async () => {
+            try {
+                const res = await fetch("http://localhost:3000/api/blog");
+                if (res.ok) {
+                    const data = await res.json();
+                    const shuffled = [...data].sort(() => 0.5 - Math.random());
+                    setHeroBlogs(shuffled.slice(0, 5));
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchBlogs();
+    }, []);
+
+    useEffect(() => {
+        if (heroBlogs.length === 0) return;
         const interval = setInterval(() => {
             setIndex((prev) => (prev + 1) % heroBlogs.length);
         }, 5000);
         return () => clearInterval(interval);
-    }, []);
+    }, [heroBlogs.length]);
+
+    if (heroBlogs.length === 0) return null;
 
     const blog = heroBlogs[index];
 
@@ -24,7 +38,7 @@ export default function BlogHero() {
             <div className="relative group">
                 <div className="relative h-[450px] overflow-hidden rounded-[2.5rem] shadow-2xl">
                     <img
-                        src={blog.image}
+                        src={blog.image || "/images/placeholder.jpg"}
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                         alt="Hero"
                     />
@@ -39,10 +53,16 @@ export default function BlogHero() {
                         {blog.title}
                     </h2>
                     <div className="flex items-center gap-4 mt-6 text-sm text-gray-500 border-t pt-4 border-gray-100">
-                        <img src={blog.avatar} className="w-10 h-10 rounded-full border-2 border-white shadow-md" alt="author" />
+                        {blog.avatar ? (
+                            <img src={blog.avatar} className="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover" alt="author" />
+                        ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white text-[14px] font-black uppercase border-2 border-white shadow-md">
+                                {blog.author?.[0] || "A"}
+                            </div>
+                        )}
                         <div className="flex flex-col">
-                            <span className="font-bold text-gray-800 uppercase text-xs tracking-wider">{blog.author}</span>
-                            <span className="text-[11px] font-medium">{blog.date}</span>
+                            <span className="font-bold text-gray-800 uppercase text-xs tracking-wider">{blog.author || "Admin"}</span>
+                            <span className="text-[11px] font-medium">{blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('vi-VN') : blog.date}</span>
                         </div>
                     </div>
                 </div>

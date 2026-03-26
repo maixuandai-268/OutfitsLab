@@ -13,6 +13,8 @@ export default function BecomePage() {
 
     const [step, setStep] = useState(initialStep);
     const [loading, setLoading] = useState(false);
+    // 1. Chỉ khai báo shopId một lần ở đây
+    const [shopId, setShopId] = useState<number | null>(null);
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -32,40 +34,46 @@ export default function BecomePage() {
         }));
     };
 
-    // Hàm Xử lý Gửi Dữ Liệu Cuối Cùng
     const handleSubmit = async () => {
         setLoading(true);
         const token = localStorage.getItem("access_token") || localStorage.getItem("token");
 
         if (!token) {
-            alert("Vui lòng đăng nhập để thực hiện chức năng này!");
+            alert("Vui lòng đăng nhập!");
             router.push("/sign-in");
             return;
         }
 
         try {
-            const res = await fetch("http://localhost:3000/api/shops/become", {
+            // 1. Sửa port từ 3001 thành 3000
+            const res = await fetch("http://localhost:3000/api/shops/become", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify(formData) // Gửi toàn bộ formData
+                // 2. Chỉ gửi ĐÚNG các trường có trong CreateShopDto
+                body: JSON.stringify({
+                    shop_name: formData.storeName,
+                    description: formData.storeDescription,
+                    contact_email: formData.email,
+                    // location: "Vietnam", // Thêm nếu cần, hoặc để trống vì là IsOptional
+                })
             });
 
             const result = await res.json();
 
             if (res.ok) {
-                alert("Chúc mừng! Bạn đã trở thành người bán. Hãy đăng nhập lại để cập nhật quyền hạn.");
-                localStorage.removeItem("token");
-                localStorage.removeItem("access_token");
-                router.push("/sign-in");
+                setShopId(result.id); 
+                // Không cần redirect ngay để StepConfirm hiện nút bấm
             } else {
-                alert(result.message || "Đăng ký không thành công.");
+                // Hiển thị lỗi cụ thể từ ValidationPipe
+                const errorMsg = Array.isArray(result.message) ? result.message.join("\n") : result.message;
+                alert("Lỗi dữ liệu:\n" + errorMsg);
             }
         } catch (error) {
-            console.error("Lỗi:", error);
-            alert("Lỗi kết nối server.");
+            console.error("Lỗi kết nối:", error);
+            alert("Không thể kết nối tới Server. Hãy kiểm tra xem Backend đã chạy ở port 3000 chưa.");
         } finally {
             setLoading(false);
         }
@@ -107,6 +115,7 @@ export default function BecomePage() {
                     prevStep={prevStep}
                     onSubmit={handleSubmit} 
                     loading={loading}
+                    shopId={shopId} // Truyền shopId xuống
                 />
             )}
         </div>

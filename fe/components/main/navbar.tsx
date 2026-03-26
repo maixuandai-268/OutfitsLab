@@ -12,11 +12,13 @@ import {
   EditOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { Avatar, Dropdown, MenuProps } from "antd";
+import { Avatar, Dropdown, MenuProps, Modal, List, Badge } from "antd";
 import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getMenuItems = (): MenuProps["items"] => {
     const baseItems: MenuProps["items"] = [
@@ -37,6 +39,11 @@ export default function Navbar() {
         label: <Link href="/user/posts">Bài viết của tôi</Link>,
       },
       {
+        key: "my-shops",
+        icon: <ShopOutlined />,
+        label: <Link href="/my_shops">Shop của tôi</Link>,
+      },
+      {
         key: "saved-posts",
         icon: <BookOutlined />,
         label: <Link href="/user/saved">Outfit đã lưu</Link>,
@@ -49,67 +56,77 @@ export default function Navbar() {
       },
     ];
 
+    // Hiển thị thêm Dashboard nếu user đã là Seller thực thụ
     if (user?.role === "shop") {
       baseItems.push({
-        key: "shop",
-        icon: <ShopOutlined />,
-        label: <Link href="/seller/dashboard">Shop</Link>,
+        key: "shop-dashboard",
+        icon: <DashboardOutlined />,
+        label: <Link href="/seller/dashboard">Bảng điều khiển Shop</Link>,
       });
     }
 
+    // Hiển thị menu cho Admin
     if (user?.role === "admin") {
       baseItems.push(
+        { type: "divider" },
         {
           key: "admin",
           icon: <DashboardOutlined />,
-          label: <Link href="/admin">Dashboard</Link>,
+          label: <Link href="/admin">Admin Dashboard</Link>,
         },
         {
           key: "manage-users",
           icon: <SettingOutlined />,
           label: <Link href="/admin/users">Quản lý người dùng</Link>,
-        },
-        { type: "divider" }
+        }
       );
     }
 
-    baseItems.push({
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: <span className="text-red-600 font-medium">Đăng xuất</span>,
-      onClick: logout,
-    });
+    // Nút Đăng xuất luôn ở dưới cùng
+    baseItems.push(
+      { type: "divider" },
+      {
+        key: "logout",
+        icon: <LogoutOutlined />,
+        label: <span className="text-red-600 font-medium">Đăng xuất</span>,
+        onClick: logout,
+      }
+    );
 
     return baseItems;
   };
 
   return (
     <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-xl shadow-sm ">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-f">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-full">
         <Link href="/" className="flex items-center gap-1.5">
-          <div className="w-[80px] h-auto  flex items-center justify-center" >
+          <div className="w-[80px] h-auto flex items-center justify-center">
             <img
               src="/images/logo.png"
               alt="OutfitsLab Logo"
-              className="object-cover scale-200 transition-transform hover:scale-225"
+              className="object-cover scale-150 transition-transform hover:scale-175"
             />
           </div>
         </Link>
 
-        {/* Menu */}
+        {/* Menu điều hướng chính */}
         <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-700">
-          <Link href="/">Home</Link>
-          <Link href="/product">Collections</Link>
-          <Link href="/try-on">Custom-Room</Link>
-          <Link href="/SellersList">Shops</Link>
-          <Link href="blog">Community</Link>
-          <Link href="/about">About</Link>
+          <Link href="/">Trang chủ</Link>
+          <Link href="/product">Bộ sưu tập</Link>
+          <Link href="/try-on">Phòng thử đồ</Link>
+          <Link href="/SellersList">Cửa hàng</Link>
+          <Link href="/blog">Blog</Link>
+          <Link href="/about">Giới thiệu</Link>
         </nav>
 
         <div className="hidden md:flex items-center gap-8">
           <div className="flex items-center gap-7 text-2xl text-gray-600">
-            <BellOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
-            <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
+            <Badge count={3} size="small" offset={[-2, 6]}>
+              <BellOutlined onClick={() => setIsModalOpen(true)} className="cursor-pointer hover:text-rose-500 transition-colors text-[24px]" />
+            </Badge>
+            <Link href="/saved">
+              <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
+            </Link>
           </div>
 
           {!user ? (
@@ -143,6 +160,40 @@ export default function Navbar() {
             </Dropdown>
           )}
         </div>
+
+        <Modal
+          title={<span className="text-lg font-bold">Thông báo của bạn</span>}
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          footer={null}
+          width={450}
+        >
+          <div className="max-h-[60vh] overflow-y-auto mt-4 custom-scrollbar pr-2">
+            <List
+              itemLayout="horizontal"
+              dataSource={[
+                { title: "Chào mừng bạn mới", desc: "Cảm ơn bạn đã tham gia OutfitsLab!", time: "2 giờ trước", unread: true },
+                { title: "Bộ sưu tập Mùa Hè", desc: "Khám phá ngay các mẫu trang phục mới nhất cho mùa hè rực rỡ.", time: "1 ngày trước", unread: false },
+                { title: "Sale Off 50%", desc: "Duy nhất hôm nay, giảm giá cực sốc các mẫu áo khoác.", time: "3 ngày trước", unread: false },
+                { title: "Sale Off 100%", desc: "giảm giá cực sốc các mẫu áo khoác.", time: "3 ngày trước", unread: true },
+              ]}
+              renderItem={(item) => (
+                <List.Item className={`px-4 py-3 mb-2 rounded-xl transition cursor-pointer border-b-0 ${item.unread ? 'bg-rose-50/50' : 'hover:bg-gray-50'}`}>
+                  <List.Item.Meta
+                    title={
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-gray-800">{item.title}</span>
+                        <span className="text-[11px] text-gray-400 font-normal">{item.time}</span>
+                      </div>
+                    }
+                    description={<span className="text-[13px] text-gray-600 line-clamp-2">{item.desc}</span>}
+                  />
+                  {item.unread && <div className="w-2 h-2 rounded-full bg-rose-500 ml-4 flex-shrink-0"></div>}
+                </List.Item>
+              )}
+            />
+          </div>
+        </Modal>
       </div>
     </header>
   );

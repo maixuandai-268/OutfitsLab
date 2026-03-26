@@ -1,67 +1,31 @@
 'use client';
 import React from 'react';
-import SectionTitle from './SectionTitle';
-import MemberCard from './MemberCard';
-import { UserOutlined, CrownFilled, BulbOutlined, SmileOutlined, MessageOutlined } from '@ant-design/icons';
 
 const TeamSection: React.FC = () => {
+  const team = [
+    { name: "Mai Xuân Đại", role: "Nhà Sáng Lập / CEO", desc: "Định hướng sản phẩm và phát triển đối tác chiến lược hệ sinh thái." },
+    { name: "Trần Ngọc Tú", role: "Cố vấn Kỹ Thuật 3D", desc: "Chịu trách nhiệm quy trình quét mẫu, đổ bóng, mô phỏng vật lý." },
+    { name: "Nguyễn Văn Công", role: "Trưởng nhóm Frontend", desc: "Tối ưu hóa nền tảng web, hiệu suất 3D realtime mượt mà." },
+    { name: "Nguyễn Đức Duyệt", role: "Trưởng phòng Đối ngoại", desc: "Kết nối thương hiệu nhà thiết kế và cộng đồng sáng tạo KOLs." },
+    { name: "Phạm Quang Trung", role: "Nghệ sĩ 3D Nội bộ", desc: "Tiến hành gia công chi tiết từng thước vải, kỹ thuật số hóa trang phục." },
+  ];
+
   return (
-    <section className="space-y-4">
-      <SectionTitle title="Team" />
-      <div className="grid gap-4 md:grid-cols-2">
-        <MemberCard
-          name="Mai Xuân Đại"
-          role="Founder / CEO"
-          desc="Định hướng sản phẩm, phát triển đối tác chiến lược."
-          icon={<CrownFilled className="text-amber-500" />}
-          badges={[
-            { text: 'Leadership', icon: <UserOutlined /> },
-            { text: 'Strategy', icon: <MessageOutlined /> },
-          ]}
-        />
-        <MemberCard
-          name="Trần Ngọc Tú"
-          role="Head of 3D"
-          desc="Quy trình digitize, shading, sim vật lý vải."
-          icon={<BulbOutlined className="text-indigo-600" />}
-          badges={[
-            { text: 'CLO/Blender', icon: <UserOutlined /> },
-            { text: 'PBR', icon: <SmileOutlined /> },
-          ]}
-        />
-        <MemberCard
-          name="Nguyễn Văn Công"
-          role="Lead Frontend"
-          desc="Realtime try-on, web performance & DX."
-          icon={<BulbOutlined className="text-emerald-600" />}
-          badges={[
-            { text: 'WebGL', icon: <UserOutlined /> },
-            { text: 'UX', icon: <SmileOutlined /> },
-          ]}
-        />
-        <MemberCard
-          name="Nguyễn Đức Duyệt"
-          role="Partnership"
-          desc="Kết nối brand, KOLs, cộng đồng thiết kế."
-          icon={<MessageOutlined className="text-rose-600" />}
-          badges={[
-            { text: 'Networking', icon: <UserOutlined /> },
-            { text: 'BD', icon: <SmileOutlined /> },
-          ]}
-        />
-        <MemberCard
-          name="Phạm Quang Trung"
-          role="3D Artist"
-          desc="Hỗ trợ digitize, shading, sim vật lý vải."
-          icon={<BulbOutlined className="text-indigo-600" />}
-          badges={[
-            { text: 'CLO/Blender', icon: <UserOutlined /> },
-            { text: 'PBR', icon: <SmileOutlined /> },
-          ]}
-        />
+    <section className="text-white">
+      <div className="bg-gray-900 px-20 py-15 rounded-4xl max-w-6xl mx-auto">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Đội ngũ</h2>
+        <h3 className="text-4xl font-extrabold mb-16">Những người cùng kiến tạo</h3>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {team.map((member, idx) => (
+            <div key={idx} className="py-6 border-b border-gray-800">
+              <h4 className="text-2xl font-bold mb-2">{member.name}</h4>
+              <p className="text-gray-400 font-bold mb-4 uppercase tracking-wider text-xs">{member.role}</p>
+              <p className="text-gray-300 leading-relaxed font-medium">{member.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
 };
-
 export default TeamSection;

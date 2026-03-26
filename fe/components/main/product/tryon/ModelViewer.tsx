@@ -94,14 +94,29 @@ function BodyModel({ url }: { url: string }) {
   return <primitive object={gltf.scene} />
 }
 
-function Garment({ url }: { url: string }) {
+function Garment({ 
+  url, 
+  scale = [1, 1, 1], 
+  position = [0, 0, 0],
+  rotation = [0, 0, 0] 
+}: { 
+  url: string; 
+  scale?: [number, number, number]; 
+  position?: [number, number, number];
+  rotation?: [number, number, number]; // [X, Y, Z] tính bằng Độ (Degrees)
+}) {
   const gltf: GLTF = useLoader(GLTFLoader, url)
   const { colors, patterns } = useCustomizer()
   const c: Colors = colors as Colors
   const p: Patterns = patterns as Patterns
 
+  // Chuyển đổi từ Độ (Degrees) sang Radian cho Three.js
+  const rotationInRadians = useMemo(() => {
+    return rotation.map(deg => deg * (Math.PI / 180)) as [number, number, number]
+  }, [rotation])
+
   useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
-  return <primitive object={gltf.scene} />
+  return <primitive object={gltf.scene} scale={scale} position={position} rotation={rotationInRadians} />
 }
 
 
@@ -120,15 +135,36 @@ export default function ModelViewer() {
   const bodyUrl = BODY_MODELS[modelId]
 
   return (
-    <div className="relative rounded-xl w-full h-100 md:h-115 lg:h-133 overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       <Canvas shadows camera={{ position: [0, 1.2, 3.2], fov: 40 }} dpr={[1, 2]}>
         <color attach="background" args={[bgColor]} />
         <Suspense fallback={null}>
           <group position={[0, -0.9, 0]}>
             <BodyModel url={bodyUrl} />
-            {activeGarments.top    && <Garment url={activeGarments.top} />}
-            {activeGarments.bottom && <Garment url={activeGarments.bottom} />}
-            {activeGarments.shoes  && <Garment url={activeGarments.shoes} />}
+            {activeGarments.top && (
+              <Garment 
+                url={activeGarments.top} 
+                scale={[0.68, 0.71, 0.9]}
+                position={[0.022, 0.84, -0.03]}
+                rotation={[0, 344, 0]}
+
+               
+              />
+            )}
+            {activeGarments.bottom && (
+              <Garment 
+                url={activeGarments.bottom} 
+                scale={[1, 1, 1]} 
+                position={[0, 0, 0]} 
+              />
+            )}
+            {activeGarments.shoes && (
+              <Garment 
+                url={activeGarments.shoes} 
+                scale={[1, 1, 1]} 
+                position={[0, 0, 0]} 
+              />
+            )}
 
             <ContactShadows
               position={[0, -0.9, 0]}
@@ -176,7 +212,7 @@ function AutoRotateBtn() {
     >
       {autoRotate ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
       <span className="hidden sm:inline">
-        {autoRotate ? 'Auto‑Rotate: On' : 'Auto‑Rotate: Off'}
+        {autoRotate ? 'Tự Động Xoay: Bật' : 'Tự Động Xoay: Tắt'}
       </span>
     </button>
   )
@@ -188,10 +224,10 @@ function ResetViewBtn({ onReset }: ResetViewBtnProps) {
     <button
       onClick={onReset}
       className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white/90 px-3 py-1 text-sm text-gray-700 shadow"
-      title="Reset góc nhìn"
+      title="Đặt lại góc nhìn"
     >
       <RedoOutlined rotate={-90} />
-      <span className="hidden sm:inline">Reset view</span>
+      <span className="hidden sm:inline">Đặt Lại Góc Nhìn</span>
     </button>
   )
 }

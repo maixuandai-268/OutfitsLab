@@ -18,11 +18,17 @@ export class Product {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Column({ nullable: true })
+  shopId: number;
+
   @Column({ length: 255 })
   name: string;
 
   @Column({ nullable: true })
   image: string;
+
+  @Column({ nullable: true })
+  shop_id: number;
 
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;

@@ -6,14 +6,16 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { ShopModule } from '../shops/shops.module';
 
 @Module({
   imports: [
     UsersModule,
+    ShopModule,
     PassportModule,
     JwtModule.register(
         {
-            secret : 'OutfitsLab_Key', //nhớ sủa để lại trong biến môi trường
+            secret : 'OutfitsLab_Key', 
             signOptions : {expiresIn : '1d'}
         }
     )

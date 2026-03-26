@@ -1,4 +1,9 @@
-import { HeartIcon, MessageCircleIcon, MapPinIcon } from 'lucide-react';
+'use client';
+import { MessageCircleIcon, MapPinIcon } from 'lucide-react';
+import { useState } from 'react';
+import { FavoriteButton } from '../../product/FavoriteButton';
+
+const API_BASE = 'http://localhost:3000/api';
 
 interface Shop {
   id: number;
@@ -70,10 +75,13 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
 
             <div className="flex items-end w-full md:w-auto mt-4 md:mt-0">
               <div className="flex flex-col gap-3 w-full">
-                <button className="cursor-pointer md:w-50 flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 border-black font-semibold hover:bg-[#fff9f0]">
-                  <HeartIcon className="w-6 h-6 " />
-                  Yêu thích
-                </button>
+                <div className="w-full md:w-50 h-[60px]">
+                  <FavoriteButton 
+                    targetId={shop.id} 
+                    type="shop"
+                    className="!w-full !h-full border-3 border-black !bg-transparent rounded-full flex items-center justify-center gap-2 [&_svg]:!w-6 [&_svg]:!h-6 !text-xl font-semibold transition-all data-[favourite=true]:!border-rose-200" 
+                  />
+                </div>
 
                 <button className="cursor-pointer md:w-50 flex items-center justify-center text-xl gap-2 px-8 py-4 rounded-full border-3 text-white bg-black font-semibold hover:bg-[#3b3b3b]">
                   <MessageCircleIcon className="w-6 h-6 text-white" />

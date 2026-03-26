@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FavouriteProduct } from './favourite.entity';
+import { FavouriteProduct } from './favourite-product.entity';
 import { FavouriteShop } from './favourite-shop.entity';
 import { Product } from '../shops/product.entity';
 import { Shop } from '../shops/shop.entity';
@@ -21,7 +21,7 @@ export class FavouriteService {
 
     @InjectRepository(Shop)
     private readonly shopRepo: Repository<Shop>,
-  ) {}
+  ) { }
 
   async toggleProduct(
     userId: number,
@@ -43,6 +43,7 @@ export class FavouriteService {
   async getFavouriteProducts(userId: number): Promise<Product[]> {
     return await this.productRepo.createQueryBuilder('product')
       .innerJoin(FavouriteProduct, 'fav', 'fav.productId = product.id')
+      .leftJoinAndMapOne('product.shop', Shop, 'shop', 'shop.id = product.shopId OR shop.id = product.shop_id')
       .where('fav.userId = :userId', { userId })
       .orderBy('fav.createdAt', 'DESC')
       .getMany();
