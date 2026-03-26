@@ -99,8 +99,8 @@ export default function Navbar() {
         {/* Menu */}
         <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-700">
           <Link href="/">Home</Link>
-          <Link href="product">Collections</Link>
-          <Link href="try-on">Custom-Room</Link>
+          <Link href="/product">Collections</Link>
+          <Link href="/try-on">Custom-Room</Link>
           <Link href="/SellersList">Shops</Link>
           <Link href="blog">Community</Link>
           <Link href="/about">About</Link>
