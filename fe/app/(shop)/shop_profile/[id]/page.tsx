@@ -1,24 +1,70 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Pagination } from 'antd'
-import { SHOPS, PRODUCTS } from '../../shopData' 
 import { ShopProductCard } from '@/components/shop/profile/showProduct';
 import { ShopInfo } from '@/components/shop/profile/shopInfo';
 import { AboutShop } from '@/components/shop/profile/aboutShop';
 
-export default function ShopProfilePage() {
+const API_BASE = 'http://localhost:3000/api';
 
+interface Shop {
+  id: number;
+  shop_name: string;
+  avatar_url: string;
+  description: string;
+  location: string;
+  rating: number;
+  reviews: number;
+  specialty?: string;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  image?: string;
+  price: number;
+  salesCount: number;
+}
+
+export default function ShopProfilePage() {
   const params = useParams();
   const shopId = Number(params.id);
-  const shop = SHOPS.find((s) => s.id === shopId)
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
+  const [shop, setShop] = useState<Shop | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!shopId || !shop) {
+  useEffect(() => {
+    if (!shopId) return;
+
+    const fetchShopData = async () => {
+      try {
+        setLoading(true);
+        // Lấy thông tin shop
+        const shopRes = await fetch(`${API_BASE}/shops/${shopId}`);
+        if (!shopRes.ok) throw new Error('Thất bại khi lấy thông tin shop');
+        const shopData = await shopRes.json();
+        
+        setShop({ ...shopData, rating: shopData.rating || 0 ,reviews: shopData.reviews || 0 });
+
+        const productsRes = await fetch(`${API_BASE}/products?shopId=${shopId}`);
+        if (productsRes.ok) {
+          const pData = await productsRes.json();
+          setProducts(pData.data || []);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShopData();
+  }, [shopId]);
+
+  if (!shopId) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-800">
         <p>Không tìm thấy Shop ID hợp lệ. Vui lòng quay lại trang danh sách.</p>
@@ -29,19 +75,38 @@ export default function ShopProfilePage() {
     )
   }
 
-  const filteredShopProducts = PRODUCTS.filter((product) => product.shop_id === shopId)
-  const paginatedProducts = filteredShopProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-gray-400 border-t-transparent rounded-full animate-spin" />
+          <p className="text-gray-600 font-medium">Đang tải thông tin cửa hàng...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!shop) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-800">
+        <p>Cửa hàng không tồn tại hoặc đã bị xóa.</p>
+        <Link href="/" className="ml-4 font-semibold underline hover:text-gray-500 transition-colors">
+          Về trang chủ
+        </Link>
+      </div>
+    )
+  }
 
   return (
     <div className=" text-lg font-sans">
       <ShopInfo shop={shop} />
       <div className="max-w-310 mx-auto pb-35">
-        <AboutShop shop={shop} />
+        <AboutShop shop={shop as any} />
         <div>
           <div className="flex items-center justify-between mb-6">
             <div>
                <h2 className="text-3xl font-bold tracking-tight text-black">Sản phẩm tiêu biểu</h2>
-               <p className="text-gray-500 mt-2 text-base">{filteredShopProducts.length} sản phẩm có sẵn</p>
+               <p className="text-gray-500 mt-2 text-base">{products.length} sản phẩm có sẵn</p>
             </div>
             <div className="flex gap-3">
               <button className="cursor-pointer flex items-center justify-center text-base gap-2 px-6 py-2.5 rounded-full border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all">
@@ -55,26 +120,14 @@ export default function ShopProfilePage() {
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-            {paginatedProducts.map((product) => (
-              <ShopProductCard key={product.id} product={product} shop={shop} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {products.slice(0, 6).map((product) => (
+              <ShopProductCard key={product.id} product={product as any} shop={shop as any} />
             ))}
           </div>
-
-          {filteredShopProducts.length > 0 && (
-            <div className="flex justify-center mt-8 mb-4">
-              <Pagination 
-                current={currentPage} 
-                pageSize={pageSize} 
-                total={filteredShopProducts.length} 
-                onChange={(page) => setCurrentPage(page)} 
-                showSizeChanger={false}
-              />
-            </div>
-          )}
           
           {/* Empty State */}
-          {filteredShopProducts.length === 0 && (
+          {products.length === 0 && (
             <div className="text-center py-24 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                 <p className="text-gray-500">Shop này chưa đăng bán sản phẩm nào.</p>
             </div>

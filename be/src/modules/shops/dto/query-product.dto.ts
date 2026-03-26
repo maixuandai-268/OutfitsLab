@@ -16,7 +16,20 @@ export class QueryProductDto {
   @IsString()
   search?: string;
 
-  @ApiPropertyOptional({ description: 'Lọc theo trạng thái', enum: ProductStatus })
+  @ApiPropertyOptional({
+    description: 'Lọc theo ID cửa hàng',
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  shopId?: number;
+
+
+  @ApiPropertyOptional({
+    description: 'Lọc theo trạng thái',
+    enum: ProductStatus,
+  })
   @IsOptional()
   @IsEnum(ProductStatus)
   status?: ProductStatus;
