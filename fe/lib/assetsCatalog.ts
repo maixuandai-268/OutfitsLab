@@ -1,6 +1,6 @@
 export const BODY_MODELS = {
-  avatar_female: '/model/body/model_male.glb',
-  avatar_male:   '/model/body/model_male.glb',
+  avatar_female: '/model/body/avatar_female.glb',
+  avatar_male:   '/model/body/avatar_male.glb',
 } as const
 
 export const GARMENTS = {
