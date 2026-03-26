@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FavouriteProduct } from './favourite.entity';
+import { FavouriteProduct } from './favourite-product.entity';
 import { FavouriteShop } from './favourite-shop.entity';
 import { Product } from '../shops/product.entity';
 import { Shop } from '../shops/shop.entity';
@@ -21,7 +21,7 @@ export class FavouriteService {
 
     @InjectRepository(Shop)
     private readonly shopRepo: Repository<Shop>,
-  ) {}
+  ) { }
 
   async toggleProduct(
     userId: number,

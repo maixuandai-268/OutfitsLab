@@ -120,7 +120,7 @@ export default function ModelViewer() {
   const bodyUrl = BODY_MODELS[modelId]
 
   return (
-    <div className="relative rounded-xl w-full h-100 md:h-115 lg:h-133 overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       <Canvas shadows camera={{ position: [0, 1.2, 3.2], fov: 40 }} dpr={[1, 2]}>
         <color attach="background" args={[bgColor]} />
         <Suspense fallback={null}>
@@ -176,7 +176,7 @@ function AutoRotateBtn() {
     >
       {autoRotate ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
       <span className="hidden sm:inline">
-        {autoRotate ? 'Auto‑Rotate: On' : 'Auto‑Rotate: Off'}
+        {autoRotate ? 'Tự Động Xoay: Bật' : 'Tự Động Xoay: Tắt'}
       </span>
     </button>
   )
@@ -188,10 +188,10 @@ function ResetViewBtn({ onReset }: ResetViewBtnProps) {
     <button
       onClick={onReset}
       className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white/90 px-3 py-1 text-sm text-gray-700 shadow"
-      title="Reset góc nhìn"
+      title="Đặt lại góc nhìn"
     >
       <RedoOutlined rotate={-90} />
-      <span className="hidden sm:inline">Reset view</span>
+      <span className="hidden sm:inline">Đặt Lại Góc Nhìn</span>
     </button>
   )
 }

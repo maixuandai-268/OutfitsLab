@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { Pagination } from 'antd'
 import { SHOPS, PRODUCTS } from '../../shopData' 
 import { ShopProductCard } from '@/components/shop/profile/showProduct';
 import { ShopInfo } from '@/components/shop/profile/shopInfo';
@@ -12,6 +14,9 @@ export default function ShopProfilePage() {
   const params = useParams();
   const shopId = Number(params.id);
   const shop = SHOPS.find((s) => s.id === shopId)
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
 
   if (!shopId || !shop) {
     return (
@@ -25,6 +30,7 @@ export default function ShopProfilePage() {
   }
 
   const filteredShopProducts = PRODUCTS.filter((product) => product.shop_id === shopId)
+  const paginatedProducts = filteredShopProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   return (
     <div className=" text-lg font-sans">
@@ -49,11 +55,23 @@ export default function ShopProfilePage() {
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {filteredShopProducts.slice(0, 6).map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+            {paginatedProducts.map((product) => (
               <ShopProductCard key={product.id} product={product} shop={shop} />
             ))}
           </div>
+
+          {filteredShopProducts.length > 0 && (
+            <div className="flex justify-center mt-8 mb-4">
+              <Pagination 
+                current={currentPage} 
+                pageSize={pageSize} 
+                total={filteredShopProducts.length} 
+                onChange={(page) => setCurrentPage(page)} 
+                showSizeChanger={false}
+              />
+            </div>
+          )}
           
           {/* Empty State */}
           {filteredShopProducts.length === 0 && (
