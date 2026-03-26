@@ -15,7 +15,19 @@ import { Type } from 'class-transformer';
 import { ProductStatus } from '../product.entity';
 
 export class CreateProductDto {
-  @ApiProperty({ description: 'Tên sản phẩm', minLength: 2, maxLength: 255 })
+  @ApiProperty({
+    description: 'ID cửa hàng sở hữu sản phẩm',
+  })
+  @IsNumber({}, { message: 'ID cửa hàng phải là số' })
+  @IsNotEmpty({ message: 'ID cửa hàng không được để trống' })
+  @Type(() => Number)
+  shopId: number;
+
+  @ApiProperty({
+    description: 'Tên sản phẩm',
+    minLength: 2,
+    maxLength: 255,
+  })
   @IsString({ message: 'Tên sản phẩm phải là chuỗi' })
   @IsNotEmpty({ message: 'Tên sản phẩm không được để trống' })
   @MinLength(2, { message: 'Tên sản phẩm phải có ít nhất 2 ký tự' })

@@ -18,6 +18,9 @@ export class Product {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Column({ nullable: true })
+  shopId: number;
+
   @Column({ length: 255 })
   name: string;
 

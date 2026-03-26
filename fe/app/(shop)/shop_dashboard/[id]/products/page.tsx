@@ -7,6 +7,8 @@ import { Input, Button, Spin, Empty, message } from "antd";
 import { useAuth } from "@/context/AuthContext";
 import { ShopProductCard } from '@/components/shop/profile/showProduct';
 
+const API_BASE = 'http://localhost:3000/api';
+
 export default function ProductsPage() {
   const router = useRouter(); 
   const params = useParams();

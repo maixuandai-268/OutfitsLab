@@ -13,7 +13,7 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-  ) {}
+  ) { }
 
   // 1. Tạo sản phẩm mới
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -29,6 +29,7 @@ export class ProductsService {
       status,
       minPrice,
       maxPrice,
+      shopId,
       page = 1,
       limit = 10,
       sortBy = 'createdAt',
@@ -51,6 +52,10 @@ export class ProductsService {
 
     if (status) {
       queryBuilder.andWhere('product.status = :status', { status });
+    }
+
+    if (shopId !== undefined) {
+      queryBuilder.andWhere('product.shopId = :shopId', { shopId });
     }
 
     if (minPrice !== undefined) {
