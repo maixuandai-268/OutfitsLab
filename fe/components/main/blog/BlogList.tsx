@@ -2,26 +2,27 @@
 import { useState, useEffect } from "react"
 import BlogCard from "./BlogCard"
 
-const staticBlogs = [
-    { id: 101, category: "Thời trang", title: "Gợi Ý Các Phụ Kiện Hoàn Hảo Khi Phối Đồ Với Giày Thể Thao Nam", author: "Nguyễn Hùng Hải", date: "21 Thg 2, 2026", avatar: "/images/avatar/ava1.png", image: "/images/blog/blog1.jpg" },
-    { id: 102, category: "Thể thao", title: "Bật mí cách phối đồ với giày jordan nam thu hút mọi ánh nhìn", author: "Trần Nhật Minh", date: "14 Thg 1, 2026", avatar: "/images/avatar/ava2.png", image: "/images/blog/blog2.jpg" },
-    { id: 103, category: "Thời trang", title: "Top Những Mẫu Áo Khoác Hoodie Cặp Nam Nữ Siêu Cute", author: "Phạm Gia Hùng", date: "23 Thg 12, 2025", avatar: "/images/avatar/ava3.png", image: "/images/blog/blog3.jpg" },
-    { id: 104, category: "Đời sống", title: "Độ Bền Và Sự Ấm Áp Đầy Mê Hoặc Của Áo Hoodie Nam Siêu Dày", author: "Lê Hồng Lan", date: "2 Thg 11, 2025", avatar: "/images/avatar/ava4.png", image: "/images/blog/blog4.jpg" },
-    { id: 105, category: "Thời trang", title: "Local Brand Có Hoodie Đẹp Nhất ở Sài Gòn Thời Điểm Hiện Tại", author: "Đặng Anh Tuấn", date: "25 Thg 10, 2025", avatar: "/images/avatar/ava5.png", image: "/images/blog/blog5.jpg" },
-    { id: 106, category: "Thời trang", title: "Các phong cách thời trang nam HOT nhất 2025: Tìm gu chuẩn", author: "Bùi Hải Nam", date: "16 Thg 10, 2025", avatar: "/images/avatar/ava6.png", image: "/images/blog/blog6.jpg" },
-];
-
 export default function BlogList() {
-    const [allBlogs, setAllBlogs] = useState<any[]>(staticBlogs);
+    const [allBlogs, setAllBlogs] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 6;
 
     useEffect(() => {
-        const savedData = localStorage.getItem("outfitslab_full_storage");
-        if (savedData) {
-            const adminBlogs = JSON.parse(savedData);
-            setAllBlogs([...adminBlogs, ...staticBlogs]);
-        }
+        const fetchBlogs = async () => {
+            try {
+                const res = await fetch("http://localhost:3000/api/blog");
+                if (res.ok) {
+                    const data = await res.json();
+                    setAllBlogs(data);
+                } else {
+                    setAllBlogs([]);
+                }
+            } catch (error) {
+                console.error(error);
+                setAllBlogs([]);
+            }
+        };
+        fetchBlogs();
     }, []);
 
     const totalPages = Math.ceil(allBlogs.length / postsPerPage);

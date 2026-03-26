@@ -121,7 +121,7 @@ export default function ShopProfilePage() {
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.slice(0, 6).map((product) => (
+            {products.map((product) => (
               <ShopProductCard key={product.id} product={product as any} shop={shop as any} />
             ))}
           </div>

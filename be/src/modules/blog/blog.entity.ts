@@ -14,6 +14,15 @@ export class Blog {
   @Column('text')
   content: string;
 
+  @Column({ default: '' })
+  image: string;
+
+  @Column({ default: 'Thời trang' })
+  category: string;
+
+  @Column({ default: 'Admin' })
+  author: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }
