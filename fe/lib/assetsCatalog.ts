@@ -1,6 +1,6 @@
 export const BODY_MODELS = {
-  avatar_female: '/model/body/avatar_female.glb',
-  avatar_male:   '/model/body/avatar_male.glb',
+  avatar_female: '/model/body/male.glb',
+  avatar_male:   '/model/body/male.glb',
 } as const
 
 export const GARMENTS = {
@@ -9,8 +9,8 @@ export const GARMENTS = {
     beanie_01: '/model/garments/hat/hat_beanie_01.glb',
   },
   top: {
-    tshirt_01: '/model/cloth/shirt/shirt_tshirt_01.glb',
-    hoodie_01: '/model/cloth/shirt/shirt_hoodie_01.glb',
+    tshirt_01: '/model/cloth/shirt/red_shirt.glb',
+    hoodie_01: '/model/cloth/shirt/aodep.glb',
     sweater_01: '/model/cloth/shirt/shirt_sweater_01.glb',
     hoodie_02: '/model/cloth/shirt/shirt_hoodie_02.glb',
     hoodie_03: '/model/cloth/shirt/shirt_hoodie_03.glb',
