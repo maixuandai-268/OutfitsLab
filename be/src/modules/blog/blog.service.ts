@@ -18,6 +18,10 @@ export class BlogService {
 
   async create(data: Partial<Blog>) {
     try {
+      if (!data.slug) {
+        const baseSlug = data.title ? data.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-') : 'blog';
+        data.slug = baseSlug + '-' + Math.floor(Math.random() * 10000);
+      }
       const newPost = this.blogRepo.create(data);
       return await this.blogRepo.save(newPost);
     } catch (error) {
@@ -41,4 +45,12 @@ export class BlogService {
   Object.assign(blog, updateBlogDto);
   return await this.blogRepo.save(blog);
 }
-}
+
+  async remove(id: number) {
+    const blog = await this.blogRepo.findOneBy({ id });
+    if (!blog) {
+      throw new BadRequestException(`Không tìm thấy Blog với id ${id}`);
+    }
+    return await this.blogRepo.remove(blog);
+  }
+}

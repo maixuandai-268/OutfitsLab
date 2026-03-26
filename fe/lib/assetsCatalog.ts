@@ -1,6 +1,6 @@
 export const BODY_MODELS = {
-  avatar_female: '/model/body/avatar_female.glb',
-  avatar_male:   '/model/body/avatar_male.glb',
+  avatar_female: '/model/body/model_male.glb',
+  avatar_male:   '/model/body/model_male.glb',
 } as const
 
 export const GARMENTS = {
@@ -58,11 +58,12 @@ export const GARMENTS = {
     hoodie_45: '/model/cloth/shirt/shirt_hoodie_45.glb',     
   },
   bottom: {
-    cap_01: '/model/garments/hat/hat_cap_01.glb',
-    beanie_01: '/model/garments/hat/hat_beanie_01.glb',
+    cap_01: '/model/cloth/pants/pants.glb',
+    beanie_01: '/model/cloth/pants/shorts.glb',
   },
   shoes: {
-    sneaker_01: '/model/garments/shoes/shoes_sneaker_01.glb',
+    pants: '/model/garments/shoes/shoes_sneaker_01.glb',
     boot_01:    '/model/garments/shoes/shoes_boot_01.glb',
+    
   }
 } as const

@@ -43,6 +43,7 @@ export class FavouriteService {
   async getFavouriteProducts(userId: number): Promise<Product[]> {
     return await this.productRepo.createQueryBuilder('product')
       .innerJoin(FavouriteProduct, 'fav', 'fav.productId = product.id')
+      .leftJoinAndMapOne('product.shop', Shop, 'shop', 'shop.id = product.shopId OR shop.id = product.shop_id')
       .where('fav.userId = :userId', { userId })
       .orderBy('fav.createdAt', 'DESC')
       .getMany();

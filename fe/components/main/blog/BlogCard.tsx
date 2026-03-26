@@ -7,6 +7,7 @@ interface BlogCardProps {
         category?: string;
         avatar?: string;
         date?: string;
+        createdAt?: string;
     }
 }
 
@@ -40,7 +41,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
                     )}
                     <div className="flex flex-col">
                         <span className="font-bold text-gray-800 text-[12px] leading-none">{blog.author}</span>
-                        <span className="text-[10px] text-gray-400 mt-1">{blog.date}</span>
+                        <span className="text-[10px] text-gray-400 mt-1">{blog.createdAt ? new Date(blog.createdAt).toLocaleDateString("vi-VN") : blog.date}</span>
                     </div>
                 </div>
             </div>

@@ -8,7 +8,8 @@ interface Blog {
   image: string;      
   category: string;   
   author: string;    
-  date: string;
+  date?: string;
+  createdAt?: string;
 }
 
 export default function BlogAdminPage({ dark }: { dark: boolean }) {
@@ -22,17 +23,23 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   const [category, setCategory] = useState("Thời trang");
   const [author, setAuthor] = useState("");
 
-  useEffect(() => {
-    const data = localStorage.getItem("outfitslab_full_storage");
-    if (data) setBlogs(JSON.parse(data));
-  }, []);
-
-  const saveToLocal = (newList: Blog[]) => {
-    localStorage.setItem("outfitslab_full_storage", JSON.stringify(newList));
-    setBlogs(newList);
+  const fetchBlogs = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/blog");
+      if (res.ok) {
+        const data = await res.json();
+        setBlogs(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleSave = () => {
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const handleSave = async () => {
     if (!title || !content || !image) return alert("Vui lòng điền đủ thông tin và dán URL ảnh!");
 
     const blogData = {
@@ -40,18 +47,40 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
       content,
       image,
       category,
-      author: author || "Admin",
-      date: new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: 'short', year: 'numeric' })
+      author: author || "Admin"
     };
 
-    if (currentId) {
-      const updated = blogs.map(b => b.id === currentId ? { ...b, ...blogData } : b);
-      saveToLocal(updated);
-    } else {
-      const newBlog = { id: Date.now(), ...blogData };
-      saveToLocal([newBlog, ...blogs]);
+    try {
+      if (currentId) {
+        const res = await fetch(`http://localhost:3000/api/blog/${currentId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(blogData)
+        });
+        if (res.ok) {
+          fetchBlogs();
+          setIsEditing(false);
+        } else {
+          alert("Lỗi khi cập nhật!");
+        }
+      } else {
+        const res = await fetch(`http://localhost:3000/api/blog`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(blogData)
+        });
+        if (res.ok) {
+          fetchBlogs();
+          setIsEditing(false);
+        } else {
+          const err = await res.json();
+          alert("Lỗi: " + JSON.stringify(err.message));
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Đã xảy ra lỗi hệ thống!");
     }
-    setIsEditing(false);
   };
 
   const handleOpenEdit = (blog: Blog) => {
@@ -129,12 +158,19 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
                 <div className="p-5 space-y-3">
                   <h3 className="font-bold text-lg leading-tight line-clamp-2 min-h-[3.5rem]">{blog.title}</h3>
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-800/50">
-                    <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-[10px] font-bold text-white uppercase">{blog.author[0]}</div>
-                    <span className="text-xs text-gray-400 font-medium">{blog.author} • {blog.date}</span>
+                    <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-[10px] font-bold text-white uppercase">{blog.author?.[0] || 'A'}</div>
+                    <span className="text-xs text-gray-400 font-medium">{blog.author || "Admin"} • {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('vi-VN') : blog.date}</span>
                   </div>
                   <div className="flex justify-between pt-2">
                     <button onClick={() => handleOpenEdit(blog)} className="text-[10px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300">Chỉnh sửa</button>
-                    <button onClick={() => {if(confirm("Xóa bài này?")) saveToLocal(blogs.filter(b => b.id !== blog.id))}} className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-400">Gỡ bỏ</button>
+                    <button onClick={async () => {
+                      if(confirm("Xóa bài này?")) {
+                        try {
+                          const res = await fetch(`http://localhost:3000/api/blog/${blog.id}`, { method: "DELETE" });
+                          if (res.ok) fetchBlogs();
+                        } catch(e) { console.error(e); }
+                      }
+                    }} className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-400">Gỡ bỏ</button>
                   </div>
                 </div>
               </div>

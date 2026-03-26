@@ -124,7 +124,9 @@ export default function Navbar() {
             <Badge count={3} size="small" offset={[-2, 6]}>
               <BellOutlined onClick={() => setIsModalOpen(true)} className="cursor-pointer hover:text-rose-500 transition-colors text-[24px]" />
             </Badge>
-            <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
+            <Link href="/saved">
+              <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
+            </Link>
           </div>
 
           {!user ? (

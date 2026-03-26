@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Heart, Trash2, ShoppingBag, ArrowLeft, Store } from 'lucide-react';
+import { ShopProductCard } from '@/components/shop/profile/showProduct';
 import Link from 'next/link';
 
 const API_BASE = 'http://localhost:3000/api';
@@ -71,21 +72,6 @@ export default function SavedOutfitsPage() {
     }
   }, [authLoading, token, fetchFavourites]);
 
-  const handleRemoveProduct = async (productId: number) => {
-    if (!token) return;
-    setRemovingId(`product-${productId}`);
-    try {
-      await fetch(`${API_BASE}/favourite/products/${productId}/toggle`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setProducts((prev) => prev.filter((p) => p.id !== productId));
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setRemovingId(null);
-    }
-  };
 
   const handleRemoveShop = async (shopId: number) => {
     if (!token) return;
@@ -209,54 +195,16 @@ export default function SavedOutfitsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group"
-                >
-                  <div className="relative h-52 bg-gray-100 overflow-hidden">
-                    {product.image ? (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300">
-                        <ShoppingBag className="w-16 h-16" />
-                      </div>
-                    )}
-                    <button
-                      onClick={() => handleRemoveProduct(product.id)}
-                      disabled={removingId === `product-${product.id}`}
-                      className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-red-50 text-rose-500 rounded-full shadow-md transition disabled:opacity-50"
-                      title="Bỏ lưu"
-                    >
-                      {removingId === `product-${product.id}` ? (
-                        <div className="w-4 h-4 border-2 border-rose-400 border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 truncate">{product.name}</h3>
-                    {product.description && (
-                      <p className="text-xs text-gray-400 mt-1 line-clamp-2">{product.description}</p>
-                    )}
-
-                    <div className="flex items-center justify-between mt-4">
-                      <p className="text-lg font-bold text-gray-900">
-                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
-                      </p>
-                      <Link
-                        href={`/product_detail/${product.id}`}
-                        className="text-xs font-semibold text-rose-500 hover:underline"
-                      >
-                        Xem chi tiết →
-                      </Link>
-                    </div>
-                  </div>
+                <div key={product.id} className="relative group rounded-2xl bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  <ShopProductCard
+                    product={product as any}
+                    shop={(product as any).shop}
+                    onToggleFavourite={(productId, isFavourite) => {
+                      if (!isFavourite) {
+                        setProducts((prev) => prev.filter((p) => p.id !== productId));
+                      }
+                    }}
+                  />
                 </div>
               ))}
             </div>
