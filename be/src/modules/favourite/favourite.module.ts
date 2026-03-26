@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FavouriteProduct } from './favourite.entity';
+import { FavouriteProduct } from './favourite-product.entity';
 import { FavouriteShop } from './favourite-shop.entity';
 import { FavouriteService } from './favourite.service';
 import { FavouriteController } from './favourite.controller';
@@ -14,4 +14,4 @@ import { Shop } from '../shops/shop.entity';
   controllers: [FavouriteController],
   exports: [FavouriteService],
 })
-export class FavouriteModule {}
+export class FavouriteModule { }
