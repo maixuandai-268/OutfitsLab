@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsEnum, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ProductStatus } from '../product.entity';
 
@@ -9,65 +9,79 @@ export class QueryProductDto {
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  shop_id?: number; // Đã tách riêng ra đây
+  shop_id?: number;
 
-  @ApiPropertyOptional({ description: 'Tìm kiếm theo tên sản phẩm' })
-  @IsOptional()
-  @IsString()
-  search?: string;
-
-  @ApiPropertyOptional({
-    description: 'Lọc theo ID cửa hàng',
-    example: 1,
-  })
+  @ApiPropertyOptional({ description: 'ID shop (camelCase hỗ trợ cả 2)' })
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
   shopId?: number;
 
+  @ApiPropertyOptional({ description: 'Từ khóa tìm kiếm tên/mô tả' })
+  @IsOptional()
+  @IsString()
+  search?: string;
 
-  @ApiPropertyOptional({
-    description: 'Lọc theo trạng thái',
-    enum: ProductStatus,
-  })
+  @ApiPropertyOptional({ enum: ProductStatus })
   @IsOptional()
   @IsEnum(ProductStatus)
   status?: ProductStatus;
 
-  @ApiPropertyOptional({ description: 'Giá tối thiểu', example: 10 })
+  @ApiPropertyOptional({ description: 'Danh mục (shirts, pants...)' })
+  @IsOptional()
+  @IsString()
+  type?: string;
+
+  @ApiPropertyOptional({ description: 'Thương hiệu' })
+  @IsOptional()
+  @IsString()
+  brand?: string;
+
+  @ApiPropertyOptional({ description: 'Tag (MỚI, HOT...)' })
+  @IsOptional()
+  @IsString()
+  tag?: string;
+
+  @ApiPropertyOptional({ description: 'Lọc theo danh sách màu' })
+  @IsOptional()
+  @IsArray()
+  colors?: string[];
+
+  @ApiPropertyOptional({ description: 'Lọc theo danh sách size' })
+  @IsOptional()
+  @IsArray()
+  sizes?: string[];
+
+  @ApiPropertyOptional({ description: 'Giá tối thiểu' })
   @IsOptional()
   @IsNumber()
-  @Min(0)
   @Type(() => Number)
   minPrice?: number;
 
-  @ApiPropertyOptional({ description: 'Giá tối đa', example: 200 })
+  @ApiPropertyOptional({ description: 'Giá tối đa' })
   @IsOptional()
   @IsNumber()
-  @Min(0)
   @Type(() => Number)
   maxPrice?: number;
 
-  @ApiPropertyOptional({ description: 'Số trang', default: 1 })
+  @ApiPropertyOptional({ description: 'Trang hiện tại', default: 1 })
   @IsOptional()
   @IsNumber()
-  @Min(1)
   @Type(() => Number)
   page?: number = 1;
 
   @ApiPropertyOptional({ description: 'Số lượng mỗi trang', default: 10 })
   @IsOptional()
   @IsNumber()
-  @Min(1)
   @Type(() => Number)
   limit?: number = 10;
 
-  @ApiPropertyOptional({ description: 'Sắp xếp theo trường' })
+  @ApiPropertyOptional({ description: 'Sắp xếp theo field', default: 'createdAt' })
   @IsOptional()
   @IsString()
   sortBy?: string = 'createdAt';
 
-  @ApiPropertyOptional({ description: 'Thứ tự sắp xếp', enum: ['ASC', 'DESC'] })
+  @ApiPropertyOptional({ description: 'Thứ tự sắp xếp', enum: ['ASC', 'DESC'], default: 'DESC' })
   @IsOptional()
   @IsEnum(['ASC', 'DESC'])
   sortOrder?: 'ASC' | 'DESC' = 'DESC';

@@ -5,7 +5,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm';
+import { Shop } from './shop.entity';
+import { Review } from '../reviews/review.entity';
 
 export enum ProductStatus {
   ACTIVE = 'active',
@@ -17,9 +22,6 @@ export enum ProductStatus {
 export class Product {
   @PrimaryGeneratedColumn('increment')
   id: number;
-
-  @Column({ nullable: true })
-  shopId: number;
 
   @Column({ length: 255 })
   name: string;
@@ -46,9 +48,31 @@ export class Product {
   })
   status: ProductStatus;
 
+  @Column({ nullable: true })
+  type: string;
+
+  @Column({ nullable: true })
+  brand: string;
+
+  @Column({ nullable: true })
+  tag: string;
+
+  @Column('jsonb', { nullable: true, default: [] })
+  colors: string[];
+
+  @Column('jsonb', { nullable: true, default: [] })
+  sizes: string[];
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Shop, (shop) => shop.products)
+  @JoinColumn({ name: 'shop_id' })
+  shop: Shop;
+
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Review[];
 }

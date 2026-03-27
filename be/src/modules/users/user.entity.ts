@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import { Shop } from '../shops/shop.entity'; 
 /* eslint-disable prettier/prettier */
 
 @Entity('users')
@@ -42,5 +43,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
-  
+
+  @OneToOne(() => Shop, (shop: any) => shop.owner)
+  shop: Shop;
 }

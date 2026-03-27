@@ -5,16 +5,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import StepInfo from "@/components/seller/StepInfo";
 import StepStore from "@/components/seller/StepStore";
 import StepConfirm from "@/components/seller/StepConfirm";
+import { useAuth } from "@/context/AuthContext";
 
 export default function BecomePage() {
     const router = useRouter();
+    const { refreshUser } = useAuth(); 
     const searchParams = useSearchParams();
     const initialStep = parseInt(searchParams.get("step") || "1");
 
     const [step, setStep] = useState(initialStep);
     const [loading, setLoading] = useState(false);
-    // 1. Chỉ khai báo shopId một lần ở đây
-    const [shopId, setShopId] = useState<number | null>(null);
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -28,15 +28,12 @@ export default function BecomePage() {
     });
 
     const handleChange = (field: string, value: string | boolean) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value
-        }));
+        setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
     const handleSubmit = async () => {
         setLoading(true);
-        const token = localStorage.getItem("access_token") || localStorage.getItem("token");
+        const token = localStorage.getItem("token") || localStorage.getItem("access_token");
 
         if (!token) {
             alert("Vui lòng đăng nhập!");
@@ -45,35 +42,34 @@ export default function BecomePage() {
         }
 
         try {
-            // 1. Sửa port từ 3001 thành 3000
             const res = await fetch("http://localhost:3000/api/shops/become", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                // 2. Chỉ gửi ĐÚNG các trường có trong CreateShopDto
                 body: JSON.stringify({
                     shop_name: formData.storeName,
-                    description: formData.storeDescription,
-                    contact_email: formData.email,
-                    // location: "Vietnam", // Thêm nếu cần, hoặc để trống vì là IsOptional
+                    description: formData.storeDescription || undefined,
+                    contact_email: formData.email || undefined,
                 })
             });
 
             const result = await res.json();
 
             if (res.ok) {
-                setShopId(result.id); 
-                // Không cần redirect ngay để StepConfirm hiện nút bấm
+                // 1. Cập nhật lại dữ liệu User để Navbar biết trạng thái 'pending'
+                if (refreshUser) await refreshUser(); 
+                
+                // 2. Thông báo và đẩy thẳng về trang chủ
+                alert("Đăng ký thành công! Vui lòng chờ Admin phê duyệt.");
+                router.push("/"); 
             } else {
-                // Hiển thị lỗi cụ thể từ ValidationPipe
                 const errorMsg = Array.isArray(result.message) ? result.message.join("\n") : result.message;
-                alert("Lỗi dữ liệu:\n" + errorMsg);
+                alert("Lỗi: " + errorMsg);
             }
         } catch (error) {
-            console.error("Lỗi kết nối:", error);
-            alert("Không thể kết nối tới Server. Hãy kiểm tra xem Backend đã chạy ở port 3000 chưa.");
+            alert("Không thể kết nối tới Server.");
         } finally {
             setLoading(false);
         }
@@ -84,38 +80,28 @@ export default function BecomePage() {
 
     return (
         <div className="min-h-screen bg-white">
+            {/* Bước 1: Nhập thông tin */}
             {step === 1 && (
-                <StepInfo
-                    firstName={formData.firstName}
-                    lastName={formData.lastName}
-                    email={formData.email}
-                    phone={formData.phone}
-                    onChange={handleChange}
-                    nextStep={nextStep}
-                />
+                <StepInfo {...formData} onChange={handleChange} nextStep={nextStep} />
             )}
 
+            {/* Bước 2: Thiết lập cửa hàng */}
             {step === 2 && (
-                <StepStore
-                    storeName={formData.storeName}
-                    storeDescription={formData.storeDescription}
-                    primaryCategory={formData.primaryCategory}
-                    rememberMe={formData.rememberMe}
-                    onChange={handleChange}
-                    nextStep={nextStep}
-                    prevStep={prevStep}
+                <StepStore 
+                    {...formData} 
+                    onChange={handleChange} 
+                    nextStep={nextStep} 
+                    prevStep={prevStep} 
                 />
             )}
 
+            {/* Bước 3: Tóm tắt và Xác nhận */}
             {step === 3 && (
-                <StepConfirm
-                    firstName={formData.firstName}
-                    email={formData.email}
-                    storeName={formData.storeName}
-                    prevStep={prevStep}
+                <StepConfirm 
+                    {...formData} 
+                    prevStep={prevStep} 
                     onSubmit={handleSubmit} 
-                    loading={loading}
-                    shopId={shopId} // Truyền shopId xuống
+                    loading={loading} 
                 />
             )}
         </div>

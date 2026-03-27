@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { Rate } from 'antd';
 
 const API_BASE = 'http://localhost:3000/api';
 
@@ -13,8 +14,8 @@ interface Product {
   price: number;
   image_url?: string;
   image?: string;
-  rating?: number;
-  reviews?: number;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 interface Shop {
@@ -104,15 +105,16 @@ export const ShopProductCard = ({ product, shop, onToggleFavourite }: ShopProduc
       <div className="p-5">
         <h3 className="font-semibold line-clamp-1 text-gray-800">{product.name}</h3>
         
-        <div className="flex items-center text-xs gap-1 mb-2">
-          <div className="flex text-[#d19f42]">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={(star <= Math.floor(product.rating || 5)) ? "currentColor" : "none"} stroke="currentColor" strokeWidth={(star <= Math.floor(product.rating || 5)) ? 0 : 2} className="w-3 h-3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.545.044.757.74.34 1.146l-4.252 4.145a.563.563 0 00-.154.498l1.31 5.372c.16.654-.535 1.159-1.028.875L12 18.067l-4.708 2.615c-.493.284-1.187-.22-1.028-.875l1.31-5.372a.563.563 0 00-.154-.498L2.736 10.543c-.417-.406-.205-1.102.34-1.146l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /> 
-                </svg> 
-              ))}
-          </div>
-          <span className="text-gray-400">({product.rating || 5}.0)</span>
+        <div className="flex items-center gap-1.5 mb-2">
+          <Rate 
+            disabled 
+            allowHalf 
+            value={Number(product.averageRating) || 0} 
+            className="text-[12px] text-amber-500 scale-90 -ml-1"
+          />
+          <span className="text-gray-400 text-[10px] font-bold">
+            ({(Number(product.averageRating) || 0).toFixed(1)})
+          </span>
         </div>
 
         <p className="text-xs text-gray-500 mb-3">bởi {shop?.shop_name || 'Cửa hàng ẩn'}</p>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { Rate } from 'antd'
 
 const API_BASE = 'http://localhost:3000/api';
 
@@ -12,7 +13,8 @@ interface Shop {
   description: string;
   location: string;
   rating: number;
-  reviews?: number;
+  reviewCount?: number;
+  productCount?: number;
   specialty?: string;
 }
 
@@ -24,7 +26,6 @@ interface Product {
 export default function FeaturedSellersPage() {
   const [activeFilter, setActiveFilter] = useState('All Sellers')
   const [shops, setShops] = useState<Shop[]>([])
-  const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
   const categories = [
@@ -36,19 +37,10 @@ export default function FeaturedSellersPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [shopsRes, productsRes] = await Promise.all([
-          fetch(`${API_BASE}/shops`),
-          fetch(`${API_BASE}/products?limit=1000`)
-        ]);
-
+        const shopsRes = await fetch(`${API_BASE}/shops`);
         if (shopsRes.ok) {
           const sData = await shopsRes.json();
           setShops(sData);
-        }
-
-        if (productsRes.ok) {
-          const pData = await productsRes.json();
-          setProducts(pData.data || []);
         }
       } catch (err) {
         console.error(err);
@@ -98,7 +90,6 @@ export default function FeaturedSellersPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             {shops.map((shop) => {
-              const productCount = products.filter(i => i.shopId === shop.id).length
               return (
                 <Link key={shop.id} href={`/shop_profile/${shop.id}`} className="bg-white rounded-3xl border-3 border-gray-200 hover:shadow-xl overflow-hidden">
                   <div className={`h-24 w-full bg-linear-to-tl from-[#d5e9e9] to-[#f4ebd9]`}></div>
@@ -112,13 +103,17 @@ export default function FeaturedSellersPage() {
                     <h3 className="mt-4 text-xl font-bold ">{shop.shop_name}</h3>
 
                     <div className="flex items-center gap-1 mt-1 text-sm">
-                      <div className="flex text-[#d19f42]">
-                        {[1, 2, 3, 4, 5].map(star => (
-                          <StarIcon key={star} filled={star <= Math.floor(shop.rating || 5)} />
-                        ))}
-                      </div>
-                      <span className="">{Number(shop.rating || 5).toFixed(1)}</span>
-                      <span className="text-gray-500">({shop.reviews || 0} reviews)</span>
+                       <span className="font-bold text-amber-500 mr-1">{Number(shop.rating || 0).toFixed(1)}</span>
+                       <div className="flex text-[#d19f42]">
+                           {/* Dùng Ant Design Rate cho đồng bộ */}
+                           <svg className="hidden">
+                             {/* Để tránh lỗi kĩ thuật khi chuyển đổi */}
+                           </svg>
+                           <div className="scale-75 -mx-4">
+                              <Rate disabled allowHalf defaultValue={shop.rating || 0} className="text-amber-500" />
+                           </div>
+                       </div>
+                       <span className="text-gray-500 ml-1">({shop.reviewCount || 0} reviews)</span>
                     </div>
 
                     <span className="mt-3 ml-1 px-3 py-1 bg-black/60 text-white text-[10px] uppercase font-bold rounded-full">
@@ -133,7 +128,7 @@ export default function FeaturedSellersPage() {
 
                     <div className="w-full flex justify-between px-10">
                       <div className="text-center">
-                        <p className="text-2xl font-bold text-black">{productCount}</p>
+                        <p className="text-2xl font-bold text-black">{shop.productCount || 0}</p>
                         <p className="text-xs text-gray-600 font-medium">Sản phẩm</p>
                       </div>
                       <div className="text-center">
