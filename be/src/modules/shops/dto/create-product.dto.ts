@@ -16,14 +16,6 @@ import { ProductStatus } from '../product.entity';
 
 export class CreateProductDto {
   @ApiProperty({
-    description: 'ID cửa hàng sở hữu sản phẩm',
-  })
-  @IsNumber({}, { message: 'ID cửa hàng phải là số' })
-  @IsNotEmpty({ message: 'ID cửa hàng không được để trống' })
-  @Type(() => Number)
-  shopId: number;
-
-  @ApiProperty({
     description: 'Tên sản phẩm',
     minLength: 2,
     maxLength: 255,
@@ -51,16 +43,32 @@ export class CreateProductDto {
   @IsString({ message: 'Mô tả phải là chuỗi' })
   description?: string;
 
-  @ApiProperty({ description: 'Loại sản phẩm (TOP, BOTTOM...)' })
+  @ApiProperty({ description: 'Danh mục sản phẩm (shirts, pants...)' })
   @IsString()
   @IsNotEmpty({ message: 'Loại sản phẩm không được để trống' })
   type: string;
 
   @ApiProperty({ description: 'ID cửa hàng' })
-  @IsNumber({}, { message: 'shop_id phải là số' }) // Thêm kiểm tra rõ ràng
-  @IsNotEmpty({ message: 'shop_id không được để trống' }) // BẮT BUỘC phải có cái này
+  @IsNumber({}, { message: 'shop_id phải là số' })
+  @IsNotEmpty({ message: 'shop_id không được để trống' })
   @Type(() => Number)
   shop_id: number;
+
+  @ApiPropertyOptional({ description: 'ID cửa hàng (Bản cũ hỗ trợ)' })
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  shopId?: number;
+
+  @ApiPropertyOptional({ description: 'Thương hiệu sản phẩm' })
+  @IsOptional()
+  @IsString()
+  brand?: string;
+
+  @ApiPropertyOptional({ description: 'Tag sản phẩm (MỚI, HOT, SALE...)' })
+  @IsOptional()
+  @IsString()
+  tag?: string;
 
   @ApiPropertyOptional({ description: 'Danh sách kích cỡ' })
   @IsOptional()

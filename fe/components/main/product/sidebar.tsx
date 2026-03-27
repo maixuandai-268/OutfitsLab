@@ -34,8 +34,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       { value: "hoodies", label: "Hoodies" },
       { value: "blazers", label: "Blazers" },
       { value: "jackets", label: "Jackets" },
-      { value: "skirts", label: "Skirts" },
-      { value: "sweaters", label: "Sweaters" },
       { value: "sneakers", label: "Sneakers" },
     ],
     []

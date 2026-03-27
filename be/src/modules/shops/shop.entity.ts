@@ -5,7 +5,12 @@ import {
   Column, 
   CreateDateColumn, 
   UpdateDateColumn,  
+  OneToOne,
+  OneToMany,
+  JoinColumn
 } from 'typeorm';
+import { User } from '../users/user.entity';
+import { Product } from './product.entity';
 
 @Entity('shops')
 export class Shop {
@@ -41,4 +46,11 @@ export class Shop {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToOne(() => User, (user: any) => user.shop)
+  @JoinColumn({ name: 'ownerId' }) 
+  owner: User;
+
+  @OneToMany(() => Product, (product) => product.shop)
+  products: Product[];
 }

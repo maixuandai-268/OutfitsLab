@@ -17,6 +17,9 @@ export class ProductsService {
 
   // 1. Tạo sản phẩm mới
   async create(createProductDto: CreateProductDto): Promise<Product> {
+    if (createProductDto.shopId && !createProductDto.shop_id) {
+      createProductDto.shop_id = createProductDto.shopId;
+    }
     const product = this.productRepository.create(createProductDto);
     return await this.productRepository.save(product);
   }
@@ -38,9 +41,10 @@ export class ProductsService {
 
     const queryBuilder = this.productRepository.createQueryBuilder('product');
 
-    // Lọc theo shop_id
-    if (shop_id) {
-      queryBuilder.andWhere('product.shop_id = :shop_id', { shop_id });
+    // Lọc theo shop_id (Hỗ trợ cả shop_id và shopId từ frontend)
+    const effectiveShopId = shop_id || shopId;
+    if (effectiveShopId) {
+      queryBuilder.andWhere('product.shop_id = :effectiveShopId', { effectiveShopId });
     }
 
     if (search) {
@@ -54,10 +58,6 @@ export class ProductsService {
       queryBuilder.andWhere('product.status = :status', { status });
     }
 
-    if (shopId !== undefined) {
-      queryBuilder.andWhere('product.shopId = :shopId', { shopId });
-    }
-
     if (minPrice !== undefined) {
       queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
     }
@@ -66,18 +66,56 @@ export class ProductsService {
       queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
     }
 
+    if (query.type) {
+      queryBuilder.andWhere('product.type = :type', { type: query.type });
+    }
+
+    if (query.brand) {
+      queryBuilder.andWhere('product.brand ILIKE :brand', { brand: `%${query.brand}%` });
+    }
+
+    if (query.tag) {
+      queryBuilder.andWhere('product.tag = :tag', { tag: query.tag });
+    }
+
+    // Lọc theo mảng JSONB
+    if (query.colors && Array.isArray(query.colors) && query.colors.length > 0) {
+      queryBuilder.andWhere('product.colors @> :colors', { colors: JSON.stringify(query.colors) });
+    }
+
+    if (query.sizes && Array.isArray(query.sizes) && query.sizes.length > 0) {
+      queryBuilder.andWhere('product.sizes @> :sizes', { sizes: JSON.stringify(query.sizes) });
+    }
+
     const allowedSortFields = ['name', 'price', 'salesCount', 'createdAt'];
     const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'createdAt';
 
     queryBuilder
+      .leftJoinAndSelect('product.shop', 'shop')
+      .leftJoinAndSelect('product.reviews', 'reviews')
       .orderBy(`product.${safeSortBy}`, sortOrder)
       .skip((page - 1) * limit)
       .take(limit);
 
     const [data, total] = await queryBuilder.getManyAndCount();
 
+    // Map to include review stats
+    const productsWithStats = data.map(product => {
+      const reviewCount = product.reviews?.length || 0;
+      const averageRating = reviewCount > 0 
+        ? Number((product.reviews.reduce((acc, r) => acc + r.rating, 0) / reviewCount).toFixed(1))
+        : 0;
+      
+      const { reviews, ...productInfo } = product; // Remove raw reviews array to keep response clean
+      return {
+        ...productInfo,
+        reviewCount,
+        averageRating,
+      };
+    });
+
     return {
-      data,
+      data: productsWithStats,
       total,
       page,
       limit,

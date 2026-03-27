@@ -54,7 +54,7 @@ export default function ProductDetailPage() {
     <div className="">
       <div className="max-w-310 mx-auto">
         <div className='mb-15'><ProductDetail product={product} /></div>
-        <ReviewSection />
+        <ReviewSection productId={productId} />
       </div>
 
       <section className="">
