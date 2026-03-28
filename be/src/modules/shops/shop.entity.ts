@@ -29,7 +29,7 @@ export class Shop {
   @Column({ nullable: true })
   contact_email: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   avatar_url: string;
 
   @Column({ nullable: true })
@@ -40,6 +40,9 @@ export class Shop {
 
   @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   rating: number;
+
+  @Column({ default: 0 })
+  views: number;
 
   @CreateDateColumn()
   created_at: Date;

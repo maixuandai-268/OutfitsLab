@@ -20,7 +20,8 @@ import {
   BgColorsOutlined,
   InfoCircleOutlined,
   ShopOutlined,
-  AppstoreOutlined
+  AppstoreOutlined,
+  GlobalOutlined
 } from "@ant-design/icons";
 import { useAuth } from "@/context/AuthContext";
 
@@ -73,6 +74,7 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: 
     colors: [] as string[],
     sizes: [] as string[],
     status: "active",
+    affiliateLink: "",
   });
 
   const handleInputChange = (key: string, value: any) => {
@@ -137,6 +139,7 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: 
           colors: [],
           sizes: [],
           status: "active",
+          affiliateLink: "",
         });
       } else {
         const errorData = await response.json();
@@ -223,17 +226,31 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: 
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Mô tả sản phẩm</label>
-              <Input.TextArea 
-                placeholder="Mô tả sẽ hiển thị tại trang chi tiết sản phẩm..." 
-                rows={3}
-                value={formData.description}
-                onChange={(e) => handleInputChange("description", e.target.value)}
-                className="rounded-xl border-gray-200"
-              />
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
+                  <GlobalOutlined className="text-orange-500" /> Link Affiliate (Shopee, Tik Tok...)
+                </label>
+                <Input 
+                  placeholder="Dán link sản phẩm tại đây..." 
+                  size="large"
+                  value={formData.affiliateLink}
+                  onChange={(e) => handleInputChange("affiliateLink", e.target.value)}
+                  className="rounded-lg shadow-sm"
+                />
+              </div>
+
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Mô tả sản phẩm</label>
+                <Input.TextArea 
+                  placeholder="Mô tả sẽ hiển thị tại trang chi tiết sản phẩm..." 
+                  rows={3}
+                  value={formData.description}
+                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  className="rounded-xl border-gray-200"
+                />
+              </div>
             </div>
-          </div>
 
           <div className="space-y-5">
             <div>

@@ -31,6 +31,7 @@ export interface Product {
   colors: string[];
   rating?: number;
   reviews?: number;
+  shop_id?: number;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -70,16 +71,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <div className="group rounded-2xl border border-black/10 bg-white overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
       <Link href={`/product_detail/${product.id}`}>
         <div className="relative h-64 bg-gray-100">
-          {product.image ? (
-            <img
-              src={product.image}
-              alt={product.name}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-              loading="lazy"
-            />
-          ) : (
-            <div className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-400 font-light">Không có ảnh</div>
-          )}
+          <img
+            src={product.image || (product as any).image_url || 'https://via.placeholder.com/400x500/f9fafb/9ca3af?text=No+Image'}
+            alt={product.name}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
+          />
 
           {(product.tag || product.category) && (
             <span className="absolute top-3 left-3 select-none rounded-full bg-[#FDF0DE] text-[#A36A1F] px-3 py-1 text-xs font-bold shadow-sm z-10 uppercase tracking-wider">
@@ -135,7 +132,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </button>
 
           <Tooltip title="Xem cửa hàng">
-            <Link href="/shop">
+            <Link href={product.shop_id ? `/shop_profile/${product.shop_id}` : '#'}>
               <Button 
                 shape="circle" 
                 size="large"
@@ -291,6 +288,7 @@ export default function ProductAll() {
           return {
             id: item.id,
             name: item.name,
+            shop_id: item.shop_id || item.shop?.id,
             category: catKey, 
             colors: Array.isArray(item.colors) ? item.colors.map((c: string) => normalizeColor(c)) : [],
             sizes: Array.isArray(item.sizes) ? item.sizes : [],
@@ -298,7 +296,7 @@ export default function ProductAll() {
             rating: Number(item.averageRating) || 0, 
             reviews: Number(item.reviewCount) || 0,
             price: Number(item.price) || 0,
-            image: item.image,
+            image: item.image || item.image_url,
             tag: item.tag || CATEGORY_LABELS[catKey] || "MỚI",
           };
         });

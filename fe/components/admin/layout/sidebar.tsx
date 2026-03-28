@@ -5,6 +5,7 @@ import {
   SettingOutlined, LogoutOutlined,
   AreaChartOutlined,
   BankOutlined,
+  ShoppingOutlined
 } from "@ant-design/icons";
 import Link from "antd/es/typography/Link";
 
@@ -14,8 +15,9 @@ const navItems = [
   { icon: <AreaChartOutlined />,     label: "Báo cáo" },
   { icon: <BankOutlined />,     label: "Đơn đăng ký người bán" },
   { icon: <TeamOutlined />,         label: "Team" },
-  { icon: <SettingOutlined />,      label: "Cài đặt" },
   { icon: <DashboardOutlined />,    label: "Blog" },
+  { icon: <ShoppingOutlined />,     label: "Sản phẩm" },
+  { icon: <SettingOutlined />,      label: "Cài đặt" },
 ];
 interface SidebarProps {
   dark?: boolean;

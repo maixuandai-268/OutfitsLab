@@ -159,4 +159,9 @@ export class ProductsService {
     product.salesCount = (product.salesCount || 0) + quantity;
     return await this.productRepository.save(product);
   }
-}
+
+  // 8. Tăng số lượt click affiliate
+  async incrementAffiliateClicks(id: number): Promise<void> {
+    await this.productRepository.increment({ id }, 'affiliateClicks', 1);
+  }
+}

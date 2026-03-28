@@ -8,7 +8,6 @@ export class CreateShopDto {
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   avatar_url?: string;
 
   @IsOptional()

@@ -11,16 +11,79 @@ import {
   SettingOutlined,
   EditOutlined,
   BookOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
-import { Avatar, Dropdown, MenuProps, Modal, List, Badge, message } from "antd";
+import { Avatar, Dropdown, MenuProps, Badge, message, List, Empty, Button } from "antd";
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import NotificationItem from "./NotificationItem";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user, token, logout } = useAuth();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const fetchNotifications = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:3000/api/notifications", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data);
+      }
+    } catch (error) {
+      console.error("Lỗi tải thông báo:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+      // Polling thông báo mỗi 30 giây
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user, fetchNotifications]);
+
+  const handleMarkAsRead = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/notifications/${id}/read`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setNotifications(prev => 
+          prev.map(n => n.id === id ? { ...n, isRead: true } : n)
+        );
+      }
+    } catch (error) {
+      message.error("Không thể cập nhật trạng thái thông báo");
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/notifications/read-all`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        message.success("Đã đánh dấu tất cả là đã đọc");
+      }
+    } catch (error) {
+      message.error("Lỗi khi cập nhật thông báo");
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleShopClick = () => {
     if (!user?.shopId) {
@@ -33,8 +96,6 @@ export default function Navbar() {
       return;
     }
 
-    // Trường hợp 'rejected' sẽ không xảy ra nữa vì DB đã bị xóa, 
-    // nhưng ta giữ lại check để code an toàn hơn
     if (user?.shopStatus === 'rejected') {
       message.error("Đơn đăng ký cửa hàng đã bị từ chối.");
       return;
@@ -103,10 +164,48 @@ export default function Navbar() {
     return baseItems;
   };
 
+  const notificationContent = (
+    <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-80 overflow-hidden">
+      <div className="p-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+        <h3 className="font-bold text-gray-800">Thông báo</h3>
+        {unreadCount > 0 && (
+          <Button 
+            type="text" 
+            size="small" 
+            icon={<CheckOutlined />} 
+            onClick={handleMarkAllAsRead}
+            className="text-blue-500 text-[11px] font-bold"
+          >
+            Đọc tất cả
+          </Button>
+        )}
+      </div>
+      <div className="max-h-96 overflow-y-auto">
+        {notifications.length > 0 ? (
+          notifications.map(n => (
+            <NotificationItem 
+              key={n.id} 
+              notification={n} 
+              onRead={handleMarkAsRead} 
+            />
+          ))
+        ) : (
+          <div className="py-10 px-4">
+            <Empty description="Không có thông báo nào" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          </div>
+        )}
+      </div>
+      <div className="p-2 border-t border-gray-50 text-center">
+        <Link href="/user/notifications" className="text-[12px] font-bold text-gray-400 hover:text-blue-500 transition-colors">
+          Xem tất cả thông báo
+        </Link>
+      </div>
+    </div>
+  );
+
   return (
     <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-xl shadow-sm ">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-full">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-1.5">
           <div className="w-[80px] h-auto flex items-center justify-center">
             <img
@@ -117,7 +216,6 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Navigation */}
         <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-700">
           <Link href="/" className="hover:text-yellow-700 transition-colors">Trang chủ</Link>
           <Link href="/product" className="hover:text-yellow-700 transition-colors">Bộ sưu tập</Link>
@@ -126,7 +224,6 @@ export default function Navbar() {
           <Link href="/blog" className="hover:text-yellow-700 transition-colors">Cộng đồng</Link>
           <Link href="/about" className="hover:text-yellow-700 transition-colors">Giới thiệu</Link>
           
-          {/* NÚT TRỞ THÀNH SHOP: Hiện lại khi shopId là null (do Admin xóa DB) */}
           {user && !user.shopId && (
             <Link 
               href="/become" 
@@ -136,7 +233,6 @@ export default function Navbar() {
             </Link>
           )}
 
-          {/* TRẠNG THÁI CHỜ: Hiện khi đã đăng ký nhưng chưa được duyệt */}
           {user && user.shopId && user.shopStatus === 'pending' && (
             <span className="text-orange-500 font-medium italic animate-pulse">
               Đang chờ duyệt...
@@ -144,15 +240,24 @@ export default function Navbar() {
           )}
         </nav>
 
-        {/* Right Actions */}
         <div className="flex items-center gap-8">
           <div className="hidden md:flex items-center gap-7 text-2xl text-gray-600">
-            <Badge count={3} size="small" offset={[-2, 6]}>
-              <BellOutlined 
-                onClick={() => setIsModalOpen(true)} 
-                className="cursor-pointer hover:text-rose-500 transition-colors text-[24px]" 
-              />
-            </Badge>
+            {user ? (
+              <Dropdown 
+                popupRender={() => notificationContent} 
+                trigger={['click']} 
+                placement="bottomRight"
+                arrow
+              >
+                <Badge count={unreadCount} size="small" offset={[-2, 6]}>
+                  <BellOutlined className="cursor-pointer hover:text-rose-500 transition-colors text-[24px]" />
+                </Badge>
+              </Dropdown>
+            ) : (
+              <Badge count={0} size="small" offset={[-2, 6]}>
+                <BellOutlined className="cursor-pointer hover:text-rose-500 transition-colors text-[24px]" />
+              </Badge>
+            )}
             <Link href="/saved">
               <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
             </Link>

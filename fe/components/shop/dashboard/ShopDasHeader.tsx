@@ -37,9 +37,17 @@ export default function ShopHeader({ shop, owner }: ShopHeaderProps) {
                         ? <StarFilled key={i} style={{ color: '#facc15', fontSize: 15 }}/> 
                         : <StarOutlined key={i} style={{ color: '#facc15', fontSize: 15 }}/>
                     )}
-                  </div> 
-                  {shop.rating}<span className="text-gray-600">({shop.reviews} đánh giá)</span>
-                  <span className="bg-[#e0b565] backdrop-blur-3xl text-[12px] px-2.5 py-0.5 rounded-full border border-gray-300 ml-1 text-white">✓ Shop Được Kiểm Duyệt</span>
+                  </div>
+                  {shop.rating}<span className="text-gray-600">({shop.reviews || 0} đánh giá)</span>
+                  {shop.status === 'approved' && (
+                    <span className="bg-green-600 backdrop-blur-3xl text-[12px] px-2.5 py-0.5 rounded-full border border-green-300 ml-1 text-white">✓ Shop Được Kiểm Duyệt</span>
+                  )}
+                  {shop.status === 'pending' && (
+                    <span className="bg-yellow-600 backdrop-blur-3xl text-[12px] px-2.5 py-0.5 rounded-full border border-yellow-300 ml-1 text-white">🕒 Đang Chờ Duyệt</span>
+                  )}
+                  {shop.status === 'rejected' && (
+                    <span className="bg-red-600 backdrop-blur-3xl text-[12px] px-2.5 py-0.5 rounded-full border border-red-300 ml-1 text-white">✕ Bị Từ Chối</span>
+                  )}
                 </div>
               </div>
             </div>
