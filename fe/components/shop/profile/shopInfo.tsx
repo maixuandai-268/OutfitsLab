@@ -11,6 +11,7 @@ interface Shop {
   rating: number;
   reviews: number;
   location: string;
+  followerCount?: number;
 }
 
 interface ShopInfoProps {
@@ -68,7 +69,7 @@ export const ShopInfo = ({ shop }: ShopInfoProps) => {
 
                     <div className="flex items-center gap-2 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
                       <UsersIcon className="w-4 h-4 text-pink-400" />
-                      <span>5,420 Followers</span>
+                      <span>{(shop.followerCount ?? 0).toLocaleString('vi-VN')} Followers</span>
                     </div>
 
                     <div className="flex items-center gap-2 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
