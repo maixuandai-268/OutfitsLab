@@ -57,6 +57,12 @@ export class Product {
   @Column({ nullable: true })
   tag: string;
 
+  @Column({ nullable: true })
+  affiliateLink: string;
+
+  @Column({ default: 0 })
+  affiliateClicks: number;
+
   @Column('jsonb', { nullable: true, default: [] })
   colors: string[];
 

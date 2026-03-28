@@ -101,6 +101,17 @@ export class ProductsController {
     return this.productsService.incrementSalesCount(id, quantity);
   }
 
+  @Patch(':id/click-affiliate')
+  @ApiOperation({ summary: 'Tăng số lượt click affiliate của sản phẩm' })
+  @ApiParam({ name: 'id', description: 'ID của sản phẩm' })
+  @ApiResponse({
+    status: 200,
+    description: 'Số lượt click đã được cập nhật',
+  })
+  incrementAffiliateClicks(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.incrementAffiliateClicks(id);
+  }
+
 
 
   @Delete(':id')

@@ -70,6 +70,11 @@ export class CreateProductDto {
   @IsString()
   tag?: string;
 
+  @ApiPropertyOptional({ description: 'Link tiếp thị liên kết' })
+  @IsOptional()
+  @IsString()
+  affiliateLink?: string;
+
   @ApiPropertyOptional({ description: 'Danh sách kích cỡ' })
   @IsOptional()
   @IsArray({ message: 'sizes phải là một mảng' })

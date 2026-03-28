@@ -9,6 +9,7 @@ import ReportPage from "@/components/admin/report/ReportPage";
 import SellerApplicationPage from "@/components/admin/sellerApplication/SellerApplicationPage";
 import AdminAccountsPage from "@/components/admin/adminAccounts/AdminAccountsPage";
 import BlogAdminPage from "@/components/admin/blog/BlogAdminPage";
+import AdminProductsPage from "@/components/admin/products/AdminProductsPage";
 
 
 export const ThemeCtx = createContext<{
@@ -32,8 +33,6 @@ export default function App() {
         return <DashboardPage dark={dark} />; 
       case "Người dùng":
         return <UserProfile dark={dark} />;     
-      case "Cài đặt":
-        return <SettingsPage dark={dark} />;  
       case "Báo cáo":
         return <ReportPage dark={dark} />;      
       case "Đơn đăng ký người bán":
@@ -42,6 +41,10 @@ export default function App() {
         return <AdminAccountsPage dark={dark} />;
       case "Blog":
         return <BlogAdminPage dark={dark} />;
+      case "Sản phẩm":
+        return <AdminProductsPage dark={dark} />;
+      case "Cài đặt":
+        return <SettingsPage dark={dark} />;  
       default:
         return (
           <div

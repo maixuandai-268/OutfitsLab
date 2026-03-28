@@ -42,7 +42,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <Spin size="large" tip="Đang tải dữ liệu cửa hàng..." />
+        <Spin size="large" description="Đang tải dữ liệu cửa hàng..." />
       </div>
     );
   }

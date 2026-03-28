@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Request, ParseIntPipe, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Request, ParseIntPipe, Delete, UseGuards, Query } from '@nestjs/common';
 import { ShopsService } from './shops.service';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
@@ -56,6 +56,30 @@ export class ShopsController {
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateShopDto: UpdateShopDto) {
     return this.shopsService.update(id, updateShopDto);
+  }
+
+  // Tăng lượt xem cho shop profile
+  @Patch(':id/views')
+  incrementViews(@Param('id', ParseIntPipe) id: number) {
+    return this.shopsService.incrementViews(id);
+  }
+
+  // Ghi nhận lượt xem profile cửa hàng (FE gọi mỗi khi user vào trang shop)
+  @Post(':id/track-view')
+  trackView(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('sessionId') sessionId?: string,
+  ) {
+    return this.shopsService.trackView(id, sessionId);
+  }
+
+  // Lấy thống kê lượt xem theo tháng (dùng cho trang phân tích)
+  @Get(':id/view-stats')
+  getViewStats(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('year') year?: string,
+  ) {
+    return this.shopsService.getMonthlyViewStats(id, year ? parseInt(year) : undefined);
   }
 
   // Xóa shop

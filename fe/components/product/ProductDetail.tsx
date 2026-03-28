@@ -14,6 +14,7 @@ interface Product {
   type: 'TOP' | 'BOTTOM' | 'SHOES' | 'HAT' | 'GLASSES' | 'ACCESSORY';
   rating?: number;
   reviews?: number;
+  affiliateLink?: string;
 }
 
 interface ProductDetailProps {
@@ -35,6 +36,18 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
     { color: '#FFFF00' }, // Yellow
     { color: '#FF69B4' }, // Pink
   ]
+
+  const handleAffiliateClick = async () => {
+    if (!product.affiliateLink) return;
+    try {
+      fetch(`http://localhost:3000/api/products/${product.id}/click-affiliate`, { 
+        method: 'PATCH' 
+      });
+    } catch (e) {
+      console.error("Lỗi track click:", e);
+    }
+    window.open(product.affiliateLink, '_blank');
+  };
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
@@ -118,6 +131,21 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
             />
           </div>
         </div>
+
+        {product.affiliateLink && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={handleAffiliateClick}
+              className="w-full py-4 bg-[#ee4d2d] text-white font-black rounded-2xl flex items-center justify-center hover:bg-[#ff5722] transition-all duration-300 shadow-xl hover:shadow-orange-200 uppercase tracking-widest gap-3"
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" className="w-6 h-6 invert brightness-0" alt="Shopee" />
+              Mua hàng tại Shopee
+            </button>
+            <p className="text-[10px] text-gray-400 mt-2 text-center font-bold italic">* Nhấn vào để chuyển hướng đến trang mua hàng chính thức</p>
+          </div>
+        )}
+
         <p className="font-semibold mt-8">Mô tả:</p>
         <p className='text-justify'>{product.description}</p>
       </div>

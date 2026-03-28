@@ -70,6 +70,9 @@ export default function ShopProfilePage() {
     };
 
     fetchShopData();
+
+    // Ghi nhận 1 lượt xem profile (fire-and-forget, không chặn UI)
+    fetch(`${API_BASE}/shops/${shopId}/track-view`, { method: 'POST' }).catch(() => {});
   }, [shopId]);
 
   if (loading) {
