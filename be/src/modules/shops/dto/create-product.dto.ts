@@ -15,13 +15,13 @@ import { Type } from 'class-transformer';
 import { ProductStatus } from '../product.entity';
 
 export class CreateProductDto {
-  @ApiProperty({
+  /* @ApiProperty({
     description: 'ID cửa hàng sở hữu sản phẩm',
   })
   @IsNumber({}, { message: 'ID cửa hàng phải là số' })
   @IsNotEmpty({ message: 'ID cửa hàng không được để trống' })
   @Type(() => Number)
-  shopId: number;
+  shopId: number; */
 
   @ApiProperty({
     description: 'Tên sản phẩm',

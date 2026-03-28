@@ -1,16 +1,19 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException, InternalServerErrorException, Module } from '@nestjs/common';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Shop } from './shop.entity';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
+import { NotificationController } from './notification.controller';
+import { Notification } from './notification.entity';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class ShopsService {
   constructor(
     @InjectRepository(Shop)
     private readonly shopsRepository: Repository<Shop>,
-  ) {}
+  ) { }
 
   // 1. Tạo Shop mới (Dùng cho trang Become)
   async create(userId: number, createShopDto: CreateShopDto) {
@@ -44,12 +47,12 @@ export class ShopsService {
 
   // 4. Tìm Shop theo ID người dùng (Dùng cho Dashboard của Seller)
   async findByUserId(userId: number) {
-  const shops = await this.shopsRepository.find({ 
-    where: { ownerId: userId },
-    order: { id: 'DESC' } 
-  });
-  return shops; 
-}
+    const shops = await this.shopsRepository.find({
+      where: { ownerId: userId },
+      order: { id: 'DESC' }
+    });
+    return shops;
+  }
 
   // 5. Cập nhật thông tin Shop chung
   async update(id: number, updateShopDto: UpdateShopDto) {
@@ -82,4 +85,13 @@ export class ShopsService {
     shop.status = 'rejected';
     return await this.shopsRepository.save(shop);
   }
+}
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Notification])],
+  controllers: [NotificationController],
+  providers: [NotificationService],
+  exports: [NotificationService], // export để ProductService dùng được
+})
+export class NotificationModule {
 }

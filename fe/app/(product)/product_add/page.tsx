@@ -8,7 +8,7 @@ import { message } from "antd";
 export default function AddProductPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const shopId = searchParams.get('shopId');
 
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -32,6 +32,7 @@ export default function AddProductPage() {
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
+
   const toggleSize = (size: string) => {
     setSelectedSizes((prev) =>
       prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
@@ -46,7 +47,11 @@ export default function AddProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!shopId) return message.error("Không tìm thấy ID cửa hàng!");
+    const shopIdNumber = Number(shopId);
+
+    if (!shopId || isNaN(shopIdNumber)) {
+      return message.error("ID cửa hàng không hợp lệ!");
+    }
 
     setLoading(true);
     try {
@@ -58,18 +63,18 @@ export default function AddProductPage() {
         image: imageUrl,           // Khớp với trường 'image' trong DTO
         status: "active",          // Khớp với Enum ProductStatus (active/inactive)
         type: category,            // TOP, BOTTOM, v.v.
-        shop_id: Number(shopId),   // Ép kiểu số cho ID cửa hàng
+        shop_id: shopIdNumber,   // Ép kiểu số cho ID cửa hàng
         sizes: selectedSizes,      // Gửi mảng kích cỡ đã chọn
         colors: selectedColors,    // Gửi mảng mã màu đã chọn
       };
 
-      const apiUrl = 'http://localhost:3000/api/products'; 
-      
+      const apiUrl = 'http://localhost:3000/api/products';
+
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       });
@@ -78,7 +83,8 @@ export default function AddProductPage() {
 
       if (res.ok) {
         message.success("Đã đăng sản phẩm thành công!");
-        router.push(`/shop_dashboard/${shopId}/products`); 
+        window.dispatchEvent(new Event("new-notification"));
+        router.push(`/shop_dashboard/${shopId}/products`);
       } else {
         console.error("Lỗi chi tiết từ Server:", data);
         message.error(data.message || "Đăng sản phẩm thất bại.");
@@ -89,6 +95,9 @@ export default function AddProductPage() {
     } finally {
       setLoading(false);
     }
+
+    console.log("shopId raw:", shopId);
+    console.log("shopId number:", Number(shopId));
   };
 
   return (
@@ -104,8 +113,8 @@ export default function AddProductPage() {
 
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-2xl border-2 border-[#ffe9cc] p-8 shadow-sm">
-          <button 
-            onClick={() => router.back()} 
+          <button
+            onClick={() => router.back()}
             className="text-[#d19f42] font-semibold text-sm mb-6 inline-flex items-center hover:underline"
           >
             ← Quay lại danh sách
@@ -144,7 +153,7 @@ export default function AddProductPage() {
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Danh mục</label>
-                <select 
+                <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full bg-[#fffbf5] px-4 h-12 border-2 border-[#ffe9cc] rounded-lg focus:outline-none"

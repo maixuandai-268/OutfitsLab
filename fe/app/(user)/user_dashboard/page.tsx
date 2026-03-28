@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MailOutlined,
   PhoneOutlined,
@@ -107,8 +107,19 @@ export default function ProfilePage() {
         <div className="max-w-6xl mx-auto px-8 pt-12 pb-8">
           <div className="flex flex-col md:flex-row items-start gap-8">
             <div className="relative shrink-0">
-              <div className="w-32 h-32 rounded-full bg-[#fa649a] border-[6px] border-white shadow-xl flex items-center justify-center text-6xl">
-                <img src={user?.avatarUrl} alt="Ảnh hồ sơ" />
+              <div className="w-32 h-32 rounded-full bg-[#fa649a] border-[6px] border-white shadow-xl flex items-center justify-center text-4xl overflow-hidden">
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt="Ảnh hồ sơ"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <span>👤</span>
+                )}
               </div>
             </div>
 
@@ -181,7 +192,7 @@ function AboutSection({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setUserInfo((prev:any) => ({
+    setUserInfo((prev: any) => ({
       ...prev,
       [name]: value
     }));
@@ -203,7 +214,7 @@ function AboutSection({
               { label: "Họ và tên", name: "displayName", value: userInfo.displayName },
               { label: "Mật khẩu", name: "password", value: userInfo.password, type: "password" },
               { label: "Địa chỉ email", name: "email", value: userInfo.email, type: "email" },
-              { label: "Bio", name: "bio", value: userInfo.bio},
+              { label: "Bio", name: "bio", value: userInfo.bio },
               { label: "Phone", name: "phone", value: userInfo.phone, type: "tel" }
             ].map((input) => (
               <div key={input.name} className="space-y-2">

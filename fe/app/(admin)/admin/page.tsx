@@ -3,7 +3,7 @@ import { useState, createContext, Dispatch, SetStateAction } from "react";
 import Sidebar from "@/components/admin/layout/sidebar";
 import Topbar from "@/components/admin/layout/topbar";
 import DashboardPage from "@/components/admin/dashboard/DashboardPage";
-import UserProfile from "@/components/admin/userProfile/UserProfile"; 
+import UserProfile from "@/components/admin/userProfile/UserProfile";
 import SettingsPage from "@/components/admin/settings/SettingsPage";
 import ReportPage from "@/components/admin/report/ReportPage";
 import SellerApplicationPage from "@/components/admin/sellerApplication/SellerApplicationPage";
@@ -14,28 +14,28 @@ import BlogAdminPage from "@/components/admin/blog/BlogAdminPage";
 export const ThemeCtx = createContext<{
   dark: boolean;
   setDark: Dispatch<SetStateAction<boolean>>;
-}>({ dark: true, setDark: () => {} });
+}>({ dark: true, setDark: () => { } });
 
 export default function App() {
-  const [dark, setDark]               = useState(true);
+  const [dark, setDark] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
- 
+
   const [expandedNav, setExpandedNav] = useState<string | null>(null);
 
-  const [activeNav, setActiveNav]     = useState<string | null>("Dashboard");
+  const [activeNav, setActiveNav] = useState<string | null>("Dashboard");
 
- 
+
   const renderContent = () => {
     switch (activeNav) {
       case "Bảng điều khiển":
-        return <DashboardPage dark={dark} />; 
+        return <DashboardPage dark={dark} />;
       case "Người dùng":
-        return <UserProfile dark={dark} />;     
+        return <UserProfile dark={dark} />;
       case "Cài đặt":
-        return <SettingsPage dark={dark} />;  
+        return <SettingsPage dark={dark} />;
       case "Báo cáo":
-        return <ReportPage dark={dark} />;      
+        return <ReportPage dark={dark} />;
       case "Đơn đăng ký người bán":
         return <SellerApplicationPage dark={dark} />;
       case "Team":
@@ -45,9 +45,8 @@ export default function App() {
       default:
         return (
           <div
-            className={`flex items-center justify-center h-full ${
-              dark ? "text-gray-400" : "text-gray-500"
-            }`}
+            className={`flex items-center justify-center h-full ${dark ? "text-gray-400" : "text-gray-500"
+              }`}
           >
             {activeNav}
           </div>

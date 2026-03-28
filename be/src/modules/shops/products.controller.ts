@@ -11,6 +11,8 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
+  Req,
+  UseGuards
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,12 +21,18 @@ import {
   ApiParam,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
 import { ProductStatus } from './product.entity';
 import { ProductResponseDto } from './dto/product-response.dto';
+
+interface AuthRequest {
+  user?: { id: number };
+}
+
 
 @ApiTags('Products')
 @ApiBearerAuth()
@@ -33,10 +41,12 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Tạo sản phẩm mới' })
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  create(@Body() createProductDto: CreateProductDto, @Req() req: AuthRequest) {
+    const userId = req.user?.id as number;
+    return this.productsService.create(createProductDto, userId);
   }
 
   @Get()

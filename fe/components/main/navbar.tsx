@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from "next/link";
 import {
   BellOutlined,
@@ -12,14 +13,159 @@ import {
   EditOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { Avatar, Dropdown, MenuProps, Modal, List, Badge } from "antd";
+import { Avatar, Dropdown, MenuProps, List, Badge, Popover, Button, Spin } from "antd";
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/vi";
+
+dayjs.extend(relativeTime);
+dayjs.locale("vi");
+
+// ─── Type ───────────────────────────────────────────────
+interface Notification {
+  id: number;
+  title: string;
+  desc: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+const API = "http://localhost:3000/api";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user, logout, token } = useAuth();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  // ─── Fetch notifications ────────────────────────────────
+  const fetchNotifications = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/notifications`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data);
+      }
+    } catch (err) {
+      console.error("Lỗi fetch notifications:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  // Fetch khi mount + lắng nghe event từ AddProduct
+  useEffect(() => {
+    fetchNotifications();
+
+    const handleNewNotification = () => fetchNotifications();
+    window.addEventListener("new-notification", handleNewNotification);
+    return () => window.removeEventListener("new-notification", handleNewNotification);
+  }, [fetchNotifications]);
+
+  // ─── Đánh dấu 1 thông báo đã đọc ──────────────────────
+  const handleMarkAsRead = async (id: number) => {
+    if (!token) return;
+    try {
+      await fetch(`${API}/notifications/${id}/read`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      );
+    } catch (err) {
+      console.error("Lỗi markAsRead:", err);
+    }
+  };
+
+  // ─── Đánh dấu tất cả đã đọc ────────────────────────────
+  const handleMarkAllAsRead = async () => {
+    if (!token) return;
+    try {
+      await fetch(`${API}/notifications/read-all`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    } catch (err) {
+      console.error("Lỗi markAllAsRead:", err);
+    }
+  };
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  // ─── Popover content ────────────────────────────────────
+  const notificationContent = (
+    <div className="w-full">
+      {/* Header hành động */}
+      {unreadCount > 0 && (
+        <div className="flex justify-end mb-2">
+          <Button
+            type="link"
+            size="small"
+            className="text-rose-500 hover:text-rose-600 p-0 text-xs"
+            onClick={handleMarkAllAsRead}
+          >
+            Đánh dấu tất cả đã đọc
+          </Button>
+        </div>
+      )}
+
+      {/* Danh sách */}
+      <div className="max-h-[60vh] overflow-y-auto custom-scrollbar pr-1">
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <Spin />
+          </div>
+        ) : notifications.length === 0 ? (
+          <div className="text-center py-8 text-gray-400 text-sm">
+            Không có thông báo nào
+          </div>
+        ) : (
+          <List
+            itemLayout="horizontal"
+            dataSource={notifications}
+            renderItem={(item) => (
+              <List.Item
+                className={`px-4 py-3 mb-1 rounded-xl transition cursor-pointer border-b-0
+                  ${!item.isRead ? "bg-rose-50/50 hover:bg-rose-50" : "hover:bg-gray-50"}`}
+                onClick={() => !item.isRead && handleMarkAsRead(item.id)}
+              >
+                <List.Item.Meta
+                  title={
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-semibold text-gray-800 text-sm">
+                        {item.title}
+                      </span>
+                      <span className="text-[11px] text-gray-400 font-normal ml-2 shrink-0">
+                        {dayjs(item.createdAt).fromNow()}
+                      </span>
+                    </div>
+                  }
+                  description={
+                    <span className="text-[13px] text-gray-600 line-clamp-2">
+                      {item.desc}
+                    </span>
+                  }
+                />
+                {!item.isRead && (
+                  <div className="w-2 h-2 rounded-full bg-rose-500 ml-4 shrink-0" />
+                )}
+              </List.Item>
+            )}
+          />
+        )}
+      </div>
+    </div>
+  );
+
+  // ─── Menu items ─────────────────────────────────────────
   const getMenuItems = (): MenuProps["items"] => {
     const baseItems: MenuProps["items"] = [
       {
@@ -56,7 +202,6 @@ export default function Navbar() {
       },
     ];
 
-    // Hiển thị thêm Dashboard nếu user đã là Seller thực thụ
     if (user?.role === "shop") {
       baseItems.push({
         key: "shop-dashboard",
@@ -65,7 +210,6 @@ export default function Navbar() {
       });
     }
 
-    // Hiển thị menu cho Admin
     if (user?.role === "admin") {
       baseItems.push(
         { type: "divider" },
@@ -82,7 +226,6 @@ export default function Navbar() {
       );
     }
 
-    // Nút Đăng xuất luôn ở dưới cùng
     baseItems.push(
       { type: "divider" },
       {
@@ -96,20 +239,22 @@ export default function Navbar() {
     return baseItems;
   };
 
+  // ─── JSX ────────────────────────────────────────────────
   return (
-    <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-xl shadow-sm ">
+    <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-xl shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-full">
         <Link href="/" className="flex items-center gap-1.5">
-          <div className="w-[80px] h-auto flex items-center justify-center">
-            <img
+          <div className="w-20 h-auto flex items-center justify-center">
+            <Image
               src="/images/logo.png"
               alt="OutfitsLab Logo"
+              width={80}
+              height={80}
               className="object-cover scale-150 transition-transform hover:scale-175"
             />
           </div>
         </Link>
 
-        {/* Menu điều hướng chính */}
         <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-700">
           <Link href="/">Trang chủ</Link>
           <Link href="/product">Bộ sưu tập</Link>
@@ -121,9 +266,25 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-8">
           <div className="flex items-center gap-7 text-2xl text-gray-600">
-            <Badge count={3} size="small" offset={[-2, 6]}>
-              <BellOutlined onClick={() => setIsModalOpen(true)} className="cursor-pointer hover:text-rose-500 transition-colors text-[24px]" />
-            </Badge>
+
+            {/* 🔔 Bell + Popover */}
+            <Popover
+              title={<span className="text-base font-bold">Thông báo của bạn</span>}
+              open={isPopoverOpen}
+              onOpenChange={(visible) => {
+                setIsPopoverOpen(visible);
+                if (visible) fetchNotifications(); // refresh mỗi lần mở
+              }}
+              trigger="click"
+              placement="bottomRight"
+              overlayStyle={{ width: 420 }}
+              content={notificationContent}
+            >
+              <Badge count={unreadCount} size="small" offset={[-2, 6]}>
+                <BellOutlined className="cursor-pointer hover:text-rose-500 transition-colors text-[24px]" />
+              </Badge>
+            </Popover>
+
             <Link href="/saved">
               <HeartOutlined className="cursor-pointer hover:text-rose-500 transition-colors" />
             </Link>
@@ -152,48 +313,11 @@ export default function Navbar() {
               arrow
             >
               <div className="flex items-center gap-3 cursor-pointer group">
-                <Avatar
-                  size={40}
-                  icon={<UserOutlined />}
-                />
+                <Avatar size={40} icon={<UserOutlined />} />
               </div>
             </Dropdown>
           )}
         </div>
-
-        <Modal
-          title={<span className="text-lg font-bold">Thông báo của bạn</span>}
-          open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
-          footer={null}
-          width={450}
-        >
-          <div className="max-h-[60vh] overflow-y-auto mt-4 custom-scrollbar pr-2">
-            <List
-              itemLayout="horizontal"
-              dataSource={[
-                { title: "Chào mừng bạn mới", desc: "Cảm ơn bạn đã tham gia OutfitsLab!", time: "2 giờ trước", unread: true },
-                { title: "Bộ sưu tập Mùa Hè", desc: "Khám phá ngay các mẫu trang phục mới nhất cho mùa hè rực rỡ.", time: "1 ngày trước", unread: false },
-                { title: "Sale Off 50%", desc: "Duy nhất hôm nay, giảm giá cực sốc các mẫu áo khoác.", time: "3 ngày trước", unread: false },
-                { title: "Sale Off 100%", desc: "giảm giá cực sốc các mẫu áo khoác.", time: "3 ngày trước", unread: true },
-              ]}
-              renderItem={(item) => (
-                <List.Item className={`px-4 py-3 mb-2 rounded-xl transition cursor-pointer border-b-0 ${item.unread ? 'bg-rose-50/50' : 'hover:bg-gray-50'}`}>
-                  <List.Item.Meta
-                    title={
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="font-semibold text-gray-800">{item.title}</span>
-                        <span className="text-[11px] text-gray-400 font-normal">{item.time}</span>
-                      </div>
-                    }
-                    description={<span className="text-[13px] text-gray-600 line-clamp-2">{item.desc}</span>}
-                  />
-                  {item.unread && <div className="w-2 h-2 rounded-full bg-rose-500 ml-4 flex-shrink-0"></div>}
-                </List.Item>
-              )}
-            />
-          </div>
-        </Modal>
       </div>
     </header>
   );

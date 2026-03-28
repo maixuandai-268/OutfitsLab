@@ -9,13 +9,14 @@ import {
 import Link from "antd/es/typography/Link";
 
 const navItems = [
-  { icon: <DashboardOutlined />,    label: "Bảng điều khiển" },
-  { icon: <UserOutlined />,         label: "Người dùng"},
-  { icon: <AreaChartOutlined />,     label: "Báo cáo" },
-  { icon: <BankOutlined />,     label: "Đơn đăng ký người bán" },
-  { icon: <TeamOutlined />,         label: "Team" },
-  { icon: <SettingOutlined />,      label: "Cài đặt" },
-  { icon: <DashboardOutlined />,    label: "Blog" },
+  { icon: <DashboardOutlined />, label: "Bảng điều khiển" },
+  { icon: <UserOutlined />, label: "Người dùng" },
+  { icon: <AreaChartOutlined />, label: "Báo cáo" },
+  { icon: <DashboardOutlined />, label: "Blog" },
+  { icon: <BankOutlined />, label: "Đơn đăng ký người bán" },
+  { icon: <TeamOutlined />, label: "Team" },
+  { icon: <SettingOutlined />, label: "Cài đặt" },
+
 ];
 interface SidebarProps {
   dark?: boolean;
@@ -26,17 +27,16 @@ interface SidebarProps {
   setExpandedNav: (label: string | null) => void;
 }
 
-export default function Sidebar({ dark = false, 
-                                  open = true, 
-                                  activeNav = null,
-                                  setActiveNav = () => {},
-                                   }: SidebarProps) {
+export default function Sidebar({ dark = false,
+  open = true,
+  activeNav = null,
+  setActiveNav = () => { },
+}: SidebarProps) {
   return (
     <aside
       style={{ width: open ? 260 : 72, transition: "width 0.25s ease" }}
-      className={`flex flex-col flex-shrink-0 min-h-screen z-10 overflow-hidden ${
-        dark ? "bg-gray-800 border-r border-gray-700" : "bg-white border-r border-slate-200"
-      }`}
+      className={`flex flex-col flex-shrink-0 min-h-screen z-10 overflow-hidden ${dark ? "bg-gray-800 border-r border-gray-700" : "bg-white border-r border-slate-200"
+        }`}
     >
       <div className={`flex items-center gap-3 px-5 py-4 w-full h-[7%] border-b ${dark ? "border-gray-700" : "border-slate-100"}`}>
         <Link href="/admin">
@@ -46,7 +46,7 @@ export default function Sidebar({ dark = false,
 
       <nav className="flex-1 overflow-y-auto py-3 px-3">
         {navItems.map((item) => {
-          const isActive   = activeNav === item.label;
+          const isActive = activeNav === item.label;
 
           return (
             <div key={item.label}>
@@ -54,15 +54,13 @@ export default function Sidebar({ dark = false,
                 onClick={() => {
                   setActiveNav(item.label);
                 }}
-                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl mb-0.5 text-sm font-medium transition-all duration-150 cursor-pointer ${
-                  !open ? "justify-center" : ""
-                } ${
-                  isActive
+                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl mb-0.5 text-sm font-medium transition-all duration-150 cursor-pointer ${!open ? "justify-center" : ""
+                  } ${isActive
                     ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md"
                     : dark
-                    ? "text-gray-400 hover:bg-gray-700 hover:text-gray-100"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-                }`}
+                      ? "text-gray-400 hover:bg-gray-700 hover:text-gray-100"
+                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                  }`}
               >
                 <span className="text-base flex-shrink-0">{item.icon}</span>
                 {open && (

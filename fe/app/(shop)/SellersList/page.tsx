@@ -18,7 +18,9 @@ interface Shop {
 
 interface Product {
   id: number;
-  shopId: number;
+  shopId?: number;
+  shop_id?: number;
+  name?: string;
 }
 
 export default function FeaturedSellersPage() {
@@ -98,7 +100,10 @@ export default function FeaturedSellersPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             {shops.map((shop) => {
-              const productCount = products.filter(i => i.shopId === shop.id).length
+            
+              const productCount = products.filter(p =>
+                (p.shopId === shop.id) || (p.shop_id === shop.id)
+              ).length;
               return (
                 <Link key={shop.id} href={`/shop_profile/${shop.id}`} className="bg-white rounded-3xl border-3 border-gray-200 hover:shadow-xl overflow-hidden">
                   <div className={`h-24 w-full bg-linear-to-tl from-[#d5e9e9] to-[#f4ebd9]`}></div>

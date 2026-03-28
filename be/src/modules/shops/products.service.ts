@@ -7,19 +7,33 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
 import { PaginatedProductResponseDto } from './dto/product-response.dto';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly notificationService: NotificationService,
   ) { }
 
   // 1. Tạo sản phẩm mới
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(createProductDto: CreateProductDto, userId?: number): Promise<Product> {
     const product = this.productRepository.create(createProductDto);
-    return await this.productRepository.save(product);
+    const saved = await this.productRepository.save(product);
+
+    // 🔔 Tạo notification cho chủ shop sau khi đăng sản phẩm thành công
+    if (saved.id && userId) {
+      await this.notificationService.create(
+        userId,
+        'Đăng sản phẩm thành công',
+        `Sản phẩm "${saved.name}" đã được đăng lên cửa hàng của bạn.`,
+      );
+    }
+
+    return saved;
   }
+
 
   // 2. Lấy danh sách sản phẩm (Có lọc theo shop_id và phân trang)
   async findAll(query: QueryProductDto): Promise<PaginatedProductResponseDto> {
