@@ -12,13 +12,12 @@ import { ShopModule } from './modules/shops/shops.module';
 import { BlogModule } from './modules/blog/blog.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-<<<<<<< HEAD
-import { UploadModule } from './modules/upload/upload.module';
-=======
 import { IssueReportModule } from './modules/report/report.module';
->>>>>>> d221946 (duyet)
-require('dotenv').config();
+import { UploadModule } from './modules/upload/upload.module';
 
+
+
+require('dotenv').config();
 const password = process.env.DB_PASSWORD || '';
 
 
@@ -42,11 +41,16 @@ const password = process.env.DB_PASSWORD || '';
     BlogModule,
     ReviewsModule,
     NotificationsModule,
-<<<<<<< HEAD
-    UploadModule
-=======
     IssueReportModule,
->>>>>>> d221946 (duyet)
+    UploadModule
+
   ],
 })
 export class AppModule { };
+
+
+// Note: Các module như AdminModule, OrderModule, CartModule sẽ được thêm vào sau khi hoàn thiện chức năng tương ứng
+// Ví dụ:
+// import { AdminModule } from './modules/admin/admin.module';
+// import { OrderModule } from './modules/order/order.module';
+// import { CartModule } from './modules/cart/cart.module';
