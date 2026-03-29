@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
   ConflictException,
@@ -32,7 +29,7 @@ export class AdminService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(Shop)
     private readonly realShopRepo: Repository<Shop>,
-  ) {}
+  ) { }
 
   async updateUserStatus(dto: UpdateUserStatusDto) {
     return await this.adminUserRepo.update(dto.userId, { is_active: dto.is_active });
@@ -51,11 +48,12 @@ export class AdminService {
   }
 
   async processSeller(dto: ApproveSellerDto) {
-    const shop = await this.adminShopRepo.findOne({ where: { id: dto.sellerId } });
-    if (!shop) throw new NotFoundException('Shop không tồn tại');
+    const shop = await this.adminShopRepo.findOneOrFail({ where: { id: dto.sellerId } }).catch(() => {
+      throw new NotFoundException('Shop không tồn tại');
+    });
 
-    await this.adminShopRepo.update(dto.sellerId, { 
-      status: dto.status, 
+    await this.adminShopRepo.update(dto.sellerId, {
+      status: dto.status,
       reject_reason: dto.status === 'rejected' ? (dto.reason || '') : ''
     });
 
@@ -65,7 +63,7 @@ export class AdminService {
   async getDashboardStats() {
     const totalUsers = await this.adminUserRepo.count();
     const totalSellers = await this.adminShopRepo.count({ where: { status: 'approved' } });
-    
+
     return {
       summary: [
         { label: 'Total Users', value: totalUsers, growth: '+12.5%' },
@@ -89,8 +87,9 @@ export class AdminService {
     };
   }
 
-  private sanitizeUser<T extends Partial<User>>(user: T): Omit<T, 'password'> {
-    const { password, ...rest } = user as any;
+  private sanitizeUser(user: User): Omit<User, 'password'> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
     return rest;
   }
 

@@ -8,10 +8,10 @@ const visitorData = [
   { day: "Mon", visitors: 1200 }, { day: "Tue", visitors: 1900 },
   { day: "Wed", visitors: 1600 }, { day: "Thu", visitors: 2300 },
   { day: "Fri", visitors: 2100 }, { day: "Sat", visitors: 1400 },
-  { day: "Sun", visitors: 900  },
+  { day: "Sun", visitors: 900 },
 ];
 
-export default function VisitorChart({ dark } : { dark: boolean }) {
+export default function VisitorChart({ dark }: { dark: boolean }) {
   return (
     <Card dark={dark}>
       <CardTitle dark={dark} title="Số lượng người truy cập" sub="Lưu lượng tuần này" />

@@ -73,6 +73,9 @@ export class Product {
   @Column({ default: 0 })
   affiliateClicks: number;
 
+  @Column({ default: 0 })
+  viewCount: number;
+
   @Column('jsonb', { nullable: true, default: [] })
   colors: string[];
 

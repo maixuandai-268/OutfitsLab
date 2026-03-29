@@ -30,6 +30,8 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+export { AuthContext };
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -43,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!res.ok) throw new Error();
       const data = await res.json();
-      
+
       // FIX: Map dữ liệu từ data.shop sang shopId và shopStatus cho Navbar dùng
       setUser({
         ...data,

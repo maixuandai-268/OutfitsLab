@@ -7,6 +7,7 @@ import Navbar from "@/components/main/navbar";
 import Footer from "@/components/footer";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthGate from "@/components/auth/AuthGate";
+import ReportAlertButton from "@/components/common/ReportAlertButton";
 
 
 const geistSans = Geist({
@@ -33,8 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthGate>
             <div>
               {children}
+              <ReportAlertButton />
             </div>
-            <Footer/>
+            <Footer />
           </AuthGate>
         </AuthProvider>
       </body>

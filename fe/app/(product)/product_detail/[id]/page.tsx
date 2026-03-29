@@ -19,6 +19,7 @@ export default function ProductDetailPage() {
     if (!productId) {
       setLoading(false);
       return;
+
     }
 
     const fetchProduct = async () => {

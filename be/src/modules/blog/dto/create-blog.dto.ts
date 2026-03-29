@@ -25,4 +25,8 @@ export class CreateBlogDto {
   @IsString()
   @IsOptional()
   author: string;
+
+  @IsString()
+  @IsOptional()
+  excerpt: string;
 }
