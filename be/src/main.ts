@@ -6,17 +6,17 @@ import { json, urlencoded } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(json({ limit: '50mb' }));
-  app.use(urlencoded({ extended: true, limit: '50mb' }));
+  app.use(json({ limit: '200mb' }));
+  app.use(urlencoded({ extended: true, limit: '200mb' }));
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,     
-      forbidNonWhitelisted: true, 
-      transform: true,    
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
-  
+
   app.setGlobalPrefix('api');
 
   app.enableCors({

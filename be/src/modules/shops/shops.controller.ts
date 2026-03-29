@@ -46,10 +46,10 @@ export class ShopsController {
     return this.shopsService.reject(id);
   }
 
-  // Lấy chi tiết 1 shop
+  // Lấy chi tiết 1 shop (profile + thống kê)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.shopsService.findOne(id);
+    return this.shopsService.getShopProfile(id);
   }
 
   // Cập nhật shop

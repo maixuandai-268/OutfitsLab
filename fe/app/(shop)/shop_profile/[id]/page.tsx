@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ShopProductCard } from '@/components/shop/profile/showProduct';
@@ -43,6 +43,7 @@ export default function ShopProfilePage() {
   const [shop, setShop] = useState<Shop | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const trackedRef = useRef(false); // 🔥 Chống đếm đúp trong StrictMode
 
   useEffect(() => {
     if (!shopId) return;
@@ -71,8 +72,11 @@ export default function ShopProfilePage() {
 
     fetchShopData();
 
-    // Ghi nhận 1 lượt xem profile (fire-and-forget, không chặn UI)
-    fetch(`${API_BASE}/shops/${shopId}/track-view`, { method: 'POST' }).catch(() => {});
+    // 🔥 Ghi nhận 1 lượt xem profile (Giao điểm đảm bảo chỉ chạy 1 lần)
+    if (!trackedRef.current) {
+      fetch(`${API_BASE}/shops/${shopId}/track-view`, { method: 'POST' }).catch(() => {});
+      trackedRef.current = true;
+    }
   }, [shopId]);
 
   if (loading) {

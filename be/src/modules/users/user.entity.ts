@@ -1,7 +1,15 @@
 /* eslint-disable prettier/prettier */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import { 
+  Entity, 
+  PrimaryGeneratedColumn, 
+  Column, 
+  CreateDateColumn, 
+  UpdateDateColumn, 
+  OneToOne, 
+  OneToMany 
+} from 'typeorm';
 import { Shop } from '../shops/shop.entity'; 
-/* eslint-disable prettier/prettier */
+import { Notification } from '../notifications/notification.entity';
 
 @Entity('users')
 export class User {
@@ -32,7 +40,7 @@ export class User {
   @Column({nullable : true})
   phone : string;
 
-  @Column({default : 1})
+  @Column({default : true}) // Sửa lại kiểu dữ liệu boolean chuẩn
   isActive : boolean;
 
   @Column({ default: 'user' })
@@ -44,6 +52,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => Shop, (shop: any) => shop.owner)
+  @OneToOne(() => Shop, (shop) => shop.owner)
   shop: Shop;
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
 }

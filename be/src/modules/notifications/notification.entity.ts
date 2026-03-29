@@ -40,7 +40,9 @@ export class Notification {
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.notifications, { 
+    onDelete: 'CASCADE' 
+  })
   @JoinColumn({ name: 'userId' })
   user: User;
 }

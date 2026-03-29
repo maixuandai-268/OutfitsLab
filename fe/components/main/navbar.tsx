@@ -59,7 +59,7 @@ export default function Navbar() {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
-        setNotifications(prev => 
+        setNotifications(prev =>
           prev.map(n => n.id === id ? { ...n, isRead: true } : n)
         );
       }
@@ -169,10 +169,10 @@ export default function Navbar() {
       <div className="p-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
         <h3 className="font-bold text-gray-800">Thông báo</h3>
         {unreadCount > 0 && (
-          <Button 
-            type="text" 
-            size="small" 
-            icon={<CheckOutlined />} 
+          <Button
+            type="text"
+            size="small"
+            icon={<CheckOutlined />}
             onClick={handleMarkAllAsRead}
             className="text-blue-500 text-[11px] font-bold"
           >
@@ -183,10 +183,10 @@ export default function Navbar() {
       <div className="max-h-96 overflow-y-auto">
         {notifications.length > 0 ? (
           notifications.map(n => (
-            <NotificationItem 
-              key={n.id} 
-              notification={n} 
-              onRead={handleMarkAsRead} 
+            <NotificationItem
+              key={n.id}
+              notification={n}
+              onRead={handleMarkAsRead}
             />
           ))
         ) : (
@@ -204,7 +204,7 @@ export default function Navbar() {
   );
 
   return (
-    <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 fixed z-50 backdrop-blur-xl shadow-sm ">
+    <header className="w-full bg-[#f4efe9]/95 border-b border-gray-100 sticky top-0 z-50 backdrop-blur-xl shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between h-full">
         <Link href="/" className="flex items-center gap-1.5">
           <div className="w-[80px] h-auto flex items-center justify-center">
@@ -223,10 +223,10 @@ export default function Navbar() {
           <Link href="/SellersList" className="hover:text-yellow-700 transition-colors">Cửa hàng</Link>
           <Link href="/blog" className="hover:text-yellow-700 transition-colors">Cộng đồng</Link>
           <Link href="/about" className="hover:text-yellow-700 transition-colors">Giới thiệu</Link>
-          
+
           {user && !user.shopId && (
-            <Link 
-              href="/become" 
+            <Link
+              href="/become"
               className="text-yellow-700 font-bold hover:text-yellow-800 transition-colors underline decoration-2 underline-offset-4"
             >
               Trở thành Shop
@@ -243,9 +243,9 @@ export default function Navbar() {
         <div className="flex items-center gap-8">
           <div className="hidden md:flex items-center gap-7 text-2xl text-gray-600">
             {user ? (
-              <Dropdown 
-                popupRender={() => notificationContent} 
-                trigger={['click']} 
+              <Dropdown
+                popupRender={() => notificationContent}
+                trigger={['click']}
                 placement="bottomRight"
                 arrow
               >
@@ -276,7 +276,7 @@ export default function Navbar() {
                   src={user.avatarUrl}
                   icon={!user.avatarUrl && <UserOutlined />}
                   className="border border-gray-200"
-                />s
+                />
               </div>
             </Dropdown>
           )}

@@ -2,35 +2,54 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { 
-  Table, 
-  Tag, 
-  Space, 
-  Button, 
-  message, 
-  Popconfirm, 
-  Input, 
-  Avatar, 
-  ConfigProvider, 
-  theme 
+  Table, Tag, Space, Button, App, Popconfirm, Input, 
+  Avatar, ConfigProvider, theme, Modal, Upload, Typography, Rate, Divider 
 } from 'antd';
 import { 
-  DeleteOutlined, 
-  EyeOutlined, 
-  SearchOutlined, 
-  ReloadOutlined,
-  ShoppingOutlined,
-  RightOutlined,
-  FilterOutlined
+  DeleteOutlined, EyeOutlined, SearchOutlined, ReloadOutlined,
+  ShoppingOutlined, RightOutlined, CloudUploadOutlined, LinkOutlined,
+  ShopOutlined, MailOutlined, EnvironmentOutlined, InboxOutlined
 } from "@ant-design/icons";
 import { useAuth } from "@/context/AuthContext";
 import Card from "../shared/card";
 import CardTitle from "../shared/cardTitle";
 
+const { Text, Title } = Typography;
+
 export default function AdminProductsPage({ dark }: { dark: boolean }) {
+  return (
+    <ConfigProvider
+      theme={{
+        algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+          colorPrimary: '#6366f1',
+          borderRadius: 12,
+        },
+      }}
+    >
+      <App>
+        <AdminProductsContent dark={dark} />
+      </App>
+    </ConfigProvider>
+  );
+}
+
+function AdminProductsContent({ dark }: { dark: boolean }) {
+  const { message } = App.useApp();
   const { token } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
+
+  // States cho Modals
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [affiliateLink, setAffiliateLink] = useState("");
+  
+  // 🔥 THÊM: State để giữ URL file sau khi upload thành công
+  const [model3DUrl, setModel3DUrl] = useState("");
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -52,6 +71,51 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  // Xử lý mở Modal Upload
+  const openUploadModal = (product: any) => {
+    setSelectedProduct(product);
+    setAffiliateLink(product.affiliateLink || "");
+    setModel3DUrl(product.model3DUrl || ""); // Lấy link cũ nếu có
+    setIsUploadModalOpen(true);
+  };
+
+  // Xử lý mở Modal Shop
+  const openShopModal = (product: any) => {
+    setSelectedProduct(product);
+    setIsShopModalOpen(true);
+  };
+
+  // Logic Lưu thông tin Upload
+  const handleSaveUpload = async () => {
+    if (!selectedProduct) return;
+    setUploadLoading(true);
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${selectedProduct.id}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        // 🔥 SỬA: Gửi cả affiliateLink và model3DUrl vào chung product
+        body: JSON.stringify({ 
+          affiliateLink, 
+          model3DUrl: model3DUrl,
+          is3DGenerated: !!model3DUrl // Tự động bật status nếu có link
+        })
+      });
+
+      if (res.ok) {
+        message.success("Cập nhật thông tin thành công");
+        setIsUploadModalOpen(false);
+        fetchProducts();
+      }
+    } catch (error) {
+      message.error("Lỗi khi cập nhật");
+    } finally {
+      setUploadLoading(false);
+    }
+  };
 
   const handleDelete = async (id: number) => {
     try {
@@ -83,10 +147,30 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
           />
           <div>
             <div className={`text-[13px] font-semibold ${dark ? 'text-gray-100' : 'text-gray-800'}`}>{record.name}</div>
-            <div className="text-[11px] text-gray-400 capitalize">{record.type} • {record.shop?.shop_name || 'N/A'}</div>
+            <div className="flex items-center gap-1">
+               <button 
+                  onClick={() => openShopModal(record)}
+                  className="text-[11px] text-indigo-400 hover:text-indigo-300 underline cursor-pointer bg-transparent border-none p-0"
+               >
+                 {record.shop?.shop_name || 'N/A'}
+               </button>
+               <span className="text-[11px] text-gray-400">• {record.type}</span>
+            </div>
           </div>
         </Space>
       ),
+    },
+    {
+      title: 'Trạng thái 3D',
+      key: 'status3d',
+      render: (_: any, record: any) => {
+        const has3D = !!record.model3DUrl; 
+        return (
+          <Tag color={has3D ? "processing" : "default"} className="text-[10px] rounded-full px-2 border-none">
+            {has3D ? "Đã đẩy file 3D" : "Chưa đẩy"}
+          </Tag>
+        )
+      }
     },
     {
       title: 'Giá',
@@ -116,24 +200,18 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
       )
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string) => (
-        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${
-          status === 'active' 
-            ? 'bg-emerald-100 text-emerald-700' 
-            : 'bg-red-100 text-red-700'
-        }`}>
-          {status === 'active' ? 'HOẠT ĐỘNG' : 'ẨN'}
-        </span>
-      ),
-    },
-    {
       title: 'Hành động',
       key: 'action',
       render: (_: any, record: any) => (
         <Space size="small">
+          <Button 
+            type="text" 
+            size="small"
+            title="Upload file 3D & Affiliate"
+            className={`flex items-center justify-center ${dark ? 'text-emerald-400 hover:bg-emerald-400/10' : 'text-emerald-600 hover:bg-emerald-50'}`}
+            icon={<CloudUploadOutlined />} 
+            onClick={() => openUploadModal(record)}
+          />
           <Button 
             type="text" 
             size="small"
@@ -167,17 +245,8 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
   );
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        token: {
-          colorPrimary: '#6366f1',
-          borderRadius: 12,
-        },
-      }}
-    >
       <div className={`p-6 min-h-full ${dark ? 'text-gray-100' : 'text-gray-800'}`}>
-        {/* Breadcrumb Header */}
+        {/* Header Section Giữ Nguyên */}
         <div className="mb-6">
           <div className="flex items-center gap-1.5 mb-1.5 text-xs text-gray-400">
             <span>Admin</span>
@@ -211,11 +280,6 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
               >
                 <ReloadOutlined /> Làm mới
               </button>
-              <button 
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-indigo-500 hover:bg-indigo-600 text-white shadow-md shadow-indigo-100 transition-all"
-              >
-                <FilterOutlined /> Bộ lọc
-              </button>
             </div>
           </div>
 
@@ -232,40 +296,136 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
                 showSizeChanger: false,
                 className: "mt-6" 
               }}
-              rowClassName={() => `group transition-colors ${dark ? 'hover:bg-gray-900/40' : 'hover:bg-slate-50/80'}`}
             />
           </div>
         </Card>
 
+        {/* MODAL UPLOAD FILE 3D & AFFILIATE */}
+        <Modal
+          title={<div className="text-lg font-bold pb-2 border-b border-gray-100">Upload Tài Nguyên Sản Phẩm</div>}
+          open={isUploadModalOpen}
+          onOk={handleSaveUpload}
+          onCancel={() => setIsUploadModalOpen(false)}
+          confirmLoading={uploadLoading}
+          okText="Lưu thay đổi"
+          cancelText="Hủy"
+          width={500}
+          centered
+        >
+          <div className="py-4 space-y-6">
+            <div>
+              <Text className="block mb-2 font-medium">1. File 3D (.glb, .obj, .gltf)</Text>
+              <Upload.Dragger 
+                name="file" 
+                multiple={false} 
+                action="http://localhost:3000/api/upload" 
+                headers={{ Authorization: `Bearer ${token}` }}
+                className={dark ? 'bg-gray-800' : 'bg-gray-50'}
+                // 🔥 SỬA: Lấy link từ kết quả upload
+                onChange={(info) => {
+                  if (info.file.status === 'done') {
+                    message.success(`${info.file.name} upload thành công`);
+                    setModel3DUrl(info.file.response.url); // Lưu link server trả về
+                  } else if (info.file.status === 'error') {
+                    message.error(`${info.file.name} upload thất bại.`);
+                  }
+                }}
+              >
+                <p className="ant-upload-drag-icon">
+                  {/* 🔥 SỬA: Icon mũi tên chỉ xuống giống Chrome */}
+                  <InboxOutlined className="text-indigo-500" style={{ fontSize: '48px' }} />
+                </p>
+                <p className="ant-upload-text text-sm">Nhấp hoặc kéo file vào đây để nhập dữ liệu</p>
+                <p className="ant-upload-hint text-xs text-gray-400 italic">Hỗ trợ các định dạng 3D chuẩn hệ thống</p>
+              </Upload.Dragger>
+            </div>
+
+            <div>
+              <Text className="block mb-2 font-medium">2. Đường dẫn Affiliate</Text>
+              <Input 
+                prefix={<LinkOutlined className="text-gray-400" />}
+                placeholder="Nhập link affiliate (Shopee, Lazada...)"
+                value={affiliateLink}
+                onChange={(e) => setAffiliateLink(e.target.value)}
+                className="rounded-lg py-2"
+              />
+            </div>
+          </div>
+        </Modal>
+
+        {/* MODAL THÔNG TIN SHOP GIỮ NGUYÊN */}
+        <Modal
+          open={isShopModalOpen}
+          footer={null}
+          onCancel={() => setIsShopModalOpen(false)}
+          width={400}
+          centered
+          className="shop-info-modal"
+        >
+          {selectedProduct?.shop && (
+            <div className="py-2">
+              <div className="flex flex-col items-center text-center mb-6">
+                <Avatar 
+                  size={80} 
+                  src={selectedProduct.shop.avatar_url} 
+                  className="shadow-md border-2 border-indigo-500 mb-3"
+                />
+                <Title level={4} className="m-0 uppercase tracking-wide">{selectedProduct.shop.shop_name}</Title>
+                <Tag color="gold" className="mt-2 rounded-full px-4 border-none font-bold">PRO SELLER</Tag>
+              </div>
+              
+              <Divider className="my-4" />
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                   <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
+                      <MailOutlined />
+                   </div>
+                   <div>
+                      <div className="text-[10px] text-gray-400 uppercase font-bold">Email liên hệ</div>
+                      <div className="text-sm">{selectedProduct.shop.contact_email || "Chưa cập nhật"}</div>
+                   </div>
+                </div>
+                <div className="flex items-center gap-3">
+                   <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
+                      <EnvironmentOutlined />
+                   </div>
+                   <div>
+                      <div className="text-[10px] text-gray-400 uppercase font-bold">Địa chỉ</div>
+                      <div className="text-sm">{selectedProduct.shop.location || "Việt Nam"}</div>
+                   </div>
+                </div>
+              </div>
+
+              <div className="mt-8 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl flex justify-between items-center">
+                  <div>
+                    <div className="text-[10px] text-gray-400 font-bold uppercase mb-1">Đánh giá shop</div>
+                    <Rate disabled defaultValue={Number(selectedProduct.shop.rating) || 5} size="small" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-indigo-500">{selectedProduct.shop.rating || "5.0"}</div>
+                  </div>
+              </div>
+            </div>
+          )}
+        </Modal>
+
         <style jsx global>{`
-          .custom-admin-table .ant-table {
-            background: transparent !important;
-          }
+          .custom-admin-table .ant-table { background: transparent !important; }
           .custom-admin-table .ant-table-thead > tr > th {
             background: transparent !important;
             border-bottom: 1px solid ${dark ? '#374151' : '#f1f5f9'} !important;
             color: #94a3b8 !important;
             font-size: 11px !important;
             text-transform: uppercase !important;
-            letter-spacing: 0.05em !important;
             font-weight: 600 !important;
-            padding: 12px 12px !important;
+            padding: 12px !important;
           }
           .custom-admin-table .ant-table-tbody > tr > td {
             border-bottom: 1px solid ${dark ? '#374151' : '#f8fafc'} !important;
             padding: 14px 12px !important;
           }
-          .custom-admin-table .ant-table-tbody > tr:last-child > td {
-            border-bottom: none !important;
-          }
-          .ant-pagination-item-active {
-            border-color: #6366f1 !important;
-          }
-          .ant-pagination-item-active a {
-            color: #6366f1 !important;
-          }
         `}</style>
       </div>
-    </ConfigProvider>
   );
 }

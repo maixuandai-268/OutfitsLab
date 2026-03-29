@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Shop } from './shop.entity'; 
 
 @Entity('shop_views')
 export class ShopView {
@@ -19,4 +22,10 @@ export class ShopView {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @ManyToOne(() => Shop, (shop) => shop.id, { 
+    onDelete: 'CASCADE' 
+  })
+  @JoinColumn({ name: 'shopId' })
+  shop: Shop;
 }

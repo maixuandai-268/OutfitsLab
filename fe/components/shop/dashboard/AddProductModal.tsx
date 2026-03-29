@@ -11,7 +11,9 @@ import {
   Divider,
   Tag as AntTag,
   Space,
-  Typography
+  Typography,
+  Upload,
+  Spin
 } from "antd";
 import { 
   PlusOutlined, 
@@ -64,6 +66,7 @@ const SIZE_OPTIONS = ["S", "M", "L", "XL", "XXL", "FREESIZE"];
 export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: AddProductModalProps) {
   const { token, user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -257,23 +260,49 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: 
               <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
                 <UploadOutlined className="text-green-500" /> Hình ảnh sản phẩm *
               </label>
-              <Input 
-                placeholder="Nhập URL hình ảnh" 
-                size="large"
-                value={formData.image}
-                onChange={(e) => handleInputChange("image", e.target.value)}
-                className="rounded-lg"
-              />
-              <div className="mt-3 relative h-40 w-full rounded-2xl border border-gray-100 overflow-hidden bg-gray-50 flex items-center justify-center group">
-                {formData.image ? (
-                  <img src={formData.image} alt="Preview" className="h-full w-full object-cover transition-transform group-hover:scale-105" />
-                ) : (
-                  <div className="text-center">
-                    <UploadOutlined className="text-xl text-gray-300" />
-                    <p className="text-[10px] text-gray-400 mt-1">HÌNH ẢNH TRỰC QUAN</p>
-                  </div>
-                )}
-              </div>
+              <Upload
+                name="file"
+                action="http://localhost:3000/api/upload"
+                showUploadList={false}
+                onChange={(info) => {
+                  if (info.file.status === 'uploading') {
+                    setIsUploadingImage(true);
+                    return;
+                  }
+                  if (info.file.status === 'done') {
+                    setIsUploadingImage(false);
+                    handleInputChange("image", info.file.response.url);
+                    message.success('Tải ảnh sản phẩm lên thành công!');
+                  } else if (info.file.status === 'error') {
+                    setIsUploadingImage(false);
+                    message.error('Lỗi khi tải ảnh sản phẩm lên Cloudinary.');
+                  }
+                }}
+              >
+                <div className="w-full relative h-[216px] rounded-2xl border-2 border-dashed border-gray-200 overflow-hidden bg-gray-50 hover:bg-green-50 hover:border-green-400 transition-all flex flex-col items-center justify-center cursor-pointer group">
+                  {isUploadingImage ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <Spin size="large" />
+                      <p className="text-xs text-green-600 font-bold mt-2">Đang xử lý ảnh...</p>
+                    </div>
+                  ) : formData.image ? (
+                    <div className="relative w-full h-full group-hover:opacity-90 transition-opacity">
+                      <img src={formData.image} alt="Preview" className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <p className="text-white font-bold text-sm bg-black/60 px-4 py-2 rounded-full">Nhấn để thay đổi</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center select-none">
+                      <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto mb-3">
+                        <UploadOutlined className="text-2xl text-green-500 group-hover:scale-110 transition-transform" />
+                      </div>
+                      <p className="text-sm font-bold text-gray-700 group-hover:text-green-600">Nhấn để chọn ảnh</p>
+                      <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-widest">Hỗ trợ JPG, PNG, WEBP</p>
+                    </div>
+                  )}
+                </div>
+              </Upload>
             </div>
 
             <div>
