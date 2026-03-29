@@ -12,6 +12,7 @@ import { ShopModule } from './modules/shops/shops.module';
 import { BlogModule } from './modules/blog/blog.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { UploadModule } from './modules/upload/upload.module';
 require('dotenv').config();
 
 const password = process.env.DB_PASSWORD || '';
@@ -37,6 +38,7 @@ const password = process.env.DB_PASSWORD || '';
     BlogModule,
     ReviewsModule,
     NotificationsModule,
+    UploadModule
   ],
 })
 export class AppModule { };
