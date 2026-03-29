@@ -276,7 +276,7 @@ export default function Navbar() {
                   src={user.avatarUrl}
                   icon={!user.avatarUrl && <UserOutlined />}
                   className="border border-gray-200"
-                />
+                />s
               </div>
             </Dropdown>
           )}
