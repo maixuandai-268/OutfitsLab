@@ -7,12 +7,14 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
 import { PaginatedProductResponseDto } from './dto/product-response.dto';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly notificationService: NotificationService,
   ) { }
 
   // 1. Tạo sản phẩm mới
@@ -20,11 +22,23 @@ export class ProductsService {
     if (createProductDto.shopId && !createProductDto.shop_id) {
       createProductDto.shop_id = createProductDto.shopId;
     }
+
     const product = this.productRepository.create(createProductDto);
-    return await this.productRepository.save(product);
+    const savedProduct = await this.productRepository.save(product);
+
+    // 🔥 THÊM NOTIFICATION TẠI ĐÂY
+    if (savedProduct.shop_id) {
+      await this.notificationService.create(
+        savedProduct.shop_id,
+        'Sản phẩm mới',
+        `Bạn vừa thêm sản phẩm "${savedProduct.name}"`
+      );
+    }
+
+    return savedProduct;
   }
 
-  // 2. Lấy danh sách sản phẩm (Có lọc theo shop_id và phân trang)
+  // 2. Lấy danh sách sản phẩm
   async findAll(query: QueryProductDto): Promise<PaginatedProductResponseDto> {
     const {
       shop_id,
@@ -41,7 +55,6 @@ export class ProductsService {
 
     const queryBuilder = this.productRepository.createQueryBuilder('product');
 
-    // Lọc theo shop_id (Hỗ trợ cả shop_id và shopId từ frontend)
     const effectiveShopId = shop_id || shopId;
     if (effectiveShopId) {
       queryBuilder.andWhere('product.shop_id = :effectiveShopId', { effectiveShopId });
@@ -78,7 +91,6 @@ export class ProductsService {
       queryBuilder.andWhere('product.tag = :tag', { tag: query.tag });
     }
 
-    // Lọc theo mảng JSONB
     if (query.colors && Array.isArray(query.colors) && query.colors.length > 0) {
       queryBuilder.andWhere('product.colors @> :colors', { colors: JSON.stringify(query.colors) });
     }
@@ -99,14 +111,14 @@ export class ProductsService {
 
     const [data, total] = await queryBuilder.getManyAndCount();
 
-    // Map to include review stats
     const productsWithStats = data.map(product => {
       const reviewCount = product.reviews?.length || 0;
-      const averageRating = reviewCount > 0 
+      const averageRating = reviewCount > 0
         ? Number((product.reviews.reduce((acc, r) => acc + r.rating, 0) / reviewCount).toFixed(1))
         : 0;
-      
-      const { reviews, ...productInfo } = product; // Remove raw reviews array to keep response clean
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { reviews, ...productInfo } = product;
       return {
         ...productInfo,
         reviewCount,
@@ -136,17 +148,39 @@ export class ProductsService {
   async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const product = await this.findOne(id);
     Object.assign(product, updateProductDto);
-    return await this.productRepository.save(product);
+
+    const updated = await this.productRepository.save(product);
+
+    // (Optional) Notification khi update
+    if (updated.shop_id) {
+      await this.notificationService.create(
+        updated.shop_id,
+        'Cập nhật sản phẩm',
+        `Sản phẩm "${updated.name}" đã được cập nhật`
+      );
+    }
+
+    return updated;
   }
 
   // 5. Xóa sản phẩm
   async remove(id: number): Promise<{ message: string }> {
     const product = await this.findOne(id);
     await this.productRepository.remove(product);
+
+    // (Optional) Notification khi xóa
+    if (product.shop_id) {
+      await this.notificationService.create(
+        product.shop_id,
+        'Xóa sản phẩm',
+        `Sản phẩm "${product.name}" đã bị xóa`
+      );
+    }
+
     return { message: `Đã xóa sản phẩm "${product.name}" thành công` };
   }
 
-  // 6. Cập nhật trạng thái (HÀM BẠN ĐANG THIẾU)
+  // 6. Cập nhật trạng thái
   async updateStatus(id: number, status: ProductStatus): Promise<Product> {
     const product = await this.findOne(id);
     product.status = status;
@@ -164,4 +198,4 @@ export class ProductsService {
   async incrementAffiliateClicks(id: number): Promise<void> {
     await this.productRepository.increment({ id }, 'affiliateClicks', 1);
   }
-}
+}

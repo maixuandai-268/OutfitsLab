@@ -1,195 +1,180 @@
 "use client";
-import { useMemo } from "react";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+
+import { useContext, useMemo, useState } from "react";
+import { AuthContext } from "@/context/AuthContext";
+import { useReports } from "@/hooks/useReports";
+import { Report } from "@/lib/api/reports";
+import ReportList from "./ReportList";
 
 interface ReportPageProps {
   dark: boolean;
 }
-
-type Report= {
-  id: string;
-  title: string;
-  desc: string;
-  severity: "Khẩn cấp" | "Trung bình" | "Thấp";
-  ago: string;
-};
-
-const reportSeed: Report[] = [
-  {
-    id: "ISS-1001",
-    title: "Sản phẩm bị cấm",
-    desc: "Báo cáo về sản phẩm vi phạm chính sách",
-    severity: "Khẩn cấp",
-    ago: "2 giờ trước",
-  },
-  {
-    id: "ISS-1002",
-    title: "Khiếu nại người dùng",
-    desc: "Báo cáo sản phẩm giả mạo",
-    severity: "Trung bình",
-    ago: "5 giờ trước",
-  },
-  {
-    id: "ISS-1003",
-    title: "Vấn đề thanh toán",
-    desc: "Tranh chấp giao dịch thất bại",
-    severity: "Thấp",
-    ago: "1 ngày trước",
-  },
-  {
-    id: "ISS-1004",
-    title: "Đánh giá chất lượng",
-    desc: "Hình ảnh sản phẩm không khớp với mô tả",
-    severity: "Trung bình",
-    ago: "2 ngày trước",
-  },
-];
 
 function StatCard({
   dark,
   title,
   value,
   accent = "indigo",
-  link = "Xem chi tiết",
+  isActive = false,
+  onClick,
 }: {
   dark: boolean;
   title: string;
   value: number;
-  accent?: "amber" | "indigo" | "emerald";
-  link?: string;
+  accent?: "amber" | "indigo" | "emerald" | "red" | "blue";
+  isActive?: boolean;
+  onClick?: () => void;
 }) {
-  const border = dark ? "border-gray-700" : "border-amber-200";
-  const bg = dark ? "bg-gray-800" : "bg-white";
-  const titleColor = dark ? "text-gray-400" : "text-slate-500";
+  const border = isActive
+    ? dark ? "border-indigo-500" : "border-indigo-400"
+    : dark ? "border-gray-700" : "border-amber-200";
+  const bg = isActive
+    ? dark ? "bg-indigo-900/30" : "bg-indigo-50"
+    : dark ? "bg-gray-800" : "bg-white";
+  const titleColor = isActive
+    ? dark ? "text-indigo-400" : "text-indigo-600"
+    : dark ? "text-gray-400" : "text-slate-500";
   const valueColor =
     accent === "amber"
       ? "text-amber-600"
       : accent === "emerald"
-      ? "text-emerald-600"
-      : "text-indigo-600";
-  const linkColor =
-    accent === "amber"
-      ? "text-amber-600"
-      : accent === "emerald"
-      ? "text-emerald-600"
-      : "text-indigo-600";
+        ? "text-emerald-600"
+        : accent === "red"
+          ? "text-red-600"
+          : accent === "blue"
+            ? "text-blue-600"
+            : "text-indigo-600";
 
   return (
     <div
-      className={`rounded-2xl ${bg} border ${border} p-4`}
+      onClick={onClick}
+      className={`rounded-2xl ${bg} border ${border} p-4 transition-all ${onClick ? "cursor-pointer hover:scale-105 hover:shadow-lg" : ""
+        }`}
     >
       <p className={`text-xs font-medium ${titleColor}`}>{title}</p>
       <p className={`text-2xl font-semibold mt-1 ${valueColor}`}>{value}</p>
-      <button
-        type="button"
-        className={`text-xs font-semibold mt-2 ${linkColor} hover:underline`}
-        onClick={() => alert(`Open list for ${title}`)}
-      >
-        {link}
-      </button>
-    </div>
-  );
-}
-
-function SeverityPill({ level }: { level: Report["severity"] }) {
-  const map = {
-    "Khẩn cấp": "bg-rose-100 text-rose-700",
-    "Trung bình": "bg-amber-100 text-amber-700",
-    "Thấp": "bg-emerald-100 text-emerald-700",
-  } as const;
-  return (
-    <span
-      className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${map[level]}`}
-    >
-      {level}
-    </span>
-  );
-}
-
-function IssueItem({ dark, issue }: { dark: boolean; issue: Report }) {
-  const cardBg = dark ? "bg-gray-900" : "bg-amber-50";
-  const border = dark ? "border-gray-700/60" : "border-amber-200";
-
-  return (
-    <div
-      className={`rounded-xl ${cardBg} border ${border} p-3`}
-    >
-      <div className="flex items-start gap-3">
-        <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-            dark ? "bg-gray-800 text-amber-400" : "bg-white text-amber-500"
-          } border ${border}`}
-        >
-          <ExclamationCircleOutlined />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p
-                className={`text-[13px] font-semibold ${
-                  dark ? "text-gray-100" : "text-gray-900"
-                }`}
-              >
-                {issue.title}
-              </p>
-              <p className="text-xs text-gray-400">{issue.desc}</p>
-            </div>
-            <SeverityPill level={issue.severity} />
-          </div>
-
-          <p className="text-[11px] text-gray-400 mt-2">{issue.ago}</p>
-        </div>
-      </div>
     </div>
   );
 }
 
 export default function ReportPage({ dark }: ReportPageProps) {
-  const stats = useMemo(
-    () => ({
-      pending: 24,
-      thisMonth: 156,
-      resolved: 892,
-    }),
-    []
+  const auth = useContext(AuthContext);
+  const { reports, loading, error, refetch, isRefetching } = useReports(
+    auth?.token,
+    { autoFetch: true }
   );
+  const [selectedStatus, setSelectedStatus] = useState<"ALL" | "pending" | "in_progress" | "resolved" | "rejected">("ALL");
+
+  // Tính toán stats từ dữ liệu thực
+  const stats = useMemo(() => {
+    let pending = 0;
+    let inProgress = 0;
+    let resolved = 0;
+    let rejected = 0;
+
+    reports.forEach((r: Report) => {
+      if (r.status === "pending") pending++;
+      else if (r.status === "in_progress") inProgress++;
+      else if (r.status === "resolved") resolved++;
+      else if (r.status === "rejected") rejected++;
+    });
+
+    return { pending, inProgress, resolved, rejected, total: reports.length };
+  }, [reports]);
 
   return (
     <main className={`flex-1 overflow-y-auto p-6 ${dark ? "" : "bg-amber-50/40"}`}>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
-        <StatCard dark={dark} title="Vấn đề đang chờ" value={stats.pending} accent="amber" />
-        <StatCard dark={dark} title="Tháng này" value={stats.thisMonth} accent="indigo" />
-        <StatCard dark={dark} title="Đã giải quyết" value={stats.resolved} accent="emerald" />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+        <StatCard
+          dark={dark}
+          title="Tổng số báo cáo"
+          value={stats.total}
+          accent="indigo"
+          isActive={selectedStatus === "ALL"}
+          onClick={() => setSelectedStatus("ALL")}
+        />
+        <StatCard
+          dark={dark}
+          title="Báo cáo chờ xử lý"
+          value={stats.pending}
+          accent="amber"
+          isActive={selectedStatus === "pending"}
+          onClick={() => setSelectedStatus("pending")}
+        />
+        <StatCard
+          dark={dark}
+          title="Báo cáo đang xử lý"
+          value={stats.inProgress}
+          accent="blue"
+          isActive={selectedStatus === "in_progress"}
+          onClick={() => setSelectedStatus("in_progress")}
+        />
+        <StatCard
+          dark={dark}
+          title="Báo cáo đã giải quyết"
+          value={stats.resolved}
+          accent="emerald"
+          isActive={selectedStatus === "resolved"}
+          onClick={() => setSelectedStatus("resolved")}
+        />
+        <StatCard
+          dark={dark}
+          title="Báo cáo đã từ chối"
+          value={stats.rejected}
+          accent="red"
+          isActive={selectedStatus === "rejected"}
+          onClick={() => setSelectedStatus("rejected")}
+        />
       </div>
 
+      {/* Report Section */}
       <section
-        className={`rounded-2xl border ${
-          dark ? "bg-gray-800 border-gray-700" : "bg-white border-amber-200"
-        } p-4`}
+        className={`rounded-2xl border ${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+          } p-6`}
       >
-        <div className="flex items-center gap-2 mb-3">
-          <span
-            className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-              dark ? "border-gray-700 text-gray-300" : "border-amber-300 text-amber-700"
-            }`}
-          >
-            ⓘ
-          </span>
-          <h2
-            className={`text-sm font-semibold ${
-              dark ? "text-gray-100" : "text-amber-900"
-            }`}
-          >
-            Các vấn đề gần đây
-          </h2>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <span
+              className={`w-5 h-5 rounded-full flex items-center justify-center border ${dark ? "border-gray-700 text-gray-300" : "border-gray-300 text-gray-600"
+                }`}
+            >
+              📋
+            </span>
+            <h2
+              className={`text-sm font-semibold ${dark ? "text-gray-100" : "text-gray-900"
+                }`}
+            >
+              {selectedStatus === "ALL"
+                ? "Danh sách tất cả báo cáo"
+                : `Báo cáo - ${selectedStatus === "pending" ? "Chờ xử lý" :
+                  selectedStatus === "in_progress" ? "Đang xử lý" :
+                    selectedStatus === "resolved" ? "Đã giải quyết" :
+                      "Đã từ chối"
+                }`
+              }
+            </h2>
+          </div>
+
+          {/* Loading indicator */}
+          {isRefetching && (
+            <svg className="animate-spin w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+          )}
         </div>
 
-        <div className="flex flex-col gap-3">
-          {reportSeed.map((it) => (
-            <IssueItem key={it.id} dark={dark} issue={it} />
-          ))}
-        </div>
+        {/* Report List Component */}
+        <ReportList
+          report={reports}
+          loading={loading}
+          error={error}
+          onRefresh={refetch}
+          dark={dark}
+          token={auth?.token || undefined}
+          selectedStatus={selectedStatus}
+        />
       </section>
     </main>
   );

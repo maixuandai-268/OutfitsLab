@@ -13,9 +13,18 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 export class BlogService {
   constructor(
     @InjectRepository(Blog)
-    private readonly blogRepo : Repository<Blog>,
-  ) {}
+    private readonly blogRepo: Repository<Blog>,
+  ) { }
 
+  async findOne(id: number) {
+    const blog = await this.blogRepo.findOneBy({ id });
+
+    if (!blog) {
+      throw new BadRequestException(`Không tìm thấy Blog với id ${id}`);
+    }
+
+    return blog;
+  }
   async create(data: Partial<Blog>) {
     try {
       if (!data.slug) {
@@ -25,7 +34,7 @@ export class BlogService {
       const newPost = this.blogRepo.create(data);
       return await this.blogRepo.save(newPost);
     } catch (error) {
-      if (error.code === '23505') { 
+      if (error.code === '23505') {
         throw new ConflictException('Slug này đã tồn tại rồi!');
       }
       throw error;
@@ -36,15 +45,15 @@ export class BlogService {
     return await this.blogRepo.find({ order: { createdAt: 'DESC' } });
   }
 
-  async update(id: number, updateBlogDto: UpdateBlogDto)  {
-  const blog = await this.blogRepo.findOneBy({ id });
-  if (!blog) {
-    throw new BadRequestException(`Không tìm thấy Blog với id ${id}`);
+  async update(id: number, updateBlogDto: UpdateBlogDto) {
+    const blog = await this.blogRepo.findOneBy({ id });
+    if (!blog) {
+      throw new BadRequestException(`Không tìm thấy Blog với id ${id}`);
+    }
+
+    Object.assign(blog, updateBlogDto);
+    return await this.blogRepo.save(blog);
   }
-  
-  Object.assign(blog, updateBlogDto);
-  return await this.blogRepo.save(blog);
-}
 
   async remove(id: number) {
     const blog = await this.blogRepo.findOneBy({ id });
@@ -53,4 +62,4 @@ export class BlogService {
     }
     return await this.blogRepo.remove(blog);
   }
-}
+}

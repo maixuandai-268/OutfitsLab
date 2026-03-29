@@ -116,7 +116,7 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   // ── FORM VIEW ────────────────────────────────────────────────────
   if (isEditing) return (
     <div className={`min-h-screen ${base} p-8`}>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4 pb-6 border-b border-gray-800">
           <button
@@ -126,10 +126,10 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
             ←
           </button>
           <div>
-            <h2 className="text-xl font-black uppercase italic tracking-tight text-purple-400">
-              {currentId ? "Chỉnh sửa bài viết" : "Soạn bài viết mới"}
+            <h2 className="text-3xl font-bold">
+              {currentId ? "CHỈNH SỬA BÀI VIẾT" : "SOẠN BÀI VIẾT MỚI"}
             </h2>
-            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">OutfitsLab Blog Editor</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Hãy cùng tạo nên những nội dung hấp dẫn!</p>
           </div>
         </div>
 
@@ -213,7 +213,7 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
           </button>
           <button
             onClick={handleSave}
-            className="px-8 py-2.5 bg-purple-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-purple-500 shadow-lg shadow-purple-500/20 transition-all"
+            className="px-8 py-2.5 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-all"
           >
             {currentId ? "Lưu thay đổi" : "Xuất bản"}
           </button>
@@ -225,12 +225,14 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   // ── LIST VIEW ────────────────────────────────────────────────────
   return (
     <div className={`min-h-screen ${base} p-8`}>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
 
         {/* Page header */}
         <div className="flex items-end justify-between pb-5 border-b border-gray-800">
           <div>
-            <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white">Blog Content</h1>
+            <h1 className={`text-4xl font-black tracking-tighter ${dark ? "text-white" : "text-gray-900"}`}>
+              BLOG CONTENT
+            </h1>
             <p className="text-[10px] text-gray-500 uppercase font-bold tracking-[0.3em] mt-0.5">Quản lý bài viết OutfitsLab</p>
           </div>
           <button
@@ -243,7 +245,7 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
               setExcerpt("");
               setIsEditing(true);
             }}
-            className="bg-purple-600 px-6 py-2.5 rounded-full font-black text-[10px] text-white uppercase tracking-widest hover:scale-105 hover:bg-purple-500 transition-all shadow-lg shadow-purple-500/30"
+            className="bg-blue-600 px-6 py-2.5 rounded-full font-bold text-[10px] text-white uppercase tracking-widest hover:scale-105 hover:bg-blue-500 transition-all shadow-lg shadow-purple-500/30"
           >
             + Tạo mới
           </button>
@@ -261,58 +263,50 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
         </div>
 
         {/* Vertical list */}
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog, i) => (
             <div
               key={blog.id}
-              className={`group flex gap-4 rounded-2xl border overflow-hidden transition-all hover:border-purple-500/50 ${card}`}
+              className={`group rounded-2xl overflow-hidden border transition-all hover:shadow-lg hover:-translate-y-1 ${card}`}
             >
-              {/* Thumbnail */}
-              <div className="w-36 flex-shrink-0 overflow-hidden relative">
+              {/* Image */}
+              <div className="h-48 overflow-hidden relative">
                 <img
                   src={blog.image}
                   alt={blog.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
-                <span className={`absolute top-2 left-2 ${categoryColors[blog.category] ?? "bg-gray-500"} text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest`}>
+                <span className={`absolute top-3 left-3 ${categoryColors[blog.category] ?? "bg-gray-500"} text-white text-[10px] font-bold px-2 py-1 rounded`}>
                   {blog.category}
                 </span>
               </div>
 
-              {/* Body */}
-              <div className="flex-1 py-4 pr-5 flex flex-col justify-between min-w-0">
-                <div className="space-y-1">
-                  {/* index */}
-                  <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">#{String(i + 1).padStart(2, "0")}</span>
-                  <h3 className="font-bold text-base leading-snug line-clamp-2">{blog.title}</h3>
-                  <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
-                    {blog.excerpt || blog.content}
-                  </p>
-                </div>
+              {/* Content */}
+              <div className="p-4 space-y-2">
+                <h3 className="font-bold text-base line-clamp-2">
+                  {blog.title}
+                </h3>
 
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-800/50">
-                  {/* Author */}
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center text-[9px] font-black text-white uppercase">
-                      {blog.author?.[0] || "A"}
-                    </div>
-                    <span className="text-[10px] text-gray-400 font-medium">
-                      {blog.author || "Admin"} &bull;{" "}
-                      {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString("vi-VN") : blog.date}
-                    </span>
-                  </div>
+                <p className="text-sm text-gray-500 line-clamp-3">
+                  {blog.excerpt || blog.content}
+                </p>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-4">
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-3 border-gray-200 text-xs">
+                  <span className="text-gray-400">
+                    {blog.author || "Admin"}
+                  </span>
+
+                  <div className="flex gap-3">
                     <button
                       onClick={() => handleOpenEdit(blog)}
-                      className="text-[10px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300 transition"
+                      className="text-blue-400 hover:text-blue-300"
                     >
                       Sửa
                     </button>
                     <button
                       onClick={() => handleDelete(blog.id)}
-                      className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-400 transition"
+                      className="text-red-500 hover:text-red-400"
                     >
                       Xóa
                     </button>
@@ -321,13 +315,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
               </div>
             </div>
           ))}
-
-          {blogs.length === 0 && (
-            <div className={`text-center py-16 rounded-2xl border border-dashed ${dark ? "border-gray-800 text-gray-600" : "border-gray-200 text-gray-400"}`}>
-              <p className="text-xs font-black uppercase tracking-widest">Chưa có bài viết nào</p>
-              <p className="text-xs mt-1">Bấm "+ Tạo mới" để bắt đầu</p>
-            </div>
-          )}
         </div>
       </div>
     </div>

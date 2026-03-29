@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity('blogs') 
+@Entity('blogs')
 export class Blog {
   @PrimaryGeneratedColumn()
   id: number;
@@ -10,6 +10,7 @@ export class Blog {
 
   @Column({ unique: true })
   slug: string;
+
 
   @Column('text')
   content: string;
@@ -22,6 +23,9 @@ export class Blog {
 
   @Column({ default: 'Admin' })
   author: string;
+
+  @Column({ type: 'text', nullable: true })
+  excerpt: string;
 
   @CreateDateColumn()
   createdAt: Date;
