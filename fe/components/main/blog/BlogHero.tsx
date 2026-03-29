@@ -11,8 +11,9 @@ export default function BlogHero() {
                 const res = await fetch("http://localhost:3000/api/blog");
                 if (res.ok) {
                     const data = await res.json();
+
                     const shuffled = [...data].sort(() => 0.5 - Math.random());
-                    setHeroBlogs(shuffled.slice(0, 5));
+                    setHeroBlogs(shuffled.slice(0, 3));
                 }
             } catch (error) {
                 console.error(error);
@@ -70,21 +71,21 @@ export default function BlogHero() {
 
             <div className="flex items-center justify-center gap-8 mt-24">
                 <button onClick={() => setIndex((prev) => (prev - 1 + heroBlogs.length) % heroBlogs.length)} className="p-3 rounded-full border hover:bg-gray-100 transition shadow-sm bg-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
                 </button>
-                
+
                 <div className="flex gap-3">
                     {heroBlogs.map((_, i) => (
-                        <div 
-                            key={i} 
+                        <div
+                            key={i}
                             onClick={() => setIndex(i)}
-                            className={`h-2 rounded-full cursor-pointer transition-all duration-500 ${index === i ? "w-12 bg-black" : "w-2 bg-gray-300 hover:bg-gray-400"}`} 
+                            className={`h-2 rounded-full cursor-pointer transition-all duration-500 ${index === i ? "w-12 bg-black" : "w-2 bg-gray-300 hover:bg-gray-400"}`}
                         />
                     ))}
                 </div>
 
                 <button onClick={() => setIndex((prev) => (prev + 1) % heroBlogs.length)} className="p-3 rounded-full border hover:bg-gray-100 transition shadow-sm bg-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                 </button>
             </div>
         </div>

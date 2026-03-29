@@ -2,6 +2,7 @@ import BlogHero from "@/components/main/blog/BlogHero"
 import BlogList from "@/components/main/blog/BlogList"
 import { ADLaM_Display } from 'next/font/google'
 
+
 const adlam = ADLaM_Display({
   subsets: ['latin'],
   weight: '400'

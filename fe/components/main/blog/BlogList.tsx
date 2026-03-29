@@ -33,21 +33,21 @@ export default function BlogList() {
             <h2 className="text-2xl font-black mb-8 uppercase italic tracking-tighter border-l-4 border-pink-500 pl-4">
                 Bài đăng mới nhất
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {currentBlogs.map((blog) => (
                     <BlogCard key={blog.id} blog={blog} />
                 ))}
             </div>
             <div className="flex justify-center items-center gap-2 mt-16">
-                <button 
+                <button
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
                     className="p-2 border rounded-xl disabled:opacity-30 hover:bg-gray-50 transition"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m11 17-5-5 5-5" /><path d="m18 17-5-5 5-5" /></svg>
                 </button>
-                
+
                 {[...Array(totalPages)].map((_, i) => (
                     <button
                         key={i}
@@ -58,12 +58,12 @@ export default function BlogList() {
                     </button>
                 ))}
 
-                <button 
+                <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
                     className="p-2 border rounded-xl disabled:opacity-30 hover:bg-gray-50 transition"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 17 5-5-5-5" /><path d="m13 17 5-5-5-5" /></svg>
                 </button>
             </div>
         </div>
