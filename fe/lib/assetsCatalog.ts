@@ -1,5 +1,5 @@
 export const BODY_MODELS = {
-  avatar_female: '/model/body/male2.glb',
+  avatar_female: '/model/body/head.glb',
   avatar_male: '/model/body/head.glb',
 } as const
 

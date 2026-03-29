@@ -31,9 +31,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AuthProvider>
           <AuthGate>
-            <Navbar/>
-            <div className="pb-20"></div>
-            {children}
+            <div>
+              {children}
+            </div>
             <Footer/>
           </AuthGate>
         </AuthProvider>
