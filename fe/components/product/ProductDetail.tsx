@@ -48,8 +48,8 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   const reviewData = Array.isArray(product.reviews) ? product.reviews : [];
   const reviewCount = reviewData.length;
   const averageRating = reviewCount > 0
-    ? (reviewData.reduce((acc, rev) => acc + rev.rating, 0) / reviewCount).toFixed(1)
-    : (product.rating ? Number(product.rating).toFixed(1) : "5.0");
+    ? (reviewData.reduce((acc, rev) => acc + Number(rev.rating), 0) / reviewCount).toFixed(1)
+    : (product.rating !== undefined && product.rating !== null ? Number(product.rating).toFixed(1) : "5.0");
 
   // 📏 Xử lý Size
   const sizes = product.sizes && product.sizes.length > 0 

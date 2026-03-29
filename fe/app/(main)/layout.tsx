@@ -25,9 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <div
-        className='pb-20'
-      >
+      <div className='pb-20'>
         <Navbar />
         {children}
       </div>

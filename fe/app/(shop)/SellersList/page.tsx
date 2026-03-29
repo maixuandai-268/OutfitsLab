@@ -2,7 +2,9 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Rate } from 'antd'
+import { Rate, Modal, Avatar, Divider, Typography } from 'antd'
+import { MailOutlined, EnvironmentOutlined } from '@ant-design/icons'
+import Navbar from "@/components/main/navbar"
 
 const API_BASE = 'http://localhost:3000/api';
 
@@ -27,6 +29,10 @@ export default function FeaturedSellersPage() {
   const [activeFilter, setActiveFilter] = useState('All Sellers')
   const [shops, setShops] = useState<Shop[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Tình trạng Modal
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false)
+  const [selectedShop, setSelectedShop] = useState<Shop | null>(null)
 
   const categories = [
     "Tất cả cửa hàng", "Tối giản", "Cổ điển",
@@ -53,6 +59,7 @@ export default function FeaturedSellersPage() {
 
   return (
     <div className="text-lg font-sans">
+      <Navbar />
 
       <div className="max-w-310 mx-auto mb-7 mt-8">
         <div className="mb-6">
@@ -141,7 +148,9 @@ export default function FeaturedSellersPage() {
                     <div className="w-full h-px bg-gray-200 my-5"></div>
 
                     <div className="w-full">
-                      <div className="w-full py-3 rounded-full bg-black text-white font-bold text-sm hover:bg-[#313131] transition-colors flex items-center justify-center gap-2">
+                      <div 
+                        className="w-full py-3 rounded-full bg-black text-white font-bold text-sm hover:bg-[#313131] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                      >
                         Thăm quan cửa hàng
                         <ExternalLinkIcon className="w-4 h-4" />
                       </div>
@@ -168,6 +177,68 @@ export default function FeaturedSellersPage() {
           </button>
         </div>
       </div>
+
+      {/* MODAL THÔNG TIN SHOP */}
+      <Modal
+        open={isShopModalOpen}
+        footer={null}
+        onCancel={() => setIsShopModalOpen(false)}
+        width={400}
+        centered
+        className="shop-info-modal"
+      >
+        {selectedShop && (
+          <div className="py-2">
+            <div className="flex flex-col items-center text-center mb-6">
+              <Avatar 
+                size={80} 
+                src={selectedShop.avatar_url || 'https://via.placeholder.com/150'} 
+                className="shadow-md border-2 border-indigo-500 mb-3"
+              />
+              <Typography.Title level={4} className="m-0 uppercase tracking-wide">
+                {selectedShop.shop_name}
+              </Typography.Title>
+              <span className="mt-2 ml-1 px-3 py-1 bg-black text-white text-[10px] uppercase font-bold rounded-full">
+                {selectedShop.specialty || 'THỜI TRANG'}
+              </span>
+            </div>
+            
+            <Divider className="my-4" />
+            
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
+                    <MailOutlined />
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-gray-400 uppercase font-bold">Email liên hệ</div>
+                    <div className="text-sm">{(selectedShop as any).contact_email || "Chưa cập nhật"}</div>
+                  </div>
+              </div>
+              <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
+                    <EnvironmentOutlined />
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-gray-400 uppercase font-bold">Địa chỉ</div>
+                    <div className="text-sm">{selectedShop.location || "Chưa cập nhật"}</div>
+                  </div>
+              </div>
+            </div>
+
+            <div className="mt-8 bg-gray-50 p-4 rounded-xl flex justify-between items-center">
+                <div>
+                  <div className="text-[10px] text-gray-400 font-bold uppercase mb-1">Đánh giá shop</div>
+                  <Rate disabled value={Number(selectedShop.rating) || 5} size="small" />
+                </div>
+                <div className="text-right">
+                  <div className="text-xl font-bold text-indigo-500">{Number(selectedShop.rating || 5).toFixed(1)}</div>
+                  <div className="text-xs text-gray-500">{selectedShop.productCount || 0} sản phẩm</div>
+                </div>
+            </div>
+          </div>
+        )}
+      </Modal>
 
     </div>
   )

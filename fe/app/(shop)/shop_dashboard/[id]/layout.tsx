@@ -6,6 +6,7 @@ import ShopHeader from '@/components/shop/dashboard/ShopDasHeader';
 import ShopNav from '@/components/shop/dashboard/ShopDasNav';
 import { useAuth } from "@/context/AuthContext"; // Import useAuth để lấy thông tin user
 import { Spin } from 'antd';
+import Navbar from "@/components/main/navbar";
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
@@ -57,9 +58,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
-      {/* FIX LỖI TẠI ĐÂY: 
-          Truyền shop lấy từ database và owner lấy từ AuthContext 
-      */}
+      <Navbar />
       <ShopHeader shop={shop} owner={user} />
 
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">

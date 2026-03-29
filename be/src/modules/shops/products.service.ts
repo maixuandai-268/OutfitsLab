@@ -33,9 +33,9 @@ export class ProductsService {
       sortOrder = 'DESC',
     } = query;
 
-    // 🔥 THÊM leftJoinAndSelect để lấy reviews cho danh sách
     const queryBuilder = this.productRepository.createQueryBuilder('product')
-      .leftJoinAndSelect('product.reviews', 'reviews');
+      .leftJoinAndSelect('product.reviews', 'reviews')
+      .leftJoinAndSelect('product.shop', 'shop'); // 🔥 THÊM: Lấy thông tin shop cho admin
 
     if (shop_id) {
       queryBuilder.andWhere('product.shop_id = :shop_id', { shop_id });
@@ -71,8 +71,21 @@ export class ProductsService {
 
     const [data, total] = await queryBuilder.getManyAndCount();
 
+    const formattedData = data.map(product => {
+      let avgRating = Number(product.rating) || 5.0; // Fallback to 5.0 explicitly if db returns 0 for a null rating
+      if (product.reviews && product.reviews.length > 0) {
+        avgRating = product.reviews.reduce((sum, rev) => sum + Number((rev as any).rating), 0) / product.reviews.length;
+      }
+      
+      return {
+        ...product,
+        rating: Number(avgRating.toFixed(1)),
+        reviewCount: product.reviews?.length || 0
+      };
+    });
+
     return {
-      data,
+      data: formattedData as Product[],
       total,
       page,
       limit,

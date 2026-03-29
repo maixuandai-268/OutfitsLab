@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { 
-  Table, Tag, Space, Button, message, Popconfirm, Input, 
+  Table, Tag, Space, Button, App, Popconfirm, Input, 
   Avatar, ConfigProvider, theme, Modal, Upload, Typography, Rate, Divider 
 } from 'antd';
 import { 
@@ -17,6 +17,25 @@ import CardTitle from "../shared/cardTitle";
 const { Text, Title } = Typography;
 
 export default function AdminProductsPage({ dark }: { dark: boolean }) {
+  return (
+    <ConfigProvider
+      theme={{
+        algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+          colorPrimary: '#6366f1',
+          borderRadius: 12,
+        },
+      }}
+    >
+      <App>
+        <AdminProductsContent dark={dark} />
+      </App>
+    </ConfigProvider>
+  );
+}
+
+function AdminProductsContent({ dark }: { dark: boolean }) {
+  const { message } = App.useApp();
   const { token } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -148,7 +167,7 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
         const has3D = !!record.model3DUrl; 
         return (
           <Tag color={has3D ? "processing" : "default"} className="text-[10px] rounded-full px-2 border-none">
-            {has3D ? "ĐÃ ĐẨY FILE" : "CHƯA ĐẨY"}
+            {has3D ? "Đã đẩy file 3D" : "Chưa đẩy"}
           </Tag>
         )
       }
@@ -226,15 +245,6 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
   );
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        token: {
-          colorPrimary: '#6366f1',
-          borderRadius: 12,
-        },
-      }}
-    >
       <div className={`p-6 min-h-full ${dark ? 'text-gray-100' : 'text-gray-800'}`}>
         {/* Header Section Giữ Nguyên */}
         <div className="mb-6">
@@ -308,7 +318,7 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
               <Upload.Dragger 
                 name="file" 
                 multiple={false} 
-                action="http://localhost:3000/api/products/upload" // Đảm bảo Backend có API này
+                action="http://localhost:3000/api/upload" 
                 headers={{ Authorization: `Bearer ${token}` }}
                 className={dark ? 'bg-gray-800' : 'bg-gray-50'}
                 // 🔥 SỬA: Lấy link từ kết quả upload
@@ -417,6 +427,5 @@ export default function AdminProductsPage({ dark }: { dark: boolean }) {
           }
         `}</style>
       </div>
-    </ConfigProvider>
   );
 }

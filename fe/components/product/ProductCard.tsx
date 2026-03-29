@@ -69,7 +69,7 @@ export const ProductCard = ({ count = 3, columns = 3 }: ProductCardProps) => {
                     const avg = reviewData.reduce((acc, rev) => acc + Number(rev.rating), 0) / reviewCount;
                     displayRating = avg.toFixed(1);
                 } else {
-                    displayRating = item.rating ? Number(item.rating).toFixed(1) : "5.0";
+                    displayRating = item.rating !== undefined && item.rating !== null ? Number(item.rating).toFixed(1) : "5.0";
                 }
 
                 return (

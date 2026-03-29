@@ -88,6 +88,37 @@ export class ShopsService {
     return shop;
   }
 
+  async getShopProfile(id: number) {
+    const shop = await this.shopsRepository.findOne({ 
+      where: { id },
+      relations: ['products', 'products.reviews']
+    });
+    if (!shop) throw new NotFoundException(`Không tìm thấy shop với ID ${id}`);
+
+    const productCount = shop.products?.length || 0;
+    let totalRating = 0;
+    let totalReviews = 0;
+    
+    shop.products?.forEach(product => {
+      product.reviews?.forEach(review => {
+        totalRating += Number(review.rating);
+        totalReviews++;
+      });
+    });
+
+    const averageRating = totalReviews > 0 
+      ? Number((totalRating / totalReviews).toFixed(1)) 
+      : 0;
+
+    const { products, ...shopInfo } = shop;
+    return {
+      ...shopInfo,
+      productCount,
+      rating: averageRating,
+      reviews: totalReviews // map to shop.reviews for Frontend
+    };
+  }
+
   async incrementViews(id: number) {
     const shop = await this.findOne(id);
     shop.views = (shop.views || 0) + 1;

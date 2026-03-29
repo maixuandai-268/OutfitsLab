@@ -11,7 +11,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from "@/context/AuthContext";
-import { message, Spin, Input, Modal, Button, Avatar } from 'antd';
+import { message, Spin, Input, Modal, Button, Avatar, Upload } from 'antd';
 
 const { TextArea } = Input;
 
@@ -25,6 +25,7 @@ export default function SettingsPage() {
   const [shopData, setShopData] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editForm, setEditForm] = useState<any>({});
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   useEffect(() => {
     const fetchShop = async () => {
@@ -189,25 +190,43 @@ export default function SettingsPage() {
 
           <div className="space-y-4">
             <label className="text-xs font-black text-gray-400 uppercase ml-1 flex items-center gap-2">
-              <UploadOutlined className="text-[#d19f42]" /> Link Ảnh Đại Diện (Avatar URL)
+              <UploadOutlined className="text-[#d19f42]" /> Ảnh Đại Diện (Avatar)
             </label>
-            <Input 
-              size="large"
-              placeholder="Nhập URL hình ảnh (https://...)"
-              className="rounded-xl border-gray-100 bg-gray-50 py-3"
-              value={editForm.avatar_url}
-              onChange={(e) => setEditForm({...editForm, avatar_url: e.target.value})}
-            />
-            <div className="mt-3 relative h-40 w-full rounded-2xl border border-gray-100 overflow-hidden bg-white flex items-center justify-center group shadow-sm">
-              {editForm.avatar_url ? (
-                <img src={editForm.avatar_url} alt="Preview" className="h-full w-full object-cover transition-transform group-hover:scale-105" />
-              ) : (
-                <div className="text-center">
-                  <UploadOutlined className="text-2xl text-gray-300" />
-                  <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest">Xem Trước Hình Ảnh</p>
+            <Upload
+              name="file"
+              action="http://localhost:3000/api/upload"
+              showUploadList={false}
+              onChange={(info) => {
+                if (info.file.status === 'uploading') {
+                  setIsUploadingAvatar(true);
+                  return;
+                }
+                if (info.file.status === 'done') {
+                  setIsUploadingAvatar(false);
+                  setEditForm({...editForm, avatar_url: info.file.response.url});
+                  message.success('Tải ảnh đại diện lên thành công!');
+                } else if (info.file.status === 'error') {
+                  setIsUploadingAvatar(false);
+                  message.error('Lỗi khi tải ảnh đại diện lên Cloudinary.');
+                }
+              }}
+            >
+              <div className="w-full flex items-center gap-4 cursor-pointer p-3 border-2 border-dashed border-gray-200 rounded-2xl hover:border-[#d19f42] hover:bg-orange-50 transition-all group">
+                <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden bg-white border border-gray-100 flex items-center justify-center shadow-sm">
+                  {isUploadingAvatar ? (
+                    <Spin />
+                  ) : editForm.avatar_url ? (
+                    <img src={editForm.avatar_url} alt="Preview" className="h-full w-full object-cover" />
+                  ) : (
+                    <UploadOutlined className="text-xl text-gray-300 group-hover:text-[#d19f42]" />
+                  )}
                 </div>
-              )}
-            </div>
+                <div className="text-left select-none">
+                  <p className="font-bold text-gray-700 group-hover:text-[#d19f42]">Nhấn để tải ảnh mới lên</p>
+                  <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-widest">Hỗ trợ JPG, PNG, WEBP (Tối đa 10MB)</p>
+                </div>
+              </div>
+            </Upload>
           </div>
 
           <div className="space-y-2">

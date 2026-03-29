@@ -25,7 +25,7 @@ export class UploadController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter,
-      limits: { fileSize: 50 * 1024 * 1024 },
+      limits: { fileSize: 200 * 1024 * 1024 },
     }),
   )
   async upload(@UploadedFile() file: Express.Multer.File) {
@@ -36,7 +36,7 @@ export class UploadController {
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       fileFilter,
-      limits: { fileSize: 50 * 1024 * 1024 },
+      limits: { fileSize: 200 * 1024 * 1024 },
     }),
   )
   async uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
@@ -47,7 +47,7 @@ export class UploadController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter,
-      limits: { fileSize: 50 * 1024 * 1024 },
+      limits: { fileSize: 200 * 1024 * 1024 },
     }),
   )
   async update(
