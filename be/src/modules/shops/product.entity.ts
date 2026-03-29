@@ -41,6 +41,9 @@ export class Product {
   @Column({ default: 0 })
   salesCount: number;
 
+  @Column('decimal', { precision: 3, scale: 1, default: 5.0 })
+  rating: number;
+
   @Column({
     type: 'enum',
     enum: ProductStatus,
@@ -57,8 +60,15 @@ export class Product {
   @Column({ nullable: true })
   tag: string;
 
+  // Cập nhật/Thêm các cột mới ở đây
   @Column({ nullable: true })
   affiliateLink: string;
+
+  @Column({ nullable: true })
+  model3DUrl: string; // 🔥 Lưu đường dẫn file 3D
+
+  @Column({ default: false })
+  is3DGenerated: boolean; // 🔥 Đánh dấu trạng thái 3D
 
   @Column({ default: 0 })
   affiliateClicks: number;
@@ -75,7 +85,9 @@ export class Product {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Shop, (shop) => shop.products)
+  @ManyToOne(() => Shop, (shop) => shop.products, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'shop_id' })
   shop: Shop;
 
