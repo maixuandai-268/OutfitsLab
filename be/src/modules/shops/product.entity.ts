@@ -57,15 +57,19 @@ export class Product {
   @Column({ nullable: true })
   brand: string;
 
+  @Column({ nullable: true, default: 'male' })
+  gender: string;
+
   @Column({ nullable: true })
   tag: string;
-
-
   @Column({ nullable: true })
   affiliateLink: string;
 
   @Column({ nullable: true })
-  model3DUrl: string;
+  garment_slot: string;
+
+  @Column('jsonb', { nullable: true, default: [] })
+  model_url: string[];
 
   @Column({ default: false })
   is3DGenerated: boolean;

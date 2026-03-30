@@ -32,10 +32,20 @@ export class QueryProductDto {
   @IsString()
   type?: string;
 
+  @ApiPropertyOptional({ description: 'Slot thử đồ: top | bottom | shoes | hat' })
+  @IsOptional()
+  @IsString()
+  garment_slot?: string;
+
   @ApiPropertyOptional({ description: 'Thương hiệu' })
   @IsOptional()
   @IsString()
   brand?: string;
+
+  @ApiPropertyOptional({ description: 'Giới tính (male, female)' })
+  @IsOptional()
+  @IsString()
+  gender?: string;
 
   @ApiPropertyOptional({ description: 'Tag (MỚI, HOT...)' })
   @IsOptional()

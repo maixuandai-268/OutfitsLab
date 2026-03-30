@@ -72,8 +72,16 @@ export class ProductsService {
       queryBuilder.andWhere('product.type = :type', { type: query.type });
     }
 
+    if (query.garment_slot) {
+      queryBuilder.andWhere('product.garment_slot = :garment_slot', { garment_slot: query.garment_slot });
+    }
+
     if (query.brand) {
       queryBuilder.andWhere('product.brand ILIKE :brand', { brand: `%${query.brand}%` });
+    }
+
+    if (query.gender) {
+      queryBuilder.andWhere('product.gender = :gender', { gender: query.gender });
     }
 
     if (query.tag) {

@@ -1,13 +1,13 @@
 'use client'
 
 import { useCustomizer, ModelId } from '@/store/useCustomizer'
-import { BODY_MODELS } from '@/lib/assetsCatalog'
+
 
 export function ModelSelector() {
   const modelId = useCustomizer((s) => s.modelId)
   const setModelId = useCustomizer((s) => s.setModelId)
 
-  const ids = Object.keys(BODY_MODELS) as ModelId[]
+  const ids: ModelId[] = ['avatar_female', 'avatar_male']
 
   return (
     <div className="space-y-2">
