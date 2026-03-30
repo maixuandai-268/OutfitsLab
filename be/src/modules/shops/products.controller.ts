@@ -10,7 +10,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
-  ParseUUIDPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -23,47 +23,29 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
-import {
-  ProductResponseDto,
-  PaginatedProductResponseDto,
-} from './dto/product-response.dto';
 import { ProductStatus } from './product.entity';
+import { ProductResponseDto } from './dto/product-response.dto';
 
 @ApiTags('Products')
 @ApiBearerAuth()
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
-
-
+  constructor(private readonly productsService: ProductsService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Tạo sản phẩm mới' })
-  @ApiResponse({
-    status: 201,
-    description: 'Sản phẩm đã được tạo thành công',
-    type: ProductResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Dữ liệu đầu vào không hợp lệ' })
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
-
-
   @Get()
-  @ApiOperation({ summary: 'Lấy danh sách sản phẩm (có phân trang & lọc)' })
-  @ApiResponse({
-    status: 200,
-    description: 'Danh sách sản phẩm',
-    type: PaginatedProductResponseDto,
-  })
+  @ApiOperation({ summary: 'Lấy danh sách sản phẩm' })
   findAll(@Query() query: QueryProductDto) {
     return this.productsService.findAll(query);
   }
 
- 
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Lấy chi tiết một sản phẩm theo ID' })
@@ -74,40 +56,29 @@ export class ProductsController {
     type: ProductResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Không tìm thấy sản phẩm' })
-  findOne(@Param('id', ParseUUIDPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.findOne(id);
   }
 
-  
+
 
   @Patch(':id')
   @ApiOperation({ summary: 'Cập nhật thông tin sản phẩm' })
-  @ApiParam({ name: 'id', description: 'UUID của sản phẩm' })
-  @ApiResponse({
-    status: 200,
-    description: 'Sản phẩm đã được cập nhật',
-    type: ProductResponseDto,
-  })
-  @ApiResponse({ status: 404, description: 'Không tìm thấy sản phẩm' })
+  @ApiParam({ name: 'id', description: 'ID số của sản phẩm' })
   update(
-    @Param('id', ParseUUIDPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productsService.update(id, updateProductDto);
   }
 
-  
+
 
   @Patch(':id/status')
   @ApiOperation({ summary: 'Cập nhật trạng thái sản phẩm' })
-  @ApiParam({ name: 'id', description: 'UUID của sản phẩm' })
-  @ApiResponse({
-    status: 200,
-    description: 'Trạng thái đã được cập nhật',
-    type: ProductResponseDto,
-  })
+  @ApiParam({ name: 'id', description: 'ID số của sản phẩm' })
   updateStatus(
-    @Param('id', ParseUUIDPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body('status') status: ProductStatus,
   ) {
     return this.productsService.updateStatus(id, status);
@@ -124,10 +95,21 @@ export class ProductsController {
     type: ProductResponseDto,
   })
   incrementSales(
-    @Param('id', ParseUUIDPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body('quantity') quantity: number = 1,
   ) {
     return this.productsService.incrementSalesCount(id, quantity);
+  }
+
+  @Patch(':id/click-affiliate')
+  @ApiOperation({ summary: 'Tăng số lượt click affiliate của sản phẩm' })
+  @ApiParam({ name: 'id', description: 'ID của sản phẩm' })
+  @ApiResponse({
+    status: 200,
+    description: 'Số lượt click đã được cập nhật',
+  })
+  incrementAffiliateClicks(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.incrementAffiliateClicks(id);
   }
 
 
@@ -138,7 +120,7 @@ export class ProductsController {
   @ApiParam({ name: 'id', description: 'UUID của sản phẩm' })
   @ApiResponse({ status: 200, description: 'Sản phẩm đã được xóa' })
   @ApiResponse({ status: 404, description: 'Không tìm thấy sản phẩm' })
-  remove(@Param('id', ParseUUIDPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.remove(id);
   }
 }

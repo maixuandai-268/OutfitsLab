@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="w-full pb-20 mt-16 relative">
+    <section className="w-full pb-20  pt-26 relative">
       {/* Hiệu ứng phát sáng nền */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-pink-200/30 rounded-full blur-[120px] -z-10" />
       

@@ -27,7 +27,6 @@ type EnvPreset =
   | 'apartment' | 'city' | 'dawn' | 'forest' | 'lobby'
   | 'night' | 'park' | 'studio' | 'sunset' | 'warehouse'
 
-
 function applyToMaterial(
   src: THREE.Material,
   candidateName: string,
@@ -41,23 +40,11 @@ function applyToMaterial(
   mat.metalness = 0
 
   const includes = (tags: string[]) => tags.some((t) => candidateName.includes(t.toLowerCase()))
-  const set = (hex: string, map?: THREE.Texture | null) => {
-    mat.color = new THREE.Color(hex)
-    mat.map = map ?? null
-    if (mat.map) mat.map.needsUpdate = true
+  const isSkin = includes(MATERIAL_TAGS.skin.map((s) => s.toLowerCase()))
+  if (!isSkin) return null
+  if (isSkin) {
     mat.needsUpdate = true
   }
-
-  if (includes(MATERIAL_TAGS.skin.map((s) => s.toLowerCase()))) {
-    set(colors.skin)
-  } else if (includes(MATERIAL_TAGS.top.map((s) => s.toLowerCase()))) {
-    set(colors.top, makePatternTexture(patterns.top, colors.top))
-  } else if (includes(MATERIAL_TAGS.bottom.map((s) => s.toLowerCase()))) {
-    set(colors.bottom, makePatternTexture(patterns.bottom, colors.bottom))
-  } else if (includes(MATERIAL_TAGS.shoes.map((s) => s.toLowerCase()))) {
-    set(colors.shoes)
-  }
-
   return mat
 }
 
@@ -94,41 +81,67 @@ function BodyModel({ url }: { url: string }) {
   return <primitive object={gltf.scene} />
 }
 
-function Garment({ url }: { url: string }) {
+function Garment({
+  url,
+  scale = [1, 1, 1],
+  position = [0, 0, 0],
+  rotation = [0, 0, 0]
+}: {
+  url: string;
+  scale?: [number, number, number];
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+}) {
   const gltf: GLTF = useLoader(GLTFLoader, url)
   const { colors, patterns } = useCustomizer()
   const c: Colors = colors as Colors
   const p: Patterns = patterns as Patterns
 
+  const rotationInRadians = useMemo(() => {
+    return rotation.map(deg => deg * (Math.PI / 180)) as [number, number, number]
+  }, [rotation])
+
   useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
-  return <primitive object={gltf.scene} />
+  return <primitive object={gltf.scene} scale={scale} position={position} rotation={rotationInRadians} />
 }
 
 
 export default function ModelViewer() {
   const { autoRotate, background, modelId, activeGarments } = useCustomizer()
-  const controlsRef = useRef<OrbitControlsImpl | null>(null) 
+  const controlsRef = useRef<OrbitControlsImpl | null>(null)
 
   const bgColor: string =
     background === 'neutral' ? '#ebebeb'
       : background === 'gradientWarm' ? '#f8e7d8'
-      : background === 'gradientCool' ? '#e6eef7'
-      : '#eaeaea'
+        : background === 'gradientCool' ? '#e6eef7'
+          : '#eaeaea'
 
   const envPreset: EnvPreset = background === 'studio' ? 'studio' : 'apartment'
   const shadowColor = background === 'shadow' ? '#d0d0d0' : '#e0e0e0'
   const bodyUrl = BODY_MODELS[modelId]
 
   return (
-    <div className="relative rounded-xl w-full h-100 md:h-115 lg:h-133 overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       <Canvas shadows camera={{ position: [0, 1.2, 3.2], fov: 40 }} dpr={[1, 2]}>
         <color attach="background" args={[bgColor]} />
         <Suspense fallback={null}>
           <group position={[0, -0.9, 0]}>
             <BodyModel url={bodyUrl} />
-            {activeGarments.top    && <Garment url={activeGarments.top} />}
-            {activeGarments.bottom && <Garment url={activeGarments.bottom} />}
-            {activeGarments.shoes  && <Garment url={activeGarments.shoes} />}
+            {activeGarments.top && (
+              <Garment
+                url={activeGarments.top}
+              />
+            )}
+            {activeGarments.bottom && (
+              <Garment
+                url={activeGarments.bottom}
+              />
+            )}
+            {activeGarments.shoes && (
+              <Garment
+                url={activeGarments.shoes}
+              />
+            )}
 
             <ContactShadows
               position={[0, -0.9, 0]}
@@ -143,7 +156,7 @@ export default function ModelViewer() {
         </Suspense>
 
         <OrbitControls
-          ref={controlsRef}              
+          ref={controlsRef}
           enablePan={false}
           enableDamping
           dampingFactor={0.08}
@@ -169,14 +182,13 @@ function AutoRotateBtn() {
   return (
     <button
       onClick={toggleAutoRotate}
-      className={`inline-flex items-center gap-2 rounded-md border bg-white/90 px-3 py-1 text-sm shadow ${
-        autoRotate ? 'border-orange-400 text-orange-500' : 'border-gray-200 text-gray-700'
-      }`}
+      className={`inline-flex items-center gap-2 rounded-md border bg-white/90 px-3 py-1 text-sm shadow ${autoRotate ? 'border-orange-400 text-orange-500' : 'border-gray-200 text-gray-700'
+        }`}
       title="Bật/Tắt xoay tự động"
     >
       {autoRotate ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
       <span className="hidden sm:inline">
-        {autoRotate ? 'Auto‑Rotate: On' : 'Auto‑Rotate: Off'}
+        {autoRotate ? 'Tự Động Xoay: Bật' : 'Tự Động Xoay: Tắt'}
       </span>
     </button>
   )
@@ -188,10 +200,10 @@ function ResetViewBtn({ onReset }: ResetViewBtnProps) {
     <button
       onClick={onReset}
       className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white/90 px-3 py-1 text-sm text-gray-700 shadow"
-      title="Reset góc nhìn"
+      title="Đặt lại góc nhìn"
     >
       <RedoOutlined rotate={-90} />
-      <span className="hidden sm:inline">Reset view</span>
+      <span className="hidden sm:inline">Đặt Lại Góc Nhìn</span>
     </button>
   )
 }

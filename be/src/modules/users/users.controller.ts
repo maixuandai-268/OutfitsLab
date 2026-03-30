@@ -1,30 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Controller, Get, Post, Param, Patch, Body, UsePipes, ValidationPipe, Delete, UseGuards, Req } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from '../common/decorators/get-user.decorator';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UsersService) { }
 
-  @UseGuards(AuthGuard('jwt'))
-  // @Patch('user') // hoàn thiện sửa người dùng
-  update(@GetUser() user,
-    @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(user.sub, updateUserDto);
-  }
-
- 
-
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
-  getMe(@Req() req ) {
-    return req.user;
+  async getMe(@Req() req) {
+    // FIX: Lấy id từ token và gọi findById để lấy data mới nhất có kèm Shop
+    const userId = req.user.id || req.user.sub;
+    return await this.userService.findById(userId);
   }
 }

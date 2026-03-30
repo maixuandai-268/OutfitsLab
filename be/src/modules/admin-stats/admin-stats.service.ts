@@ -6,7 +6,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, LessThan, Repository } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Product } from '../shops/product.entity';
 import { QueryStatsDto, StatsPeriod } from './dto/query-stats.dto';
+import { ProductStatus } from '../shops/product.entity';
 import {
   GrowthDataPointDto,
   RoleStatItemDto,
@@ -22,7 +24,9 @@ export class AdminStatsService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-  ) {}
+    @InjectRepository(Product)
+    private readonly productRepo: Repository<Product>,
+  ) { }
 
 
   async getUserStats(query: QueryStatsDto): Promise<UserStatsResponseDto> {
@@ -83,7 +87,7 @@ export class AdminStatsService {
       case StatsPeriod.YEAR:
         from.setFullYear(from.getFullYear() - 1);
         break;
-      default: 
+      default:
         from.setMonth(from.getMonth() - 1);
     }
     from.setHours(0, 0, 0, 0);
@@ -112,11 +116,11 @@ export class AdminStatsService {
     }
     if (driver === 'sqlite') {
       return isWeek
-        ? `strftime('%Y-%W', u.createdAt)` 
+        ? `strftime('%Y-%W', u.createdAt)`
         : `strftime('%Y-%m', u.createdAt)`;
     }
     return isWeek
-      ? `DATE_FORMAT(u.createdAt, '%Y-%u')` 
+      ? `DATE_FORMAT(u.createdAt, '%Y-%u')`
       : `DATE_FORMAT(u.createdAt, '%Y-%m')`;
   }
 
@@ -179,9 +183,46 @@ export class AdminStatsService {
     const pct = (n: number) => (total > 0 ? +((n / total) * 100).toFixed(2) : 0);
     return {
       breakdown: [
-        { status: 'active',   count: active,   percentage: pct(active) },
+        { status: 'active', count: active, percentage: pct(active) },
         { status: 'inactive', count: inactive, percentage: pct(inactive) },
       ],
     };
+  }
+
+  // Product Statistics
+  async getProductStats(query: QueryStatsDto): Promise<any> {
+    const { from, to } = this.resolveDateRange(query);
+
+    const [total, active, draft, newInPeriod, prevCount] = await Promise.all([
+      this.productRepo.count(),
+      this.productRepo.count({ where: { status: ProductStatus.ACTIVE } }),
+      this.productRepo.count({ where: { status: ProductStatus.DRAFT } }),
+      this.productRepo.count({ where: { createdAt: Between(from, to) } }),
+      this.countPrevPeriodProducts(from, to),
+    ]);
+
+    const totalSales = await this.productRepo
+      .createQueryBuilder('p')
+      .select('SUM(p.salesCount)', 'total')
+      .getRawOne()
+      .then(r => Number(r.total) || 0);
+
+    const growthRate =
+      prevCount > 0
+        ? +(((newInPeriod - prevCount) / prevCount) * 100).toFixed(2)
+        : newInPeriod > 0
+          ? 100
+          : 0;
+
+    return {
+      overview: { total, active, draft, newInPeriod, growthRate, totalSales },
+    };
+  }
+
+  private async countPrevPeriodProducts(currentFrom: Date, currentTo: Date): Promise<number> {
+    const span = currentTo.getTime() - currentFrom.getTime();
+    const prevTo = new Date(currentFrom.getTime() - 1);
+    const prevFrom = new Date(prevTo.getTime() - span);
+    return this.productRepo.count({ where: { createdAt: Between(prevFrom, prevTo) } });
   }
 }

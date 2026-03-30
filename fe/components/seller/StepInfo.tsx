@@ -1,7 +1,26 @@
+"use client";
+
 interface StepInfoProps {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    onChange: (field: string, value: string) => void;
     nextStep: () => void;
 }
-export default function StepInfo({ nextStep }: StepInfoProps) {
+export default function StepInfo({
+    firstName,
+    lastName,
+    email,
+    phone,
+    onChange,
+    nextStep
+}: StepInfoProps) {
+    const isFormValid =
+        firstName.trim() !== "" &&
+        lastName.trim() !== "" &&
+        email.trim() !== "" &&
+        phone.trim() !== "";
     return (
         <div className="mt-0.5 bg-white">
             <div className="w-full flex flex-col">
@@ -12,20 +31,14 @@ export default function StepInfo({ nextStep }: StepInfoProps) {
                     Tham gia cùng hàng ngàn nhà sáng tạo khác và bắt đầu bán các thiết kế của bạn.
                 </p>
             </div>
-
             <div className=" w-full h-[89px] bg-white flex flex-col justify-center">
                 <div className="ml-[473px] flex items-center gap-1">
-
                     <div className="w-[40px] h-[40px] rounded-full bg-[#D19F42] text-white flex items-center justify-center">1</div>
                     <span className="text-[#D19F42]">Thông tin của bạn</span>
-
                     <div className="ml-4 mr-4 w-[32px] h-[2px] bg-[#FFE9CC]"></div>
-
                     <div className="w-[40px] h-[40px] rounded-full bg-[#008080] text-white flex items-center justify-center">2</div>
                     <span className="text-[#262626]">Chi tiết cửa hàng</span>
-
                     <div className="ml-4 mr-4 w-[32px] h-[2px] bg-[#FFE9CC]"></div>
-
                     <div className="w-[40px] h-[40px] rounded-full bg-[#008080] text-white flex items-center justify-center">3</div>
                     <span className="text-[#262626]">Xác nhận thông tin</span>
                 </div>
@@ -33,55 +46,70 @@ export default function StepInfo({ nextStep }: StepInfoProps) {
             <div className="min-h-screen border border-[#FFE9CC] bg-gradient-to-r from-[#FFEAFD] to-[#BFFFF7] p-4 max-h-full">
                 <div className="flex justify-center items-center mt-10 ">
                     <div className="w-[832px] h-[566px] border border-[#FFE9CC] rounded-[24px] bg-white p-10">
-
                         <h1 className="font-semibold text-[24px]">Thông tin của bạn</h1>
-
                         <div className="grid grid-cols-2 gap-7 w-full mt-[50px]">
                             <div className="flex flex-col items-start gap-1 mb-4">
-                                <label htmlFor="First Name" className="mb-1 text-[14px] block font-semibold">Họ</label>
-                                <input type="text"
+                                <label className="mb-1 text-[14px] block font-semibold">Họ</label>
+                                <input
+                                    type="text"
+                                    value={firstName}
+                                    onChange={(e) => onChange("firstName", e.target.value)}
                                     placeholder="Nguyễn Văn"
                                     className="w-full h-[50px] rounded-[16px] border border-[#FFE9CC] bg-[#FFFBF5] px-4 py-2 "
                                 />
                             </div>
                             <div className="flex flex-col items-start gap-1 mb-4">
-                                <label htmlFor="Last Name" className="mb-1 text-[14px] block font-semibold">Tên</label>
-                                <input type="text"
+                                <label className="mb-1 text-[14px] block font-semibold">Tên</label>
+                                <input
+                                    type="text"
+                                    value={lastName}
+                                    onChange={(e) => onChange("lastName", e.target.value)}
                                     placeholder="A"
                                     className="w-full h-[50px] rounded-[16px] border border-[#FFE9CC] bg-[#FFFBF5] px-4 py-2 "
                                 />
                             </div>
                         </div>
-
                         <div className="grid grid-cols-2 gap-7 w-full mt-1">
                             <div className="flex flex-col items-start gap-1 mb-4">
-                                <label htmlFor="Email Address" className="mb-1 text-[14px] block font-semibold">Email</label>
-                                <input type="email"
+                                <label className="mb-1 text-[14px] block font-semibold">Email</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => onChange("email", e.target.value)}
                                     placeholder="you@gmail.com"
                                     className="w-full h-[50px] rounded-[16px] border border-[#FFE9CC] bg-[#FFFBF5] px-4 py-2 "
                                 />
                             </div>
                             <div className="flex flex-col items-start gap-1 mb-4">
-                                <label htmlFor="Phone Number" className="mb-1 text-[14px] block font-semibold">Số điện thoại</label>
-                                <input type="number"
+                                <label className="mb-1 text-[14px] block font-semibold">Số điện thoại</label>
+                                <input
+                                    type="number"
+                                    value={phone}
+                                    onChange={(e) => onChange("phone", e.target.value)}
                                     placeholder="+84 123 456 789"
                                     className="w-full h-[50px] rounded-[16px] border border-[#FFE9CC] bg-[#FFFBF5] px-4 py-2 "
                                 />
                             </div>
                         </div>
-
                         <div className="w-full h-[118px] flex flex-col justify-center border border-[#FFE9CC] bg-[#FFF4E6] rounded-2xl px-6">
                             <h1 className="font-semibold text-[30px]">Lý do chúng tôi cần thông tin</h1>
-                            <p className="text-gray-500 text-[14px]">Chúng tôi sử dụng thông tin của bạn để tạo tài khoản người bán và giúp khách hàng liên hệ với bạn về các giao dịch mua hàng của họ.</p>
+                            <p className="text-gray-500 text-[14px]">
+                                Chúng tôi sử dụng thông tin của bạn để tạo tài khoản người bán và giúp khách hàng liên hệ với bạn về các giao dịch mua hàng của họ.
+                            </p>
                         </div>
-
                         <h1 className="mt-8">
-                            <button onClick={nextStep}
-                                className="text-center text-white flex flex-col justify-center mt-3 border border-[#BD8928] bg-[#BD8928] rounded-full  w-full h-[50px]">
+                            <button
+                                onClick={nextStep}
+                                disabled={!isFormValid}
+                                className={`text-center text-white flex flex-col justify-center mt-3 rounded-full w-full h-[50px]
+                                ${isFormValid
+                                        ? "border border-[#BD8928] bg-[#BD8928]"
+                                        : "bg-gray-300 cursor-not-allowed"
+                                    }`}
+                            >
                                 Tiếp tục bước tiếp theo →
                             </button>
                         </h1>
-
                     </div>
                 </div>
             </div>

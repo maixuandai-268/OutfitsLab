@@ -34,8 +34,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       { value: "hoodies", label: "Hoodies" },
       { value: "blazers", label: "Blazers" },
       { value: "jackets", label: "Jackets" },
-      { value: "skirts", label: "Skirts" },
-      { value: "sweaters", label: "Sweaters" },
       { value: "sneakers", label: "Sneakers" },
     ],
     []
@@ -83,11 +81,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const updatePrice = useCallback(
     (m: string, x: string) => {
-      const normalized = `${m || ""}-${x || ""}`;
+      // Loại bỏ dấu chấm trước khi lưu vào filter state
+      const rawM = m.replace(/\./g, "");
+      const rawX = x.replace(/\./g, "");
+      const normalized = `${rawM || ""}-${rawX || ""}`;
       setFilters((prev) => ({ ...prev, priceRanges: [normalized] }));
     },
     [setFilters]
   );
+
+  // Helper định dạng tiền có dấu chấm
+  const formatVND = (val: string) => {
+    if (!val) return "";
+    const num = val.replace(/\D/g, "");
+    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   const resetFilters = useCallback(() => {
     setFilters({ categories: ["all"], colors: ["all"], priceRanges: ["-"] });
@@ -157,13 +165,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <DollarOutlined />
                 </span>
                 <input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
-                  value={minVal}
+                  value={formatVND(minVal)}
                   onChange={(e) => updatePrice(e.target.value, maxVal)}
                   className="w-full rounded-full border border-[#F6DDB8] bg-white pl-9 pr-4 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#F2C58B] focus:border-[#F2C58B]"
                   placeholder="0"
-                  min={0}
                   aria-label="Minimum price"
                 />
               </div>
@@ -177,13 +184,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <DollarOutlined />
                 </span>
                 <input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
-                  value={maxVal}
+                  value={formatVND(maxVal)}
                   onChange={(e) => updatePrice(minVal, e.target.value)}
                   className="w-full rounded-full border border-[#F6DDB8] bg-white pl-9 pr-4 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#F2C58B] focus:border-[#F2C58B]"
-                  placeholder="100"
-                  min={0}
+                  placeholder="100.000"
                   aria-label="Maximum price"
                 />
               </div>

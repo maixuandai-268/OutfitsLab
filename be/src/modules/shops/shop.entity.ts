@@ -5,10 +5,18 @@ import {
   Column, 
   CreateDateColumn, 
   UpdateDateColumn,  
+  OneToOne,
+  OneToMany,
+  JoinColumn
 } from 'typeorm';
+import { User } from '../users/user.entity';
+import { Product } from './product.entity';
 
 @Entity('shops')
 export class Shop {
+  @Column({ default: 'pending' })
+  status: 'pending' | 'approved' | 'rejected';
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,7 +29,7 @@ export class Shop {
   @Column({ nullable: true })
   contact_email: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   avatar_url: string;
 
   @Column({ nullable: true })
@@ -33,9 +41,19 @@ export class Shop {
   @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   rating: number;
 
+  @Column({ default: 0 })
+  views: number;
+
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToOne(() => User, (user: any) => user.shop)
+  @JoinColumn({ name: 'ownerId' }) 
+  owner: User;
+
+  @OneToMany(() => Product, (product) => product.shop)
+  products: Product[];
 }
