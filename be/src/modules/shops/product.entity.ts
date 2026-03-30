@@ -81,6 +81,9 @@ export class Product {
   viewCount: number;
 
   @Column('jsonb', { nullable: true, default: [] })
+  images: string[];
+
+  @Column('jsonb', { nullable: true, default: [] })
   colors: string[];
 
   @Column('jsonb', { nullable: true, default: [] })

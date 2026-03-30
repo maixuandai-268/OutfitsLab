@@ -17,7 +17,7 @@ export class ProductsService {
     private readonly notificationsService: NotificationsService,
   ) { }
 
-  // 1. Tạo sản phẩm mới
+
   async create(createProductDto: CreateProductDto): Promise<Product> {
     if (createProductDto.shopId && !createProductDto.shop_id) {
       createProductDto.shop_id = createProductDto.shopId;
@@ -27,7 +27,7 @@ export class ProductsService {
     return await this.productRepository.save(product);
   }
 
-  // 2. Lấy danh sách sản phẩm
+
   async findAll(query: QueryProductDto): Promise<PaginatedProductResponseDto> {
     const {
       shop_id,
@@ -141,26 +141,83 @@ export class ProductsService {
     };
   }
 
-  // 3. Lấy chi tiết 1 sản phẩm
-  async findOne(id: number): Promise<Product> {
-    const product = await this.productRepository.findOne({ where: { id } });
+
+  async findOne(id: number, relations: any = {}): Promise<any> {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: Object.keys(relations).length > 0 ? relations : {
+        shop: {
+          products: {
+            reviews: true
+          }
+        },
+        reviews: true
+      }
+    });
+
     if (!product) {
       throw new NotFoundException(`Không tìm thấy sản phẩm với ID: ${id}`);
     }
-    return product;
+
+    const reviewCount = product.reviews?.length || 0;
+    const averageRating = reviewCount > 0
+      ? Number(
+          (
+            product.reviews.reduce((acc, r) => acc + r.rating, 0) /
+            reviewCount
+          ).toFixed(1),
+        )
+      : 0;
+
+    let shopInfo: any = null;
+    if (product.shop) {
+      const shopProducts = product.shop.products || [];
+      const shopProductCount = shopProducts.length;
+
+      let totalShopRating = 0;
+      let totalShopReviews = 0;
+
+      shopProducts.forEach(p => {
+        const pReviews = p.reviews || [];
+        pReviews.forEach(r => {
+          totalShopRating += Number(r.rating);
+          totalShopReviews++;
+        });
+      });
+
+      const shopAverageRating = totalShopReviews > 0
+        ? Number((totalShopRating / totalShopReviews).toFixed(1))
+        : 5.0;
+
+      const { products, ...baseShopInfo } = product.shop;
+      shopInfo = {
+        ...baseShopInfo,
+        productCount: shopProductCount,
+        rating: shopAverageRating,
+        reviewCount: totalShopReviews
+      };
+    }
+
+    const { reviews, shop, ...productInfo } = product;
+    return {
+      ...productInfo,
+      averageRating,
+      reviewCount,
+      shop: shopInfo,
+      reviews: reviews || []
+    };
   }
 
-  // 4. Cập nhật sản phẩm
+
   async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
-    const product = await this.findOne(id);
+    const product = await this.findOne(id, ['shop']);
     Object.assign(product, updateProductDto);
 
     const updated = await this.productRepository.save(product);
 
-    // Send notification when product is updated
-    if (updated.shop_id) {
+    if (updated.shop?.ownerId) {
       await this.notificationsService.create({
-        userId: updated.shop_id,
+        userId: updated.shop.ownerId,
         message: `Sản phẩm "${updated.name}" đã được cập nhật`,
       });
     }
@@ -168,15 +225,14 @@ export class ProductsService {
     return updated;
   }
 
-  // 5. Xóa sản phẩm
+
   async remove(id: number): Promise<{ message: string }> {
-    const product = await this.findOne(id);
+    const product = await this.findOne(id, ['shop']);
     await this.productRepository.remove(product);
 
-    // Send notification when product is deleted
-    if (product.shop_id) {
+    if (product.shop?.ownerId) {
       await this.notificationsService.create({
-        userId: product.shop_id,
+        userId: product.shop.ownerId,
         message: `Sản phẩm "${product.name}" đã bị xóa`,
       });
     }
@@ -184,21 +240,21 @@ export class ProductsService {
     return { message: `Đã xóa sản phẩm "${product.name}" thành công` };
   }
 
-  // 6. Cập nhật trạng thái
+
   async updateStatus(id: number, status: ProductStatus): Promise<Product> {
     const product = await this.findOne(id);
     product.status = status;
     return await this.productRepository.save(product);
   }
 
-  // 7. Tăng số lượng đã bán
+
   async incrementSalesCount(id: number, quantity: number = 1): Promise<Product> {
     const product = await this.findOne(id);
     product.salesCount = (product.salesCount || 0) + quantity;
     return await this.productRepository.save(product);
   }
 
-  // 8. Tăng số lượt click affiliate
+
   async incrementAffiliateClicks(id: number): Promise<void> {
     await this.productRepository.increment({ id }, 'affiliateClicks', 1);
   }
