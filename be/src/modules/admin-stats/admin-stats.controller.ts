@@ -20,7 +20,18 @@ import { UserStatsResponseDto } from './dto/stats-response.dto';
 @UseInterceptors(ClassSerializerInterceptor)
 
 export class AdminStatsController {
-  constructor(private readonly statsService: AdminStatsService) {}
+  constructor(private readonly statsService: AdminStatsService) { }
+
+  @Get()
+  @ApiOperation({ summary: 'Thống kê tổng quát cho admin (users + products)' })
+  async getOverallStats(@Query() query: QueryStatsDto) {
+    const userStats = await this.statsService.getUserStats(query);
+    const productStats = await this.statsService.getProductStats(query);
+    return {
+      users: userStats,
+      products: productStats,
+    };
+  }
 
   @Get('users')
   @ApiOperation({ summary: 'Thống kê toàn diện người dùng dành cho admin' })

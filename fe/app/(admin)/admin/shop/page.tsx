@@ -10,7 +10,7 @@ export default function AdminSellersPage() {
   // 1. Lấy danh sách shop đang chờ duyệt bằng fetch
   const fetchSellers = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/shops/pending");
+      const response = await fetch("http://localhost:3000/api/shops/pending");
       if (!response.ok) throw new Error("Lỗi mạng");
       const data = await response.json();
       setSellers(data);
@@ -26,7 +26,7 @@ export default function AdminSellersPage() {
   // 2. Hàm xử lý duyệt bằng fetch (Dùng PATCH)
   const handleApprove = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/shops/${id}/approve`, {
+      const response = await fetch(`http://localhost:3000/api/shops/${id}/approve`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -36,9 +36,9 @@ export default function AdminSellersPage() {
       });
 
       if (response.ok) {
-        notification.success({ 
-          title: "Thành công", 
-          description: "Đã duyệt người bán và nâng cấp quyền!" 
+        notification.success({
+          title: "Thành công",
+          description: "Đã duyệt người bán và nâng cấp quyền!"
         });
         fetchSellers(); // Load lại danh sách sau khi duyệt
       } else {
@@ -73,7 +73,7 @@ export default function AdminSellersPage() {
               </div>
 
               <div className="mt-5 flex gap-3">
-                <button 
+                <button
                   onClick={() => handleApprove(s.id)}
                   className="px-5 py-2 rounded-xl bg-emerald-600 text-white flex items-center gap-2 hover:bg-emerald-700 transition-all"
                 >

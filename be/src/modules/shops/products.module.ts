@@ -4,12 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { Product } from './product.entity';
-import { NotificationModule } from './notification.module';
+import { NotificationsModule } from '../notifications/notifications.module';
+
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Product]),
-    NotificationModule,  // ✅ Import NotificationModule để inject NotificationService
+    NotificationsModule,
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

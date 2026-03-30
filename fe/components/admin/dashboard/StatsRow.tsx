@@ -53,91 +53,66 @@ export default function StatsRow({ dark }: StatsRowProps) {
   useEffect(() => {
     const fetchAdminStats = async () => {
       try {
-        const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-        const response = await fetch(`${API_BASE}/api/admin/stats`);
+        const API_BASE = 'http://localhost:3000';
 
-        if (!response.ok) {
-          console.error('Failed to fetch admin stats');
+        const res = await fetch(`${API_BASE}/api/admin/stats`);
+
+        if (!res.ok) {
+          console.error("API lỗi:", res.status);
           return;
         }
 
-        const data: AdminStatsData = await response.json();
+        const data = await res.json();
+        console.log("DATA:", data);
 
-        // Helper function to calculate growth percentage
-        const calculateGrowth = (thisMonth: number, lastMonth: number) => {
-          if (lastMonth === 0) return { growth: "0%", up: true };
-          const growthPercent = ((thisMonth - lastMonth) / lastMonth) * 100;
-          const formattedGrowth = growthPercent >= 0
-            ? `+${growthPercent.toFixed(1)}%`
-            : `${growthPercent.toFixed(1)}%`;
-          return { growth: formattedGrowth, up: growthPercent >= 0 };
+        const usersOverview = data.users?.overview || {
+          total: 0,
+          growthRate: 0,
         };
 
-        // Parse data from API
-        let usersThisMonth = 0;
-        let usersLastMonth = 0;
-        let shopsThisMonth = 0;
-        let shopsLastMonth = 0;
-        let productsThisMonth = 0;
-        let productsLastMonth = 0;
+        const productsOverview = data.products?.overview || {
+          total: 0,
+          growthRate: 0,
+        };
 
-        if (data.summary && Array.isArray(data.summary)) {
-          data.summary.forEach((item) => {
-            if (item.label?.toLowerCase().includes('user')) {
-              usersThisMonth = item.thisMonth || item.value || 0;
-              usersLastMonth = item.lastMonth || 0;
-            } else if (item.label?.toLowerCase().includes('shop')) {
-              shopsThisMonth = item.thisMonth || item.value || 0;
-              shopsLastMonth = item.lastMonth || 0;
-            } else if (item.label?.toLowerCase().includes('product')) {
-              productsThisMonth = item.thisMonth || item.value || 0;
-              productsLastMonth = item.lastMonth || 0;
-            }
-          });
+        const formatNumber = (num: number): string =>
+          Number(num || 0).toLocaleString("vi-VN");
+
+        interface StatsRowProps {
+          dark: boolean;
         }
 
-        // Calculate growth for each metric
-        const { growth: usersGrowth, up: usersUp } = calculateGrowth(usersThisMonth, usersLastMonth);
-        const { growth: shopsGrowth, up: shopsUp } = calculateGrowth(shopsThisMonth, shopsLastMonth);
-        const { growth: productsGrowth, up: productsUp } = calculateGrowth(productsThisMonth, productsLastMonth);
-
-        // Format numbers with thousand separators
-        const formatNumber = (num: number) => {
-          return num.toLocaleString('vi-VN');
-        };
-
-        // Update stats with real data
         setStats([
           {
             title: "Tổng số người dùng",
-            value: formatNumber(usersThisMonth),
-            change: usersGrowth,
-            up: usersUp,
+            value: "0",   // ⚠️ bạn chưa có users API
+            change: "0%",
+            up: true,
             icon: <UserOutlined />,
             iconColor: "#f59e0b",
             iconBg: "#fffbeb"
           },
           {
             title: "Shop đăng ký thành công",
-            value: formatNumber(shopsThisMonth),
-            change: shopsGrowth,
-            up: shopsUp,
+            value: formatNumber(usersOverview.total),
+            change: `+${usersOverview.growthRate || 0}%`,
+            up: true,
             icon: <ShopOutlined />,
             iconColor: "#6366f1",
             iconBg: "#eef2ff"
           },
           {
             title: "Sản phẩm đăng trên sàn",
-            value: formatNumber(productsThisMonth),
-            change: productsGrowth,
-            up: productsUp,
+            value: formatNumber(productsOverview.total),
+            change: `+${productsOverview.growthRate || 0}%`,
+            up: true,
             icon: <ShoppingOutlined />,
             iconColor: "#10b981",
             iconBg: "#ecfdf5"
           },
         ]);
-      } catch (error) {
-        console.error('Error fetching admin stats:', error);
+      } catch (err) {
+        console.error("Fetch lỗi:", err);
       }
     };
 
