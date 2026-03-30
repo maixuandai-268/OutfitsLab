@@ -2,6 +2,9 @@
 import { useState } from 'react';
 import { ProductCard } from './ProductCard';
 import { FavoriteButton } from './FavoriteButton';
+import { useRouter } from 'next/navigation';
+import { useCustomizer } from '@/store/useCustomizer';
+import { message } from 'antd';
 
 interface Review {
   id: number;
@@ -28,6 +31,9 @@ interface Product {
   averageRating?: number;
   reviewCount?: number;
   shop?: any;
+  garment_slot?: string;
+  model_url?: string[];
+  gender?: string;
 }
 
 interface ProductDetailProps {
@@ -37,6 +43,28 @@ interface ProductDetailProps {
 export const ProductDetail = ({ product }: ProductDetailProps) => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  
+  const router = useRouter();
+  const { setGarment, setGender } = useCustomizer();
+
+  const handleTryOn = () => {
+    if (product.garment_slot && Array.isArray(product.model_url) && product.model_url.some(x => !!x)) {
+      if (product.gender === 'male' || product.gender === 'female') {
+        setGender(product.gender);
+      }
+      setGarment(product.garment_slot as any, {
+        id: product.id,
+        name: product.name,
+        type: product.type || '',
+        garment_slot: product.garment_slot,
+        model_url: product.model_url,
+        image: product.image || product.image_url
+      });
+      router.push('/try-on');
+    } else {
+      message.info("Sản phẩm này hiện chưa có mô hình 3D để thử đồ.");
+    }
+  };
 
 
   const initialImages = Array.isArray(product.images) && product.images.length > 0
@@ -186,7 +214,10 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
         </div>
 
         <div className="flex gap-4">
-          <button className="flex-[2] py-4 bg-pink-500 text-white font-bold rounded-full flex items-center justify-center hover:bg-pink-600 transition-all shadow-lg uppercase tracking-wide">
+          <button 
+            onClick={handleTryOn}
+            className="flex-[2] py-4 bg-pink-500 text-white font-bold rounded-full flex items-center justify-center hover:bg-pink-600 transition-all shadow-lg uppercase tracking-wide"
+          >
             <MagicWand className="w-5 h-5 mr-2" />
             Thử đồ ngay!
           </button>
