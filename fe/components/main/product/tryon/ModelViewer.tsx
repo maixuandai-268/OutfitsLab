@@ -1,9 +1,9 @@
 'use client'
 
-import { Canvas, useLoader } from '@react-three/fiber'
-import { Environment, OrbitControls, ContactShadows } from '@react-three/drei'
+import { Canvas, useThree } from '@react-three/fiber'
+import { Environment, OrbitControls, ContactShadows, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { GLTFLoader, GLTF } from 'three-stdlib'
+import { GLTFLoader, GLTF, KTX2Loader, MeshoptDecoder } from 'three-stdlib'
 import { Suspense, useMemo, useRef } from 'react'
 import { useCustomizer } from '@/store/useCustomizer'
 import { MATERIAL_TAGS } from '@/lib/materialMap'
@@ -72,12 +72,18 @@ function materializeScene(scene: THREE.Object3D, colors: Colors, patterns: Patte
 
 
 function BodyModel({ url }: { url: string }) {
-  const gltf: GLTF = useLoader(GLTFLoader, url)
-  const { colors, patterns } = useCustomizer()
-  const c: Colors = colors as Colors
-  const p: Patterns = patterns as Patterns
+  const gl = useThree((state) => state.gl)
+  const gltf = useGLTF(url, true, true, (loader) => {
+    const ktx2Loader = new KTX2Loader()
+    ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/basis/')
+    ktx2Loader.detectSupport(gl)
+    loader.setKTX2Loader(ktx2Loader)
+    loader.setMeshoptDecoder(MeshoptDecoder)
+  }) as any
+  // const c: Colors = colors as Colors
+  // const p: Patterns = patterns as Patterns
 
-  useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
+  // useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
   return <primitive object={gltf.scene} />
 }
 
@@ -92,16 +98,22 @@ function Garment({
   position?: [number, number, number];
   rotation?: [number, number, number];
 }) {
-  const gltf: GLTF = useLoader(GLTFLoader, url)
-  const { colors, patterns } = useCustomizer()
-  const c: Colors = colors as Colors
-  const p: Patterns = patterns as Patterns
+  const gl = useThree((state) => state.gl)
+  const gltf = useGLTF(url, true, true, (loader) => {
+    const ktx2Loader = new KTX2Loader()
+    ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/basis/')
+    ktx2Loader.detectSupport(gl)
+    loader.setKTX2Loader(ktx2Loader)
+    loader.setMeshoptDecoder(MeshoptDecoder)
+  }) as any
+  // const c: Colors = colors as Colors
+  // const p: Patterns = patterns as Patterns
 
   const rotationInRadians = useMemo(() => {
     return rotation.map(deg => deg * (Math.PI / 180)) as [number, number, number]
   }, [rotation])
 
-  useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
+  // useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
   return <primitive object={gltf.scene} scale={scale} position={position} rotation={rotationInRadians} />
 }
 
