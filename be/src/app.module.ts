@@ -14,12 +14,11 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { IssueReportModule } from './modules/report/report.module';
 import { UploadModule } from './modules/upload/upload.module';
-
+import { AdminStatsModule } from './modules/admin-stats/admin-stats.module';
 
 
 require('dotenv').config();
 const password = process.env.DB_PASSWORD || '';
-
 
 @Module({
   imports: [
@@ -42,15 +41,8 @@ const password = process.env.DB_PASSWORD || '';
     ReviewsModule,
     NotificationsModule,
     IssueReportModule,
-    UploadModule
-
+    UploadModule,
+    AdminStatsModule,
   ],
 })
 export class AppModule { };
-
-
-// Note: Các module như AdminModule, OrderModule, CartModule sẽ được thêm vào sau khi hoàn thiện chức năng tương ứng
-// Ví dụ:
-// import { AdminModule } from './modules/admin/admin.module';
-// import { OrderModule } from './modules/order/order.module';
-// import { CartModule } from './modules/cart/cart.module';
