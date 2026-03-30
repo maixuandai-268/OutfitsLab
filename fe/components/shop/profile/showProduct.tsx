@@ -2,7 +2,8 @@
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Rate } from 'antd';
+import { Rate, Tooltip } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const API_BASE = 'http://localhost:3000/api';
 
@@ -27,9 +28,11 @@ interface ShopProductCardProps {
   product: Product;
   shop?: Shop;
   onToggleFavourite?: (productId: number, isFavourite: boolean) => void;
+  onEdit?: (product: any) => void;
+  onDelete?: (productId: number) => void;
 }
 
-export const ShopProductCard = ({ product, shop, onToggleFavourite }: ShopProductCardProps) => {
+export const ShopProductCard = ({ product, shop, onToggleFavourite, onEdit, onDelete }: ShopProductCardProps) => {
   const { token } = useAuth();
   const [isFavourite, setIsFavourite] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,7 +47,7 @@ export const ShopProductCard = ({ product, shop, onToggleFavourite }: ShopProduc
         const data: { isFavourite: boolean } = await res.json();
         setIsFavourite(data.isFavourite);
       }
-    } catch { /* bỏ qua */ }
+    } catch { }
   }, [token, product?.id]);
 
   useEffect(() => { checkFavourite(); }, [checkFavourite]);
@@ -66,7 +69,7 @@ export const ShopProductCard = ({ product, shop, onToggleFavourite }: ShopProduc
           onToggleFavourite(product.id, data.isFavourite);
         }
       }
-    } catch { /* bỏ qua */ }
+    } catch { }
     finally { setLoading(false); }
   };
 
@@ -85,21 +88,55 @@ export const ShopProductCard = ({ product, shop, onToggleFavourite }: ShopProduc
           </span>
         )}
 
-        <button
-          type="button"
-          title={!token ? 'Đăng nhập để lưu yêu thích' : isFavourite ? 'Bỏ lưu' : 'Lưu yêu thích'}
-          disabled={!token || loading}
-          onClick={handleToggle}
-          className={`cursor-pointer absolute top-3 right-3 p-2 bg-white backdrop-blur-sm rounded-full shadow-sm hover:bg-gray-200 transition ${!token ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          {loading ? (
-            <div className="w-5 h-5 border-2 border-rose-400 border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" fill={isFavourite ? '#ef4444' : 'none'} viewBox="0 0 24 24" strokeWidth={2} stroke={isFavourite ? '#ef4444' : 'currentColor'} className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-            </svg>
+        <div className="absolute top-3 right-3 flex flex-col gap-2">
+          <button
+            type="button"
+            title={!token ? 'Đăng nhập để lưu yêu thích' : isFavourite ? 'Bỏ lưu' : 'Lưu yêu thích'}
+            disabled={!token || loading}
+            onClick={handleToggle}
+            className={`cursor-pointer p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition ${!token ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-rose-400 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" fill={isFavourite ? '#ef4444' : 'none'} viewBox="0 0 24 24" strokeWidth={2} stroke={isFavourite ? '#ef4444' : 'currentColor'} className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            )}
+          </button>
+
+          {onEdit && (
+            <Tooltip title="Chỉnh sửa sản phẩm">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit(product);
+                }}
+                className="cursor-pointer p-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition scale-90 hover:scale-100"
+              >
+                <EditOutlined className="text-lg" />
+              </button>
+            </Tooltip>
           )}
-        </button>
+
+          {onDelete && (
+            <Tooltip title="Xóa sản phẩm">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete(product.id);
+                }}
+                className="cursor-pointer p-2 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition scale-90 hover:scale-100"
+              >
+                <DeleteOutlined className="text-lg" />
+              </button>
+            </Tooltip>
+          )}
+        </div>
       </div>
 
       <div className="p-5">

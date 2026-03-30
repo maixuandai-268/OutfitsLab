@@ -108,7 +108,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Rate 
             disabled 
             allowHalf 
-            defaultValue={product.rating || 0} 
+            value={product.rating || 0} 
             className="text-[12px] text-amber-400"
           />
           {typeof product.reviews === "number" && (
@@ -285,11 +285,6 @@ export default function ProductAll() {
         const formatted = rawData.map((item: any) => {
           const catKey = normalizeCategory(item.type);
           
-          let avgRating = Number(item.rating) || 0;
-          if (Array.isArray(item.reviews) && item.reviews.length > 0) {
-            avgRating = item.reviews.reduce((sum: number, rev: any) => sum + Number(rev.rating), 0) / item.reviews.length;
-          }
-          
           return {
             id: item.id,
             name: item.name,
@@ -298,8 +293,8 @@ export default function ProductAll() {
             colors: Array.isArray(item.colors) ? item.colors.map((c: string) => normalizeColor(c)) : [],
             sizes: Array.isArray(item.sizes) ? item.sizes : [],
             brand: item.brand || item.shop?.shop_name || "Outfits Lab",
-            rating: Number(avgRating.toFixed(1)), 
-            reviews: Array.isArray(item.reviews) ? item.reviews.length : 0,
+            rating: item.averageRating !== undefined ? Number(item.averageRating) : (Number(item.rating) || 0), 
+            reviews: item.reviewCount !== undefined ? Number(item.reviewCount) : 0,
             price: Number(item.price) || 0,
             image: item.image || item.image_url,
             tag: item.tag || CATEGORY_LABELS[catKey] || "MỚI",

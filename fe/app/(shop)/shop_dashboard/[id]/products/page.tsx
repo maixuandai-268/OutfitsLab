@@ -21,18 +21,43 @@ export default function ProductsPage() {
   const params = useParams();
   const { token } = useAuth();
   
-  // Lấy ID từ URL (ví dụ: /shop_dashboard/15/products -> shopIdUrl = 15)
+
   const shopIdUrl = params?.id;
 
-  // --- States danh sách sản phẩm ---
+
   const [products, setProducts] = useState<any[]>([]); 
   const [loading, setLoading] = useState(true);
   const [tuKhoa, setTuKhoa] = useState("");
 
-  // --- States Modal Thêm sản phẩm ---
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
   
-  // --- Logic Fetch dữ liệu ---
+
+  const handleEdit = (product: any) => {
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (productId: number) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) return;
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${productId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        message.success("Đã xóa sản phẩm thành công!");
+        layDanhSachSanPham(); 
+      } else {
+        message.error("Không thể xóa sản phẩm.");
+      }
+    } catch (error) {
+      message.error("Lỗi kết nối máy chủ.");
+    }
+  };
+
+
   const layDanhSachSanPham = useCallback(async () => {
     if (!shopIdUrl) return;
     setLoading(true);
@@ -65,7 +90,6 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      {/* HEADER SECTION */}
       <div className="flex justify-between items-end">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Quản lý sản phẩm</h2>
@@ -76,13 +100,15 @@ export default function ProductsPage() {
           icon={<PlusOutlined />} 
           size="large"
           className="bg-yellow-700 hover:bg-yellow-600 border-none px-8 rounded-full shadow-md"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingProduct(null); 
+            setIsModalOpen(true);
+          }}
         >
           Thêm sản phẩm mới
         </Button>
       </div>
 
-      {/* FILTER BAR */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
         <Input
           prefix={<SearchOutlined className="text-gray-400" />}
@@ -99,7 +125,6 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* PRODUCT GRID */}
       {loading ? (
         <div className="text-center py-20">
           <Spin size="large" tip="Đang đồng bộ dữ liệu..." />
@@ -111,6 +136,8 @@ export default function ProductsPage() {
               key={sp.id} 
               product={sp} 
               shop={{ id: Number(shopIdUrl) || 0, shop_name: "Cửa hàng của tôi" } as any} 
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           ))}
         </div>
@@ -120,12 +147,15 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {/* MODAL THÊM SẢN PHẨM (Đã dùng component chung để đồng bộ Sidebar) */}
       <AddProductModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingProduct(null);
+        }}
         shopId={Number(shopIdUrl) || 0}
         onSuccess={layDanhSachSanPham}
+        editData={editingProduct}
       />
     </div>
   );

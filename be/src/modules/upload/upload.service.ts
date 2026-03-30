@@ -1,25 +1,14 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
-// @ts-ignore
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 
 @Injectable()
 export class UploadService {
-    constructor(@Inject('CLOUDINARY') private readonly cloudinaryInstance: any) {}
-
     async uploadFile(file: Express.Multer.File) {
         const isGLB =
             file.mimetype === 'model/gltf-binary' ||
-            file.originalname.toLowerCase().match(/\.(glb|gltf|obj)$/);
+            file.originalname.toLowerCase().endsWith('.glb');
 
-        // Xử lý lỗi font tiếng Việt của Multer và tạo tên file an toàn cho Cloudinary
-        const utf8Name = Buffer.from(file.originalname, 'latin1').toString('utf8');
-        const safeName = utf8Name
-            .normalize('NFD') // Tách dấu ra khỏi chữ
-            .replace(/[\u0300-\u036f]/g, '') // Bỏ dấu
-            .replace(/\s+/g, '-') // Đổi khoảng trắng thành gạch ngang
-            .replace(/[^a-zA-Z0-9\-]/g, ''); // Bỏ ký tự đặc biệt
-        
-        const fileName = `${Date.now()}-${safeName}`;
+        const fileName = file.originalname.split('.')[0];
 
         return new Promise((resolve, reject) => {
             cloudinary.uploader
@@ -31,17 +20,11 @@ export class UploadService {
                         public_id: isGLB ? `${fileName}.glb` : undefined,
                     },
                     (error, result) => {
-                        if (error) {
-                            console.error('Cloudinary Upload Error:', error);
-                            const errorMsg = error.message.includes('File size limit') 
-                                ? 'File quá nặng! (Cloudinary Free giới hạn 10-20MB cho file 3D). Hãy thử file nhỏ hơn.' 
-                                : `Lỗi Cloudinary: ${error.message}`;
-                            return reject(new InternalServerErrorException(errorMsg));
-                        }
+                        if (error) return reject(error);
 
                         if (!result?.secure_url || !result?.public_id) {
                             return reject(
-                                new InternalServerErrorException('Upload thất bại (Không có phản hồi từ server)'),
+                                new InternalServerErrorException('Upload failed'),
                             );
                         }
 
