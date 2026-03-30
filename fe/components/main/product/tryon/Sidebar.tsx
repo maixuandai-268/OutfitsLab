@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Shirt,
   RotateCcw,
@@ -10,11 +10,49 @@ import {
   PersonStanding,
   Scissors
 } from 'lucide-react'
-import { useCustomizer, GarmentSlot, ModelId } from '@/store/useCustomizer'
-import { GARMENTS, BODY_MODELS } from '@/lib/assetsCatalog'
+import { useCustomizer, GarmentSlot, GarmentProduct, BodyType, resolveModelUrl, ModelId } from '@/store/useCustomizer'
+import { useGarments } from '@/hooks/useGarments'
 
 export default function Sidebar() {
   const [activeTab, setActiveTab] = useState<string>('body')
+
+  const { bodyType, selectedGarments, setGarment, modelId } = useCustomizer()
+  const genderFilter = modelId === 'avatar_female' ? 'female' : 'male'
+
+  const { garments: hatGarments, loading: hatLoading } = useGarments('hat', genderFilter)
+  const { garments: topGarments, loading: topLoading } = useGarments('top', genderFilter)
+  const { garments: bottomGarments, loading: bottomLoading } = useGarments('bottom', genderFilter)
+  const { garments: shoesGarments, loading: shoesLoading } = useGarments('shoes', genderFilter)
+
+  useEffect(() => {
+    const autoSelect = (slot: GarmentSlot, list: GarmentProduct[], isLoading: boolean) => {
+
+      if (isLoading || list.length === 0) return
+
+      const curr = selectedGarments[slot]
+      const isInList = curr ? list.some(g => g.id === curr.id) : false
+
+      if (curr && resolveModelUrl(curr, bodyType) && isInList) return
+
+      const firstValid = list.find(g => resolveModelUrl(g, bodyType))
+      if (firstValid && firstValid.id !== curr?.id) {
+        setGarment(slot, firstValid)
+      } else if (!firstValid && curr && !isInList) {
+        setGarment(slot, null)
+      }
+    }
+
+    autoSelect('top', topGarments, topLoading)
+    autoSelect('bottom', bottomGarments, bottomLoading)
+    autoSelect('shoes', shoesGarments, shoesLoading)
+
+  }, [
+    bodyType,
+    topGarments, topLoading,
+    bottomGarments, bottomLoading,
+    shoesGarments, shoesLoading,
+    selectedGarments, setGarment
+  ])
 
   const navItems = [
     { id: 'body', icon: PersonStanding },
@@ -35,7 +73,7 @@ export default function Sidebar() {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center justify-center w-15 h-15 rounded-full  duration-300 ${isActive
+              className={`flex items-center justify-center rounded-full duration-300 w-12 h-12 ${isActive
                 ? 'text-white bg-black'
                 : 'text-gray-500 bg-gray-100 hover:text-gray-900 hover:bg-gray-200'
                 }`}
@@ -51,65 +89,105 @@ export default function Sidebar() {
         {activeTab === 'body' ? (
           <BodyContent />
         ) : (
-          <GarmentsContent slot={activeTab as GarmentSlot} />
+          <GarmentsContent
+            slot={activeTab as GarmentSlot}
+            garments={
+              activeTab === 'hat' ? hatGarments :
+                activeTab === 'top' ? topGarments :
+                  activeTab === 'bottom' ? bottomGarments :
+                    shoesGarments
+            }
+            loading={
+              activeTab === 'hat' ? hatLoading :
+                activeTab === 'top' ? topLoading :
+                  activeTab === 'bottom' ? bottomLoading :
+                    shoesLoading
+            }
+          />
         )}
       </div>
     </div>
   )
 }
 
+function GarmentsContent({ slot, garments, loading }: { slot: GarmentSlot, garments: GarmentProduct[], loading: boolean }) {
+  const { selectedGarments, bodyType, setGarment } = useCustomizer()
 
-function GarmentsContent({ slot }: { slot: GarmentSlot }) {
-  const { activeGarments, setGarment } = useCustomizer()
-
-  const entries = Object.entries(GARMENTS[slot]) as [string, string][]
+  const Icon = slot === 'hat' ? HatGlasses :
+    slot === 'top' ? Shirt :
+      slot === 'bottom' ? Scissors : Footprints;
 
   return (
     <div className="grid grid-cols-4 gap-2.5">
       {/* None Button */}
-      <button
-        onClick={() => setGarment(slot, null)}
-        className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem]  hover:opacity-70 ${!activeGarments[slot] ? 'border-[1.5px] border-black' : 'border-[1.5px] border-transparent'
-          }`}
-      >
-        <div className="w-full h-full rounded-2xl bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-semibold">
-          Không có
-        </div>
-      </button>
+      {slot === 'hat' && (
+        <button
+          onClick={() => setGarment(slot, null)}
+          className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem] hover:opacity-70 ${!selectedGarments[slot] ? 'border-[1.5px] border-black' : 'border-[1.5px] border-transparent'
+            }`}
+        >
+          <div className="w-full h-full rounded-2xl bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-semibold">
+            Không có
+          </div>
+        </button>
+      )}
 
       {/* Garment Buttons */}
-      {entries.map(([name, url]) => {
-        const isSelected = activeGarments[slot] === url;
-        const Icon = slot === 'hat' ? HatGlasses :
-          slot === 'top' ? Shirt :
-            slot === 'bottom' ? Scissors :
-              Footprints;
+      {loading ? (
+        <div className="col-span-3 py-10 text-center text-xs text-gray-400">Đang tải...</div>
+      ) : garments.length === 0 ? (
+        <div className="col-span-3 py-10 text-center text-xs text-gray-400"></div>
+      ) : (
+        garments.map((product) => {
+          const currentUrl = resolveModelUrl(product, bodyType)
+          const isSelected = selectedGarments[slot]?.id === product.id
+          const hasModel = !!currentUrl
 
-        return (
-          <button
-            key={name}
-            onClick={() => setGarment(slot, url)}
-            className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem]  hover:opacity-70 ${isSelected ? 'border-[1.5px] border-black' : 'border-[1.5px] border-transparent'
-              }`}
-          >
-            <div className="w-full h-full rounded-2xl bg-[#D6E0EC] flex items-center justify-center relative overflow-hidden">
-              <span className="text-[10px] text-gray-800 font-bold z-10 text-center px-1 bg-white/70 backdrop-blur-sm rounded-md py-1 mx-1">
-                {name.replace(/_/g, ' ')}
-              </span>
-              <div className="absolute inset-0 flex flex-col items-center justify-end pb-3 opacity-30 text-gray-900 pointer-events-none">
-                <Icon size={28} />
+          return (
+            <button
+              key={product.id}
+              onClick={() => hasModel ? setGarment(slot, product) : undefined}
+              disabled={!hasModel}
+              title={
+                !hasModel
+                  ? `Sản phẩm này chưa có model cho thân hình "${bodyType}"`
+                  : product.name
+              }
+              className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem] transition-all ${!hasModel
+                  ? 'opacity-30 cursor-not-allowed border-[1.5px] border-transparent'
+                  : isSelected
+                    ? 'border-[1.5px] border-black hover:opacity-70'
+                    : 'border-[1.5px] border-transparent hover:opacity-70'
+                }`}
+            >
+              <div className={`w-full h-full rounded-2xl flex items-center justify-center relative overflow-hidden ${isSelected ? 'bg-[#c8d4e3]' : 'bg-[#D6E0EC]'}`}>
+                {product.image && (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="absolute inset-0 w-full h-full object-cover opacity-80"
+                  />
+                )}
+                <span className="text-[9px] text-gray-800 font-bold z-10 text-center px-1 bg-white/70 backdrop-blur-sm rounded-md py-1 mx-1 line-clamp-2">
+                  {product.name}
+                </span>
               </div>
-            </div>
-          </button>
-        )
-      })}
+            </button>
+          )
+        })
+      )}
     </div>
   )
 }
 
 function BodyContent() {
-  const { modelId, setModelId, colors, setColor } = useCustomizer()
-  const [activeScaleId, setActiveScaleId] = useState<number>(3)
+  const { modelId, setModelId, colors, setColor, bodyType, setBodyType } = useCustomizer()
+
+  const SCALE_OPTIONS: { type: BodyType, scaleX: number }[] = [
+    { type: 'skinny', scaleX: 0.6 },
+    { type: 'fit', scaleX: 0.9 },
+    { type: 'fat', scaleX: 1.2 },
+  ]
 
   return (
     <div className="flex flex-col gap-4">
@@ -119,21 +197,21 @@ function BodyContent() {
           <Smile className="w-4 h-4 text-gray-500" /> Giới tính
         </div>
         <div className="grid grid-cols-2 gap-3">
-          {(Object.keys(BODY_MODELS) as ModelId[]).map((id) => (
+          {(['avatar_male', 'avatar_female'] as ModelId[]).map((id) => (
             <button
               key={id}
               onClick={() => setModelId(id)}
-              className={`rounded-[1rem] border py-2.5 flex items-center justify-center font-bold text-[14px]  ${
-                modelId === id 
-                  ? 'border-black bg-black text-white shadow-sm' 
+              className={`rounded-[1rem] border py-2.5 flex items-center justify-center font-bold text-[14px]  ${modelId === id
+                  ? 'border-black bg-black text-white shadow-sm'
                   : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-              }`}
+                }`}
             >
               {id === 'avatar_female' ? 'Nữ' : 'Nam'}
             </button>
           ))}
         </div>
       </div>
+
       {/* Body Type */}
       <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
         <div className="flex justify-between items-center mb-5">
@@ -143,19 +221,13 @@ function BodyContent() {
         </div>
 
         <div className="flex justify-between gap-5 items-end h-[90px] px-1">
-          {[
-            { id: 1, scaleX: 0.6 },
-            { id: 2, scaleX: 0.9 },
-            { id: 3, scaleX: 1.2 },
-            { id: 4, scaleX: 1.5 },
-            { id: 5, scaleX: 1.8 }
-          ].map((type) => {
-            const isSelected = type.id === activeScaleId
+          {SCALE_OPTIONS.map((type) => {
+            const isSelected = type.type === bodyType
 
             return (
               <button
-                key={type.id}
-                onClick={() => setActiveScaleId(type.id)}
+                key={type.type}
+                onClick={() => setBodyType(type.type)}
                 className={`w-full h-full rounded-[1.1rem] flex flex-col justify-center items-center overflow-hidden  ${isSelected
                   ? 'bg-black border border-black'
                   : 'bg-white border border-gray-200 hover:bg-gray-50'
@@ -196,73 +268,6 @@ function BodyContent() {
             />
           </div>
         </div>
-      </div>
-
-      {/* Body proportions */}
-      <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex justify-between items-center mb-5">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <PersonStanding className="w-4 h-4 text-gray-500" /> Tỷ lệ cơ thể
-          </div>
-          <button className="text-gray-400 hover:text-gray-900 transition-colors">
-            <RotateCcw size={14} />
-          </button>
-        </div>
-        <div className="space-y-5">
-          <CustomSlider label="Đầu" defaultValue={0} />
-          <CustomSlider label="Thân" defaultValue={0} />
-          <CustomSlider label="Chân" defaultValue={0} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function CustomSlider({
-  label,
-  min = -1,
-  max = 1,
-  step = 0.01,
-  defaultValue = 0
-}: {
-  label: string
-  min?: number
-  max?: number
-  step?: number
-  defaultValue?: number
-}) {
-  const [value, setValue] = React.useState(defaultValue)
-  const percentage = ((value - min) / (max - min)) * 100
-
-  return (
-    <div className="flex flex-col gap-2 group">
-      <div className="flex justify-between text-[11px] text-gray-600 font-medium">
-        <span>{label}</span>
-        <span>{value.toFixed(2)}</span>
-      </div>
-      <div className="relative flex items-center w-full h-4 mt-1">
-        {/* Track */}
-        <div className="absolute w-full h-[3px] bg-gray-200 rounded-full overflow-hidden pointer-events-none">
-          <div
-            className="h-full bg-black rounded-r-full"
-            style={{ width: `${percentage}%` }}
-          />
-        </div>
-        {/* Thumb */}
-        <div
-          className="absolute w-3 h-3 bg-white rounded-full shadow-md pointer-events-none transition-transform group-hover:scale-[1.3]"
-          style={{ left: `calc(${percentage}% - 6px)` }}
-        />
-        {/* Input */}
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => setValue(parseFloat(e.target.value))}
-          className="absolute w-full h-full opacity-0 cursor-pointer"
-        />
       </div>
     </div>
   )

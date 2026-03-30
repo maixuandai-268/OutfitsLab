@@ -107,7 +107,7 @@ function Garment({
 
 
 export default function ModelViewer() {
-  const { autoRotate, background, modelId, activeGarments } = useCustomizer()
+  const { autoRotate, background, bodyType, activeGarments, modelId } = useCustomizer()
   const controlsRef = useRef<OrbitControlsImpl | null>(null)
 
   const bgColor: string =
@@ -118,7 +118,9 @@ export default function ModelViewer() {
 
   const envPreset: EnvPreset = background === 'studio' ? 'studio' : 'apartment'
   const shadowColor = background === 'shadow' ? '#d0d0d0' : '#e0e0e0'
-  const bodyUrl = BODY_MODELS[modelId]
+  // Dùng bodyType và modelId (gender) để chọn head model tương ứng
+  const gender = modelId === 'avatar_female' ? 'female' : 'male'
+  const bodyUrl = BODY_MODELS[gender][bodyType]
 
   return (
     <div className="relative w-full h-full overflow-hidden">
