@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { ProductCard } from './ProductCard';
 import { FavoriteButton } from './FavoriteButton';
 
-// 🛠️ Định nghĩa Review chuẩn (là một mảng các đối tượng)
 interface Review {
   id: number;
   rating: number;
@@ -15,16 +14,20 @@ interface Product {
   shop_id: number;
   name: string;
   image?: string;
+  images?: string[];
   image_url?: string;
   price: number | string;
   salesCount?: number;
   description?: string;
   type: 'TOP' | 'BOTTOM' | 'SHOES' | 'HAT' | 'GLASSES' | 'ACCESSORY';
   rating?: number;
-  reviews?: Review[]; // 🔥 Phải là mảng Review[]
+  reviews?: Review[];
   affiliateLink?: string;
   colors?: string[] | any[];
   sizes?: string[];
+  averageRating?: number;
+  reviewCount?: number;
+  shop?: any;
 }
 
 interface ProductDetailProps {
@@ -34,29 +37,41 @@ interface ProductDetailProps {
 export const ProductDetail = ({ product }: ProductDetailProps) => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  
-  // 💰 Format tiền Việt Nam
+
+
+  const initialImages = Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : [product.image || product.image_url || 'https://via.placeholder.com/500'];
+
+  const [activeImage, setActiveImage] = useState(initialImages[0]);
+
+  useState(() => {
+    if (initialImages[0] !== activeImage) {
+      setActiveImage(initialImages[0]);
+    }
+  });
+
+
   const formatCurrency = (amount: number | string) => {
-    return new Intl.NumberFormat('vi-VN', { 
-      style: 'currency', 
-      currency: 'VND' 
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
     }).format(Number(amount));
   };
 
-  // ⭐ Xử lý logic Đánh giá (Rating) & Số lượng Review
-  // Tránh lỗi render Object trực tiếp vào JSX
-  const reviewData = Array.isArray(product.reviews) ? product.reviews : [];
-  const reviewCount = reviewData.length;
-  const averageRating = reviewCount > 0
-    ? (reviewData.reduce((acc, rev) => acc + Number(rev.rating), 0) / reviewCount).toFixed(1)
-    : (product.rating !== undefined && product.rating !== null ? Number(product.rating).toFixed(1) : "5.0");
 
-  // 📏 Xử lý Size
-  const sizes = product.sizes && product.sizes.length > 0 
-    ? product.sizes 
+  const reviewData = Array.isArray(product.reviews) ? product.reviews : [];
+  const reviewCount = product.reviewCount !== undefined ? Number(product.reviewCount) : (Array.isArray(product.reviews) ? product.reviews.length : 0);
+  const averageRating = product.averageRating !== undefined ? Number(product.averageRating).toFixed(1) : (reviewCount > 0
+    ? (reviewData.reduce((acc: any, rev: any) => acc + Number(rev.rating), 0) / reviewCount).toFixed(1)
+    : (product.rating !== undefined && product.rating !== null ? Number(product.rating).toFixed(1) : "5.0"));
+
+
+  const sizes = product.sizes && product.sizes.length > 0
+    ? product.sizes
     : ['90cm', '100cm', '110cm', '120cm', '130cm', '140cm'];
-  
-  // 🎨 Xử lý Màu sắc
+
+
   const displayColors = product.colors && product.colors.length > 0
     ? product.colors.map((c: any) => typeof c === 'string' ? { color: c } : c)
     : [{ color: '#000000' }, { color: '#FFFFFF' }, { color: '#FF69B4' }];
@@ -64,8 +79,8 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   const handleAffiliateClick = async () => {
     if (!product.affiliateLink) return;
     try {
-      fetch(`http://localhost:3000/api/products/${product.id}/click-affiliate`, { 
-        method: 'PATCH' 
+      fetch(`http://localhost:3000/api/products/${product.id}/click-affiliate`, {
+        method: 'PATCH'
       });
     } catch (e) {
       console.error("Lỗi track click:", e);
@@ -75,37 +90,54 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
-      {/* Cột trái: Ảnh sản phẩm */}
       <div className="w-full md:w-1/2 px-4">
-        <img 
-          src={product.image || product.image_url || 'https://via.placeholder.com/500'} 
-          alt={product.name} 
-          className="rounded-lg w-full h-[500px] object-cover shadow-2xl" 
-        />
+        <div className="relative group overflow-hidden rounded-xl shadow-2xl bg-white aspect-square mb-4">
+          <img
+            src={activeImage}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        </div>
+
+
+        {initialImages.length > 1 && (
+          <div className="grid grid-cols-5 gap-2 mb-6">
+            {initialImages.map((img, idx) => (
+              <div
+                key={idx}
+                onMouseEnter={() => setActiveImage(img)}
+                className={`aspect-square rounded-md overflow-hidden border-2 cursor-pointer transition-all ${activeImage === img ? 'border-pink-500 ring-2 ring-pink-100' : 'border-transparent hover:border-pink-300'
+                  }`}
+              >
+                <img src={img} className="w-full h-full object-cover" alt={`Thumb ${idx}`} />
+              </div>
+            ))}
+          </div>
+        )}
+
         <p className="font-semibold mt-6 uppercase text-xs text-gray-400 tracking-widest">Gợi ý phối đồ</p>
         <div className="mt-4">
           <ProductCard />
         </div>
       </div>
 
-      {/* Cột phải: Thông tin sản phẩm */}
       <div className="w-full md:w-1/2 px-4">
         <p className="text-base mb-1 text-gray-500 uppercase tracking-wider">{product.type}</p>
         <h1 className="text-3xl font-bold mb-5 text-gray-900 leading-tight">{product.name}</h1>
-        
+
         <div className="flex items-center gap-4 mb-5 text-gray-600">
           <p className="text-base">{product.salesCount || 0} Đã bán</p>
           <div className="flex items-center gap-1 border-l pl-4 border-gray-200">
             <StarIcon className="text-yellow-500 w-5 h-5" filled={true} />
             <p className="text-sm font-medium">
-              {averageRating} 
+              {averageRating}
               <span className="text-gray-400 font-normal ml-1">
                 ({reviewCount} Đánh giá)
               </span>
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2 mb-6 bg-gray-50 p-4 rounded-lg">
           <p className="text-4xl font-black text-pink-600">
             {product.price ? formatCurrency(product.price) : 'Liên hệ'}
@@ -113,16 +145,15 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
         </div>
 
         <div className="bg-gray-200 mx-auto mb-6 h-px w-full"></div>
-        
+
         <p className="font-semibold mb-3">Màu sắc</p>
         <div className="flex flex-wrap gap-3 mb-6">
           {displayColors.map((item: any, index: number) => (
             <button
               key={index}
               type="button"
-              className={`w-10 h-10 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
-                selectedColor === item.color ? 'border-pink-500 scale-110 shadow-md' : 'border-gray-300'
-              }`}
+              className={`w-10 h-10 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${selectedColor === item.color ? 'border-pink-500 scale-110 shadow-md' : 'border-gray-300'
+                }`}
               style={{ backgroundColor: item.color }}
               onClick={() => setSelectedColor(item.color)}
             >
@@ -145,9 +176,8 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
             <button
               key={size}
               type="button"
-              className={`h-12 rounded-lg font-bold transition-all border-2 ${
-                selectedSize === size ? 'bg-black text-white border-black shadow-lg' : 'bg-white text-gray-600 border-gray-100 hover:border-black'
-              }`}
+              className={`h-12 rounded-lg font-bold transition-all border-2 ${selectedSize === size ? 'bg-black text-white border-black shadow-lg' : 'bg-white text-gray-600 border-gray-100 hover:border-black'
+                }`}
               onClick={() => setSelectedSize(size)}
             >
               {size}
@@ -192,8 +222,6 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
     </div>
   );
 };
-
-// --- Sub-components (Icons) ---
 
 function MagicWand({ className }: { className?: string }) {
   return (

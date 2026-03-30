@@ -50,23 +50,22 @@ export default function ProductDetailPage() {
     )
   }
 
-  // fe/app/product_detail/[id]/page.tsx
 
-// --- LOGIC TÍNH TOÁN DỮ LIỆU SHOP ---
 const shop = product.shop;
-const shopProducts = shop?.products || [];
 
-// 1. Tính tổng số lượt đánh giá của TẤT CẢ sản phẩm trong shop
-const totalShopReviews = shopProducts.reduce((acc: number, p: any) => {
-  // Cộng dồn số lượng reviews của từng sản phẩm trong shop
-  return acc + (Array.isArray(p.reviews) ? p.reviews.length : 0);
-}, 0);
+const totalShopReviews = shop?.reviewCount !== undefined 
+  ? Number(shop.reviewCount) 
+  : (shop?.products || []).reduce((acc: number, p: any) => {
+      return acc + (Array.isArray(p.reviews) ? p.reviews.length : 0);
+    }, 0);
 
-// 2. Tính điểm đánh giá trung bình của toàn bộ shop
-const allShopReviews = shopProducts.flatMap((p: any) => p.reviews || []);
-const shopAvgRating = allShopReviews.length > 0 
-  ? (allShopReviews.reduce((sum: number, r: any) => sum + Number(r.rating), 0) / allShopReviews.length).toFixed(1)
-  : (shop?.rating ? Number(shop.rating).toFixed(1) : "5.0");
+const shopAvgRating = shop?.rating !== undefined 
+  ? Number(shop.rating).toFixed(1) 
+  : "5.0";
+
+const shopProductCount = shop?.productCount !== undefined 
+  ? Number(shop.productCount) 
+  : (shop?.products || []).length;
 
   return (
     <div className="bg-gray-50/30 min-h-screen pb-20">
@@ -75,9 +74,9 @@ const shopAvgRating = allShopReviews.length > 0
           <ProductDetail product={product} />
         </div>
 
-        {/* --- PHẦN BOX SHOP (Ô TRẮNG ĐÃ CẬP NHẬT) --- */}
+
         <div className="mb-10 bg-white p-6 rounded-sm shadow-sm flex flex-col md:flex-row items-center gap-8 border border-gray-100">
-          {/* Cột 1: Avatar, Tên Shop, Nút Xem Shop */}
+
           <div className="flex items-center gap-5 md:border-r border-gray-100 pr-10 min-w-[320px] w-full md:w-auto">
             <div className="relative shrink-0">
               <img 
@@ -111,22 +110,22 @@ const shopAvgRating = allShopReviews.length > 0
             </div>
           </div>
 
-          {/* Cột 2: Các chỉ số lấy từ Database */}
+
           <div className="flex-1 grid grid-cols-2 gap-x-20 gap-y-4 text-sm w-full">
             <div className="flex justify-between items-center">
               <span className="text-gray-400 whitespace-nowrap">Đánh Giá</span>
               <span className="text-pink-500 font-bold">{shopAvgRating}</span>
             </div>
             
+
             <div className="flex justify-between items-center">
-              {/* THAY ĐỔI: Tỉ lệ phản hồi -> Tổng lượt đánh giá */}
               <span className="text-gray-400 whitespace-nowrap">Tổng lượt đánh giá</span>
               <span className="text-pink-500 font-bold">{totalShopReviews}</span>
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-gray-400 whitespace-nowrap">Sản Phẩm</span>
-              <span className="text-pink-500 font-bold">{shopProducts.length}</span>
+              <span className="text-pink-500 font-bold">{shopProductCount}</span>
             </div>
 
             <div className="flex justify-between items-center">
