@@ -14,7 +14,7 @@ import {
 
 
 type AdminStatus = "Đã kích hoạt" | "Đã vô hiệu hóa";
-type AdminRole = "super-admin" | "admin" | "auditor";
+type AdminRole = "admin";
 type RoleFilter = AdminRole | "all";
 type StatusFilter = AdminStatus | "all";
 
@@ -38,7 +38,7 @@ const seedAdmins: AdminUser[] = [
     id: "A001",
     name: "Mai Xuân Đại",
     email: "daicl@example.com",
-    role: "super-admin",
+    role: "admin",
     status: "Đã kích hoạt",
     twoFA: true,
     lastActive: "2026-03-09T10:00:00Z",
@@ -56,7 +56,7 @@ const seedAdmins: AdminUser[] = [
     id: "A003",
     name: "Nguyễn Đức Duyệt",
     email: "duyet@example.com",
-    role: "auditor",
+    role: "admin",
     status: "Đã vô hiệu hóa",
     twoFA: false,
     lastActive: "2026-03-05T20:25:00Z",
@@ -174,7 +174,6 @@ function Modal(props: {
 }
 
 export default function AdminAccountsPage({ dark }: AdminAccountsPageProps) {
-  // data
   const [rows, setRows] = useState<AdminUser[]>(seedAdmins);
   const [q, setQ] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
@@ -243,7 +242,6 @@ export default function AdminAccountsPage({ dark }: AdminAccountsPageProps) {
     );
 
   const bulkResetPwd = (): void => {
-    // thay bằng API call thật sau này
     alert(`Reset password for: ${Array.from(selected).join(", ")}`);
   };
 
@@ -302,6 +300,8 @@ export default function AdminAccountsPage({ dark }: AdminAccountsPageProps) {
   };
 
   const containerBg = dark ? "" : "bg-amber-50/40";
+
+  
 
   return (
     <main className={cls("flex-1 overflow-y-auto p-6", containerBg)}>
@@ -383,9 +383,7 @@ export default function AdminAccountsPage({ dark }: AdminAccountsPageProps) {
           )}
         >
           <option value="all">Tất cả vai trò</option>
-          <option value="super-admin">Super Admin</option>
           <option value="admin">Admin</option>
-          <option value="auditor">Auditor</option>
         </select>
 
       
@@ -477,7 +475,6 @@ export default function AdminAccountsPage({ dark }: AdminAccountsPageProps) {
         </div>
       </div>
 
-      {/* Table */}
       <div
         className={cls(
           "mt-4 rounded-2xl border overflow-x-auto",
@@ -577,12 +574,9 @@ export default function AdminAccountsPage({ dark }: AdminAccountsPageProps) {
                           : "bg-white border-amber-200 text-slate-700"
                       )}
                     >
-                      <option value="super-admin">Super Admin</option>
                       <option value="admin">Admin</option>
-                      <option value="auditor">Auditor</option>
                     </select>
                   </td>
-           
                   <td className="px-3 py-3">
                     <button
                       onClick={() =>
@@ -730,32 +724,6 @@ export default function AdminAccountsPage({ dark }: AdminAccountsPageProps) {
                   : "bg-white border-amber-200 text-slate-700"
               )}
             />
-          </div>
-          <div>
-            <label
-              className={cls(
-                "block text-xs mb-1",
-                dark ? "text-gray-300" : "text-slate-700"
-              )}
-            >
-              Vai trò
-            </label>
-            <select
-              value={inviteRole}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setInviteRole(e.target.value as AdminRole)
-              }
-              className={cls(
-                "w-full px-3 py-2 rounded-xl outline-none border text-sm",
-                dark
-                  ? "bg-gray-900 border-gray-700 text-gray-200"
-                  : "bg-white border-amber-200 text-slate-700"
-              )}
-            >
-              <option value="super-admin">Super Admin</option>
-              <option value="admin">Admin</option>
-              <option value="auditor">Auditor</option>
-            </select>
           </div>
         </div>
       </Modal>
