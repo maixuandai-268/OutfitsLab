@@ -1,10 +1,7 @@
 import { create } from 'zustand'
 
-export type Gender = 'female' | 'male'
 export type Part = 'skin' | 'hat' | 'top' | 'bottom' | 'shoes'
-export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL'
-export type Pattern = 'none' | 'stripes' | 'polka' | 'plaid'
-export type BackgroundPreset = 'neutral' | 'studio' | 'shadow' | 'gradientWarm' | 'gradientCool'
+export type BackgroundPreset = 'neutral'|'studio'|'shadow'|'gradientWarm'|'gradientCool'
 export type ModelId = 'avatar_female' | 'avatar_male'
 export type GarmentSlot = 'top' | 'bottom' | 'shoes' | 'hat'
 export type BodyType = 'skinny' | 'fit' | 'fat'
@@ -27,50 +24,43 @@ export function resolveModelUrl(product: GarmentProduct, bodyType: BodyType): st
 
   if (bodyType === 'skinny') return product.model_url[0]
   if (bodyType === 'fat') return product.model_url[2]
-  return product.model_url[1] // fit
+  return product.model_url[1]
 }
 
 interface CustomizerState {
-  gender: Gender
   modelId: ModelId
   bodyType: BodyType
   autoRotate: boolean
-  colors: Record<Part, Hex>
-  patterns: { top: Pattern; bottom: Pattern; hat: Pattern; shoes: Pattern }
+  colors: { skin: Hex }
   background: BackgroundPreset
-  size: Size
   activeGarments: Partial<Record<GarmentSlot, string>>
   selectedGarments: Partial<Record<GarmentSlot, GarmentProduct>>
 
-  setGender: (g: Gender) => void
   setModelId: (id: ModelId) => void
-  setColor: (p: Part, c: Hex) => void
-  setPattern: (p: 'top' | 'bottom' | 'hat' | 'shoes', pattern: Pattern) => void
+  setColor: (p: 'skin', c: Hex) => void
   setBackground: (b: BackgroundPreset) => void
-  setSize: (s: Size) => void
   setBodyType: (t: BodyType) => void
   setGarment: (slot: GarmentSlot, product: GarmentProduct | null) => void
+  setGender: (gender: string) => void
   toggleAutoRotate: () => void
 }
 
 export const useCustomizer = create<CustomizerState>((set, get) => ({
-  gender: 'male',
   modelId: 'avatar_male',
   autoRotate: true,
-  colors: { skin: '#f7c7a3', hat: '#f7c7a3', top: '#d9534f', bottom: '#506680', shoes: '#222222' },
-  patterns: { top: 'none', bottom: 'none', hat: 'none', shoes: 'none' },
+  colors: { skin:'#f7c7a3' },
   background: 'neutral',
-  size: 'M',
-  bodyType: 'fit',
+  bodyType: 'fit',   
   activeGarments: {},
   selectedGarments: {},
 
-  setGender: (g) => set({ gender: g }),
-  setModelId: (id) => set({ modelId: id }),
+  setModelId: (id) => set({ modelId: id, activeGarments: {}, selectedGarments: {} }),
+  setGender: (gender) => {
+    const id: ModelId = gender === 'female' ? 'avatar_female' : 'avatar_male';
+    set({ modelId: id, activeGarments: {}, selectedGarments: {} });
+  },
   setColor: (p, c) => set((s) => ({ colors: { ...s.colors, [p]: c } })),
-  setPattern: (p, pattern) => set((s) => ({ patterns: { ...s.patterns, [p]: pattern } })),
   setBackground: (b) => set({ background: b }),
-  setSize: (s) => set({ size: s }),
   toggleAutoRotate: () => set((s) => ({ autoRotate: !s.autoRotate })),
 
   setBodyType: (t) => set((s) => {

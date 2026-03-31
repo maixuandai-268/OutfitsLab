@@ -46,7 +46,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   const [selectedBodyType, setSelectedBodyType] = useState<BodyType>('fit');
 
   const router = useRouter();
-  const { setGarment, setGender } = useCustomizer();
+  const { setGarment, setModelId } = useCustomizer();
 
   const handleTryOn = () => {
     if (product.garment_slot && Array.isArray(product.model_url)) {
@@ -56,7 +56,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 
       if (modelExists) {
         if (product.gender === 'male' || product.gender === 'female') {
-          setGender(product.gender as any);
+          setModelId(product.gender === 'female' ? 'avatar_female' : 'avatar_male');
         }
         setGarment(product.garment_slot as any, {
           id: product.id,
@@ -137,7 +137,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   const handleAffiliateClick = async () => {
     if (!product.affiliateLink) return;
     try {
-      fetch(`http://localhost:3000/api/products/${product.id}/click-affiliate`, {
+      fetch(`https://outfitslab.onrender.com/api/products/${product.id}/click-affiliate`, {
         method: 'PATCH'
       });
     } catch (e) {
@@ -259,8 +259,8 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
                   className={`
                     relative flex flex-col items-center justify-center py-3 rounded-xl border-2 transition-all duration-300
                     ${available
-                      ? isSelected 
-                        ? 'border-pink-500 bg-pink-50/50 shadow-md scale-105' 
+                      ? isSelected
+                        ? 'border-pink-500 bg-pink-50/50 shadow-md scale-105'
                         : 'border-pink-200 bg-white hover:border-pink-400 cursor-pointer group'
                       : 'border-gray-100 bg-gray-50/50 opacity-40 cursor-not-allowed'}
                   `}
