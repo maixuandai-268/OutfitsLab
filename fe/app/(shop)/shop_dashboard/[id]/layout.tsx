@@ -22,7 +22,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       
       try {
         // Gọi API Backend: Get chi tiết 1 shop
-        const res = await fetch(`http://localhost:3000/api/shops/${shopId}`, {
+        const res = await fetch(`https://outfitslab.onrender.com/api/shops/${shopId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         

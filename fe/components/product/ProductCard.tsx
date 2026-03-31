@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FavoriteButton } from './FavoriteButton';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api/';
 
 interface Product {
     id: number;

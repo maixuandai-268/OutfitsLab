@@ -183,7 +183,6 @@ function GarmentsContent({ slot, garments, loading }: { slot: GarmentSlot, garme
 function BodyContent() {
   const { modelId, setModelId, bodyType, setBodyType } = useCustomizer()
 
-  // ✅ mapping chuẩn giữa type và file SVG
   const BODY_OPTIONS = [
     { type: 'skinny', img: '/body/Bskinny.svg', label: 'Gầy' },
     { type: 'fit', img: '/body/Bfit.svg', label: 'Chuẩn' },

@@ -16,7 +16,7 @@ import {
 // Giữ nguyên import mock data cho các mục chưa có API như Review, Order
 import { USERS, REVIEWS, ORDERS } from '../../shopData';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Shop {
   id: number;

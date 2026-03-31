@@ -5,7 +5,7 @@ import { Star, ThumbsUp, ChevronDown, ChevronLeft, ChevronRight, Send } from 'lu
 import { useAuth } from '@/context/AuthContext';
 import { message, Spin, Rate, Input, Button as AntButton } from 'antd';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api/';
 
 interface User {
   id: number;

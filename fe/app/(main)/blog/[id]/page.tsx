@@ -15,8 +15,8 @@ export default function BlogDetail() {
             try {
                 // gọi song song cho nhanh
                 const [blogRes, listRes] = await Promise.all([
-                    fetch(`http://localhost:3000/api/blog/${id}`),
-                    fetch(`http://localhost:3000/api/blog`)
+                    fetch(`https://outfitslab.onrender.com/api/blog/${id}`),
+                    fetch(`https://outfitslab.onrender.com/api/blog`)
                 ]);
 
                 const blogData = await blogRes.json();

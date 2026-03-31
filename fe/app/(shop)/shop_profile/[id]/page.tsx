@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Tooltip, Empty, Spin } from 'antd';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Shop {
   id: number;
@@ -43,7 +43,7 @@ export default function ShopProfilePage() {
   const [shop, setShop] = useState<Shop | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const trackedRef = useRef(false); // 🔥 Chống đếm đúp trong StrictMode
+  const trackedRef = useRef(false);
 
   useEffect(() => {
     if (!shopId) return;
@@ -51,13 +51,11 @@ export default function ShopProfilePage() {
     const fetchShopData = async () => {
       try {
         setLoading(true);
-        // Lấy thông tin shop
         const shopRes = await fetch(`${API_BASE}/shops/${shopId}`);
         if (!shopRes.ok) throw new Error('Thất bại khi lấy thông tin shop');
         const shopData = await shopRes.json();
         setShop(shopData);
 
-        // Lấy sản phẩm của shop
         const productsRes = await fetch(`${API_BASE}/products?shopId=${shopId}`);
         if (productsRes.ok) {
           const pData = await productsRes.json();
@@ -72,7 +70,6 @@ export default function ShopProfilePage() {
 
     fetchShopData();
 
-    // 🔥 Ghi nhận 1 lượt xem profile (Giao điểm đảm bảo chỉ chạy 1 lần)
     if (!trackedRef.current) {
       fetch(`${API_BASE}/shops/${shopId}/track-view`, { method: 'POST' }).catch(() => {});
       trackedRef.current = true;
