@@ -10,7 +10,7 @@ export default function BlogList() {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const res = await fetch("http://localhost:3000/api/blog");
+                const res = await fetch("https://outfitslab.onrender.com/api/blog");
                 if (res.ok) {
                     const data = await res.json();
                     setAllBlogs(data);

@@ -7,6 +7,9 @@ type User = {
   email: string;
   displayName: string;
   avatarUrl?: string;
+  phone?: string;
+  bio?: string;
+  password?: string;
   role: string;
   shop?: {
     id: number;

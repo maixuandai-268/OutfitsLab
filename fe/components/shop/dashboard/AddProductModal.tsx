@@ -158,7 +158,7 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
       const isEdit = !!editData;
       const url = isEdit 
         ? `https://outfitslab.onrender.com/api/products/${editData.id}`
-        : " https://outfitslab.onrender.com/api/products";
+        : "https://outfitslab.onrender.com/api/products";
       
       const method = isEdit ? "PATCH" : "POST";
 

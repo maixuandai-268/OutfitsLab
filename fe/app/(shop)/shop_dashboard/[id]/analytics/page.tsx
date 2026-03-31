@@ -18,8 +18,6 @@ import { useAuth } from '@/context/AuthContext';
 import { useParams } from 'next/navigation';
 import { Spin, Empty } from 'antd';
 
-// Đã loại bỏ hoàn toàn mốc dữ liệu tĩnh (mocking data)
-
 export default function AnalyticsPage() {
   const { token } = useAuth();
   const params = useParams();
@@ -61,12 +59,10 @@ export default function AnalyticsPage() {
     fetchData();
   }, [shopId, token]);
 
-  // Tính toán dữ liệu từ mango products + viewStats thực tế từ DB
   const { totalAffiliateClicks, totalSales, monthlyData, totalViews } = useMemo(() => {
     let totalAffiliateClicks = 0;
     let totalSales = 0;
 
-    // Khởi tạo mảng 12 tháng, gán views từ API /view-stats
     const monthsArray = Array.from({ length: 12 }, (_, i) => ({
       name: `Tháng ${i + 1}`,
       clicks: 0,

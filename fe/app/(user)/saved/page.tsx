@@ -6,7 +6,7 @@ import { Heart, Trash2, ShoppingBag, ArrowLeft, Store } from 'lucide-react';
 import { ShopProductCard } from '@/components/shop/profile/showProduct';
 import Link from 'next/link';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Product {
   id: number;

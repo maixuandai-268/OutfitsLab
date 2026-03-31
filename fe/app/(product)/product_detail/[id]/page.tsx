@@ -84,9 +84,9 @@ export default function ProductDetailPage() {
                   product.shop?.avatar_url?.startsWith('data:image')
                     ? product.shop.avatar_url
                     : product.shop?.avatar_url?.startsWith('http')
-                      ? product.shop.avatar_url
+                      ? product.shop.avatar_url 
                       : `https://outfitslab.onrender.com${product.shop?.avatar_url || ''}`
-                }
+                } 
                 alt="shop-avatar"
                 className="w-20 h-20 rounded-full border border-gray-100 object-cover shadow-sm"
                 onError={(e) => {

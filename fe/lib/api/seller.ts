@@ -13,9 +13,7 @@ export interface Shop {
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://outfitslab.onrender.com';
 
 export const sellerAPI = {
-    /**
-     * Lấy danh sách tất cả shops/seller applications
-     */
+
     getShops: async (): Promise<Shop[]> => {
         try {
             const res = await fetch(`${API_BASE}/api/shops`);
@@ -30,17 +28,13 @@ export const sellerAPI = {
         }
     },
 
-    /**
-     * Lấy số lượng shops đã được duyệt (approved)
-     */
+
     getApprovedShopsCount: async (): Promise<number> => {
         const shops = await sellerAPI.getShops();
         return shops.filter((shop) => shop.status === 'approved').length;
     },
 
-    /**
-     * Get approved shops count with month-over-month growth percentage
-     */
+
     getApprovedShopsWithGrowth: async (): Promise<{ currentCount: number; percentChange: number }> => {
         const shops = await sellerAPI.getShops();
         const approvedShops = shops.filter((shop) => shop.status === 'approved');
@@ -77,17 +71,11 @@ export const sellerAPI = {
         };
     },
 
-    /**
-     * Lấy số lượng shops theo status
-     */
     getShopsCountByStatus: async (status: 'pending' | 'approved' | 'Blocked'): Promise<number> => {
         const shops = await sellerAPI.getShops();
         return shops.filter((shop) => shop.status === status).length;
     },
 
-    /**
-     * Approve a shop
-     */
     approveShop: async (id: number): Promise<boolean> => {
         try {
             const res = await fetch(`${API_BASE}/api/shops/${id}/approve`, {
@@ -100,9 +88,6 @@ export const sellerAPI = {
         }
     },
 
-    /**
-     * Reject a shop
-     */
     rejectShop: async (id: number): Promise<boolean> => {
         try {
             const res = await fetch(`${API_BASE}/api/shops/${id}/reject`, {

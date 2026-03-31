@@ -8,6 +8,7 @@ interface Blog {
   image: string;
   category: string;
   author: string;
+  excerpt?: string;
   date?: string;
   createdAt?: string;
 }
@@ -36,7 +37,7 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   // ── BE / API – GIỮ NGUYÊN ─────────────────────────────────────────
   const fetchBlogs = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/blog");
+      const res = await fetch("https://outfitslab.onrender.com/api/blog");
       if (res.ok) {
         const data = await res.json();
         setBlogs(data);
@@ -65,7 +66,7 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
 
     try {
       if (currentId) {
-        const res = await fetch(`http://localhost:3000/api/blog/${currentId}`, {
+        const res = await fetch(`https://outfitslab.onrender.com/api/blog/${currentId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(blogData),
@@ -73,7 +74,7 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
         if (res.ok) { fetchBlogs(); setIsEditing(false); }
         else alert("Lỗi khi cập nhật!");
       } else {
-        const res = await fetch(`http://localhost:3000/api/blog`, {
+        const res = await fetch(`https://outfitslab.onrender.com/api/blog`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(blogData),
@@ -101,7 +102,7 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   const handleDelete = async (id: number) => {
     if (!confirm("Xóa bài này?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/blog/${id}`, { method: "DELETE" });
+      const res = await fetch(`https://outfitslab.onrender.com/api/blog/${id}`, { method: "DELETE" });
       if (res.ok) fetchBlogs();
     } catch (e) { console.error(e); }
   };
@@ -222,7 +223,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
     </div>
   );
 
-  // ── LIST VIEW ────────────────────────────────────────────────────
   return (
     <div className={`min-h-screen ${base} p-8`}>
       <div className="max-w-5xl mx-auto space-y-6">

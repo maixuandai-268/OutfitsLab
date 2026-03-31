@@ -6,7 +6,7 @@ import { Rate, Modal, Avatar, Divider, Typography } from 'antd'
 import { MailOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import Navbar from "@/components/main/navbar"
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Shop {
   id: number;
