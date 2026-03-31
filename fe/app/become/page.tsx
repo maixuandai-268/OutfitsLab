@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function BecomePage() {
     const router = useRouter();
-    const { refreshUser } = useAuth(); 
+    const { refreshUser } = useAuth();
     const searchParams = useSearchParams();
     const initialStep = parseInt(searchParams.get("step") || "1");
 
@@ -42,7 +42,7 @@ export default function BecomePage() {
         }
 
         try {
-            const res = await fetch("http://localhost:3000/api/shops/become", { 
+            const res = await fetch("https://outfitslab.onrender.com/api/shops/become", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -58,12 +58,10 @@ export default function BecomePage() {
             const result = await res.json();
 
             if (res.ok) {
-                // 1. Cập nhật lại dữ liệu User để Navbar biết trạng thái 'pending'
                 if (refreshUser) await refreshUser(); 
                 
-                // 2. Thông báo và đẩy thẳng về trang chủ
                 alert("Đăng ký thành công! Vui lòng chờ Admin phê duyệt.");
-                router.push("/"); 
+                router.push("/");
             } else {
                 const errorMsg = Array.isArray(result.message) ? result.message.join("\n") : result.message;
                 alert("Lỗi: " + errorMsg);
@@ -80,28 +78,25 @@ export default function BecomePage() {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Bước 1: Nhập thông tin */}
             {step === 1 && (
                 <StepInfo {...formData} onChange={handleChange} nextStep={nextStep} />
             )}
 
-            {/* Bước 2: Thiết lập cửa hàng */}
             {step === 2 && (
-                <StepStore 
-                    {...formData} 
-                    onChange={handleChange} 
-                    nextStep={nextStep} 
-                    prevStep={prevStep} 
+                <StepStore
+                    {...formData}
+                    onChange={handleChange}
+                    nextStep={nextStep}
+                    prevStep={prevStep}
                 />
             )}
 
-            {/* Bước 3: Tóm tắt và Xác nhận */}
             {step === 3 && (
-                <StepConfirm 
-                    {...formData} 
-                    prevStep={prevStep} 
-                    onSubmit={handleSubmit} 
-                    loading={loading} 
+                <StepConfirm
+                    {...formData}
+                    prevStep={prevStep}
+                    onSubmit={handleSubmit}
+                    loading={loading}
                 />
             )}
         </div>

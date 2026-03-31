@@ -7,14 +7,15 @@ type User = {
   email: string;
   displayName: string;
   avatarUrl?: string;
+  phone?: string;
+  bio?: string;
+  password?: string;
   role: string;
-  // Dữ liệu gốc từ Backend
   shop?: {
     id: number;
     status: string;
     shop_name?: string;
   };
-  // Thêm các trường này để Navbar không bị báo lỗi Property 'shopId' does not exist
   shopId?: number | null;
   shopStatus?: string | null;
 };
@@ -39,14 +40,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUser = async (jwt: string) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/users/me?t=${Date.now()}`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/users/me?t=${Date.now()}`, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
 
       if (!res.ok) throw new Error();
       const data = await res.json();
 
-      // FIX: Map dữ liệu từ data.shop sang shopId và shopStatus cho Navbar dùng
       setUser({
         ...data,
         shopId: data.shop?.id || null,

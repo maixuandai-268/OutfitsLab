@@ -11,13 +11,11 @@ export function useGarments(slot: GarmentSlot, gender: string) {
     const fetchGarments = async () => {
       setLoading(true);
       try {
-        // Lấy sản phẩm theo garment_slot (không phải type)
         const response = await fetch(
-          `http://localhost:3000/api/products?garment_slot=${slot}&gender=${gender}&limit=100`
+          `https://outfitslab.onrender.com/api/products?garment_slot=${slot}&gender=${gender}&limit=100`
         );
         const result = await response.json();
 
-        // Chỉ lấy sản phẩm có model URL hợp lệ
         const items = (result.data || []).filter((p: GarmentProduct) => {
           return Array.isArray(p.model_url) && p.model_url.some(url => !!url);
         });

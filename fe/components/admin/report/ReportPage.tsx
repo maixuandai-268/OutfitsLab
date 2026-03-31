@@ -65,7 +65,6 @@ export default function ReportPage({ dark }: ReportPageProps) {
   );
   const [selectedStatus, setSelectedStatus] = useState<"ALL" | "pending" | "in_progress" | "resolved" | "rejected">("ALL");
 
-  // Tính toán stats từ dữ liệu thực
   const stats = useMemo(() => {
     let pending = 0;
     let inProgress = 0;
@@ -84,7 +83,6 @@ export default function ReportPage({ dark }: ReportPageProps) {
 
   return (
     <main className={`flex-1 overflow-y-auto p-6 ${dark ? "" : "bg-amber-50/40"}`}>
-      {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
         <StatCard
           dark={dark}
@@ -128,7 +126,6 @@ export default function ReportPage({ dark }: ReportPageProps) {
         />
       </div>
 
-      {/* Report Section */}
       <section
         className={`rounded-2xl border ${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
           } p-6`}
@@ -156,7 +153,6 @@ export default function ReportPage({ dark }: ReportPageProps) {
             </h2>
           </div>
 
-          {/* Loading indicator */}
           {isRefetching && (
             <svg className="animate-spin w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -165,7 +161,6 @@ export default function ReportPage({ dark }: ReportPageProps) {
           )}
         </div>
 
-        {/* Report List Component */}
         <ReportList
           report={reports}
           loading={loading}

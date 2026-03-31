@@ -13,10 +13,9 @@ import {
 
 } from "@ant-design/icons";
 
-// Giữ nguyên import mock data cho các mục chưa có API như Review, Order
 import { USERS, REVIEWS, ORDERS } from '../../shopData';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Shop {
   id: number;
@@ -72,13 +71,12 @@ export default function OverviewPage() {
     fetchDashboardData();
   }, [shopId]);
 
-  // Temporary calculate from fetched products
   const activeProducts = products.length;
   const totalSales = products.reduce((sum, p) => sum + (p.price * p.salesCount), 0);
 
   const dashboardData = {
     totalSales: totalSales,
-    totalOrders: ORDERS.length, // Placeholder mock count
+    totalOrders: ORDERS.length, 
     activeProducts: activeProducts,
     avgRating: shop?.rating ? Number(shop.rating).toFixed(1) : "5.0",
   };
@@ -112,7 +110,6 @@ export default function OverviewPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      {/* STATS CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: "Doanh Thu", value: `${dashboardData.totalSales.toLocaleString()}₫`, icon: "💰" },
@@ -128,7 +125,6 @@ export default function OverviewPage() {
         ))}
       </div>
 
-      {/* RECENT ORDERS */}
       <div className="bg-white rounded-2xl border border-orange-100 shadow-sm">
         <div className="p-6 border-b border-orange-50 flex justify-between items-center">
           <h3 className="font-bold text-lg flex items-center gap-2">
@@ -154,7 +150,6 @@ export default function OverviewPage() {
             <tbody className="text-sm">
               {ORDERS.slice(0, 4).map((order) => {
                 const customer = USERS.find(u => u.id === order.user_id);
-                // Find from current fetched shop products
                 const prod = products.find(p => p.id === order.product_id) || { name: 'Sản phẩm ' + order.product_id, price: 100000 };
                 return (
                   <tr key={order.id} className="hover:bg-orange-50/20 transition group">
@@ -188,7 +183,6 @@ export default function OverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* TOP PRODUCTS */}
         <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-6">
           <h3 className="font-bold text-lg flex items-center gap-2 mb-6"><RiseOutlined /> Sản Phẩm Bán Chạy</h3>
           <div className="space-y-4">
@@ -211,7 +205,6 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* RECENT REVIEWS */}
         <div className="bg-white rounded-2xl border border-orange-100 shadow-sm p-6">
           <h3 className="font-bold text-lg flex items-center gap-2 mb-6"><StarOutlined /> Đánh Giá Gần Đây</h3>
           <div className="space-y-6">

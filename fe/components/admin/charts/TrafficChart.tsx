@@ -3,16 +3,16 @@ import Card from "../shared/card";
 import CardTitle from "../shared/cardTitle";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
-// Data gắn tại chỗ
+
 const pieData = [
-  { name: "Trực tiếp",   value: 38, color: "#6366f1" },
-  { name: "Tự nhiên",  value: 27, color: "#10b981" },
+  { name: "Trực tiếp", value: 38, color: "#6366f1" },
+  { name: "Tự nhiên", value: 27, color: "#10b981" },
   { name: "Giới thiệu", value: 20, color: "#f59e0b" },
-  { name: "Mạng xã hội",   value: 15, color: "#ef4444" },
+  { name: "Mạng xã hội", value: 15, color: "#ef4444" },
 ];
 
 interface TrafficChartProps {
-    dark: boolean;
+  dark: boolean;
 }
 
 export default function TrafficChart({ dark }: TrafficChartProps) {

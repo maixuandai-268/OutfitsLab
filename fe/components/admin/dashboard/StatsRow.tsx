@@ -54,7 +54,7 @@ export default function StatsRow({ dark }: StatsRowProps) {
   useEffect(() => {
     const fetchAdminStats = async () => {
       try {
-        const API_BASE = 'http://localhost:3000';
+        const API_BASE = 'https://outfitslab.onrender.com';
 
         const [adminRes, shopData] = await Promise.all([
           fetch(`${API_BASE}/api/admin/stats`),
@@ -83,7 +83,6 @@ export default function StatsRow({ dark }: StatsRowProps) {
         const formatNumber = (num: number): string =>
           Number(num || 0).toLocaleString("vi-VN");
 
-        // Format shop growth percentage with sign
         const shopChangeText = shopData.percentChange >= 0
           ? `+${shopData.percentChange}%`
           : `${shopData.percentChange}%`;

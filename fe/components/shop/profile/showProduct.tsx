@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Rate, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Product {
   id: number;
@@ -74,17 +74,17 @@ export const ShopProductCard = ({ product, shop, onToggleFavourite, onEdit, onDe
   };
 
   return (
-    <Link href={`/product_detail/${product.id}`} className="bg-white rounded-b-xl hover:scale-105 shadow-xl block overflow-hidden">  
+    <Link href={`/product_detail/${product.id}`} className="bg-white rounded-b-xl hover:scale-105 shadow-xl block overflow-hidden">
       <div className="relative h-64 border-b border-gray-300 bg-gray-100">
-        <img 
+        <img
           src={product.image || product.image_url || 'https://via.placeholder.com/200'}
-          alt={product.name} 
+          alt={product.name}
           className="w-full h-full object-cover"
         />
-        
+
         {product.type && (
           <span className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-xs">
-            {product.type} 
+            {product.type}
           </span>
         )}
 
@@ -141,12 +141,12 @@ export const ShopProductCard = ({ product, shop, onToggleFavourite, onEdit, onDe
 
       <div className="p-5">
         <h3 className="font-semibold line-clamp-1 text-gray-800">{product.name}</h3>
-        
+
         <div className="flex items-center gap-1.5 mb-2">
-          <Rate 
-            disabled 
-            allowHalf 
-            value={Number(product.averageRating) || 0} 
+          <Rate
+            disabled
+            allowHalf
+            value={Number(product.averageRating) || 0}
             className="text-[12px] text-amber-500 scale-90 -ml-1"
           />
           <span className="text-gray-400 text-[10px] font-bold">
@@ -155,7 +155,7 @@ export const ShopProductCard = ({ product, shop, onToggleFavourite, onEdit, onDe
         </div>
 
         <p className="text-xs text-gray-500 mb-3">bởi {shop?.shop_name || 'Cửa hàng ẩn'}</p>
-        
+
         <div className="text-[#d19f42] font-bold text-lg">
           {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
         </div>

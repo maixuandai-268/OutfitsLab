@@ -18,13 +18,11 @@ import { useAuth } from '@/context/AuthContext';
 import { useParams } from 'next/navigation';
 import { Spin, Empty } from 'antd';
 
-// Đã loại bỏ hoàn toàn mốc dữ liệu tĩnh (mocking data)
-
 export default function AnalyticsPage() {
   const { token } = useAuth();
   const params = useParams();
   const shopId = params.id;
-  
+
   const [products, setProducts] = useState<any[]>([]);
   const [shopData, setShopData] = useState<any>(null);
   const [viewStats, setViewStats] = useState<{ month: number; views: number }[]>([]);
@@ -35,11 +33,11 @@ export default function AnalyticsPage() {
       if (!shopId || !token) return;
       try {
         const [resProd, resShop, resViews] = await Promise.all([
-          fetch(`http://localhost:3000/api/products?shop_id=${shopId}&limit=100`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`http://localhost:3000/api/shops/${shopId}`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`http://localhost:3000/api/shops/${shopId}/view-stats`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`https://outfitslab.onrender.com/api/products?shop_id=${shopId}&limit=100`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`https://outfitslab.onrender.com/api/shops/${shopId}`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`https://outfitslab.onrender.com/api/shops/${shopId}/view-stats`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
-        
+
         if (resProd.ok) {
           const json = await resProd.json();
           setProducts(json.data || json);
@@ -61,12 +59,10 @@ export default function AnalyticsPage() {
     fetchData();
   }, [shopId, token]);
 
-  // Tính toán dữ liệu từ mango products + viewStats thực tế từ DB
   const { totalAffiliateClicks, totalSales, monthlyData, totalViews } = useMemo(() => {
     let totalAffiliateClicks = 0;
     let totalSales = 0;
 
-    // Khởi tạo mảng 12 tháng, gán views từ API /view-stats
     const monthsArray = Array.from({ length: 12 }, (_, i) => ({
       name: `Tháng ${i + 1}`,
       clicks: 0,
@@ -104,19 +100,19 @@ export default function AnalyticsPage() {
 
         <div className="bg-white border border-gray-100 rounded-[2.5rem] px-8 py-10 shadow-sm hover:shadow-md transition-shadow">
           <p className="text-lg font-black mb-8 flex items-center gap-3">
-             <div className="w-10 h-10 bg-amber-50 rounded-2xl flex items-center justify-center">
-                <LinkOutlined className="text-amber-500 text-xl" />
-             </div>
-             Lượt Truy Cập Affiliate Theo Tháng
+            <div className="w-10 h-10 bg-amber-50 rounded-2xl flex items-center justify-center">
+              <LinkOutlined className="text-amber-500 text-xl" />
+            </div>
+            Lượt Truy Cập Affiliate Theo Tháng
           </p>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData}>
                 <defs>
-                   <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={1}/>
-                      <stop offset="95%" stopColor="#d19f42" stopOpacity={0.8}/>
-                   </linearGradient>
+                  <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={1} />
+                    <stop offset="95%" stopColor="#d19f42" stopOpacity={0.8} />
+                  </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} interval={0} />
@@ -140,16 +136,16 @@ export default function AnalyticsPage() {
               <BarChart data={monthlyData}>
                 <defs>
                   <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#14b8a6" stopOpacity={1}/>
-                    <stop offset="95%" stopColor="#0d9488" stopOpacity={0.8}/>
+                    <stop offset="5%" stopColor="#14b8a6" stopOpacity={1} />
+                    <stop offset="95%" stopColor="#0d9488" stopOpacity={0.8} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} interval={0} />
                 <YAxis hide />
-                <Tooltip 
+                <Tooltip
                   cursor={{ fill: '#f0fdfa', opacity: 0.4 }}
-                  contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '15px' }} 
+                  contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '15px' }}
                   itemStyle={{ fontWeight: 'black', color: '#14b8a6' }}
                 />
                 <Bar dataKey="views" name="Lượt xem" fill="url(#colorViews)" radius={[10, 10, 0, 0]} />
