@@ -11,6 +11,7 @@ import {
   ShoppingOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 
 const navItems = [
 
@@ -29,6 +30,9 @@ interface SidebarProps {
   open: boolean;
   activeNav: string | null;
   setActiveNav: (label: string | null) => void;
+
+  expandedNav: string | null;
+  setExpandedNav: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function Sidebar({
