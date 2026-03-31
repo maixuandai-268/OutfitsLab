@@ -7,7 +7,7 @@ import { ProductDetail } from '@/components/product/ProductDetail';
 import ReviewSection from '@/components/product/ProductReview';
 import { ProductCard } from '@/components/product/ProductCard';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -85,7 +85,7 @@ const shopProductCount = shop?.productCount !== undefined
                     ? product.shop.avatar_url 
                     : product.shop?.avatar_url?.startsWith('http')
                       ? product.shop.avatar_url 
-                      : `http://localhost:3000${product.shop?.avatar_url || ''}`
+                      : `https://outfitslab.onrender.com${product.shop?.avatar_url || ''}`
                 } 
                 alt="shop-avatar"
                 className="w-20 h-20 rounded-full border border-gray-100 object-cover shadow-sm"

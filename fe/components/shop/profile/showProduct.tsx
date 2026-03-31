@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Rate, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Product {
   id: number;

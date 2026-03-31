@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { SearchOutlined, DownloadOutlined } from "@ant-design/icons";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_BASE = 'https://outfitslab.onrender.com';
 
 interface User {
   id: string | number;
@@ -117,7 +117,7 @@ export default function UsersPage({ dark }: UsersPageProps) {
       setLoading(true);
       setError(null);
       const API_BASE =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+        process.env.NEXT_PUBLIC_API_URL || "https://outfitslab.onrender.com";
       const response = await fetch(`${API_BASE}/api/users`);
       if (!response.ok) throw new Error(`Failed to fetch users: ${response.statusText}`);
 

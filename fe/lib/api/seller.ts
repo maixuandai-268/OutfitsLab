@@ -10,12 +10,10 @@ export interface Shop {
     ownerId: number;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://outfitslab.onrender.com';
 
 export const sellerAPI = {
-    /**
-     * Lấy danh sách tất cả shops/seller applications
-     */
+
     getShops: async (): Promise<Shop[]> => {
         try {
             const res = await fetch(`${API_BASE}/api/shops`);
@@ -30,17 +28,13 @@ export const sellerAPI = {
         }
     },
 
-    /**
-     * Lấy số lượng shops đã được duyệt (approved)
-     */
+
     getApprovedShopsCount: async (): Promise<number> => {
         const shops = await sellerAPI.getShops();
         return shops.filter((shop) => shop.status === 'approved').length;
     },
 
-    /**
-     * Get approved shops count with month-over-month growth percentage
-     */
+
     getApprovedShopsWithGrowth: async (): Promise<{ currentCount: number; percentChange: number }> => {
         const shops = await sellerAPI.getShops();
         const approvedShops = shops.filter((shop) => shop.status === 'approved');
@@ -52,19 +46,16 @@ export const sellerAPI = {
         const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
         const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
-        // Count approved shops in current month
         const currentCount = approvedShops.filter((shop) => {
             const createdDate = new Date(shop.created_at);
             return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
         }).length;
 
-        // Count approved shops in previous month
         const prevCount = approvedShops.filter((shop) => {
             const createdDate = new Date(shop.created_at);
             return createdDate.getMonth() === prevMonth && createdDate.getFullYear() === prevYear;
         }).length;
 
-        // Calculate percentage change
         let percentChange = 0;
         if (prevCount === 0) {
             percentChange = currentCount > 0 ? 100 : 0;
@@ -80,17 +71,11 @@ export const sellerAPI = {
         };
     },
 
-    /**
-     * Lấy số lượng shops theo status
-     */
     getShopsCountByStatus: async (status: 'pending' | 'approved' | 'Blocked'): Promise<number> => {
         const shops = await sellerAPI.getShops();
         return shops.filter((shop) => shop.status === status).length;
     },
 
-    /**
-     * Approve a shop
-     */
     approveShop: async (id: number): Promise<boolean> => {
         try {
             const res = await fetch(`${API_BASE}/api/shops/${id}/approve`, {
@@ -103,9 +88,6 @@ export const sellerAPI = {
         }
     },
 
-    /**
-     * Reject a shop
-     */
     rejectShop: async (id: number): Promise<boolean> => {
         try {
             const res = await fetch(`${API_BASE}/api/shops/${id}/reject`, {

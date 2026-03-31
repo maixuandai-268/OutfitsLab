@@ -29,7 +29,7 @@ export default function Navbar() {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/notifications", {
+      const res = await fetch("https://outfitslab.onrender.com/api/notifications", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -54,7 +54,7 @@ export default function Navbar() {
 
   const handleMarkAsRead = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/notifications/${id}/read`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/notifications/${id}/read`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -70,7 +70,7 @@ export default function Navbar() {
 
   const handleMarkAllAsRead = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/notifications/read-all`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/notifications/read-all`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` }
       });

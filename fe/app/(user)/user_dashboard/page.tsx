@@ -31,7 +31,7 @@ export default function ProfilePage() {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/users/update", {
+      const res = await fetch("https://outfitslab.onrender.com/api/users/update", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export default function ProfilePage() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/remove", {
+      const res = await fetch("https://outfitslab.onrender.com/api/users/remove", {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: user?.id })
