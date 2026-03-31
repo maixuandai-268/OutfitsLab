@@ -64,7 +64,6 @@ export default function Sidebar() {
 
   return (
     <div className="flex flex-col h-full w-full bg-white text-gray-900 overflow-hidden shadow-2xl pb-4 border border-gray-100">
-      {/* Top Navigation */}
       <div className="flex justify-center gap-7 items-center px-5 py-5 bg-white border-b border-gray-200 mb-4">
         {navItems.map((item) => {
           const isActive = activeTab === item.id
@@ -84,7 +83,6 @@ export default function Sidebar() {
         })}
       </div>
 
-      {/* Content Area */}
       <div className="flex-1 min-h-0 overflow-y-auto px-5 custom-scrollbar pb-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300">
         {activeTab === 'body' ? (
           <BodyContent />
@@ -119,7 +117,6 @@ function GarmentsContent({ slot, garments, loading }: { slot: GarmentSlot, garme
 
   return (
     <div className="grid grid-cols-4 gap-2.5">
-      {/* None Button */}
       {slot === 'hat' && (
         <button
           onClick={() => setGarment(slot, null)}
@@ -132,7 +129,6 @@ function GarmentsContent({ slot, garments, loading }: { slot: GarmentSlot, garme
         </button>
       )}
 
-      {/* Garment Buttons */}
       {loading ? (
         <div className="col-span-3 py-10 text-center text-xs text-gray-400">Đang tải...</div>
       ) : garments.length === 0 ? (
@@ -191,8 +187,6 @@ function BodyContent() {
 
   return (
     <div className="flex flex-col gap-5">
-
-      {/* Gender */}
       <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
         <div className="text-sm font-semibold text-gray-900 mb-4">
           Giới tính
@@ -218,7 +212,6 @@ function BodyContent() {
         </div>
       </div>
 
-      {/* Body Type */}
       <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
         <div className="text-sm font-semibold text-gray-900 mb-4">
           Thân hình
@@ -237,7 +230,6 @@ function BodyContent() {
                   : 'bg-white border border-gray-200 hover:bg-gray-100'
                   }`}
               >
-                {/* SVG BODY */}
                 <img
                   src={item.img}
                   alt={item.type}
@@ -245,7 +237,6 @@ function BodyContent() {
                     }`}
                 />
 
-                {/* LABEL */}
                 <span
                   className={`text-[11px] mt-1 ${isSelected ? 'text-white' : 'text-gray-500'
                     }`}

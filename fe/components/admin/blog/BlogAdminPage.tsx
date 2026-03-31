@@ -34,7 +34,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   const [author, setAuthor] = useState("");
   const [excerpt, setExcerpt] = useState("");
 
-  // ── BE / API – GIỮ NGUYÊN ─────────────────────────────────────────
   const fetchBlogs = async () => {
     try {
       const res = await fetch("https://outfitslab.onrender.com/api/blog");
@@ -106,7 +105,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
       if (res.ok) fetchBlogs();
     } catch (e) { console.error(e); }
   };
-  // ──────────────────────────────────────────────────────────────────
 
   const base = dark ? "bg-gray-950 text-white" : "bg-gray-50 text-gray-900";
   const card = dark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200";
@@ -114,11 +112,9 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
     ? "bg-gray-900 border-gray-800 text-white placeholder-gray-600"
     : "bg-white border-gray-200 text-gray-900 placeholder-gray-400";
 
-  // ── FORM VIEW ────────────────────────────────────────────────────
   if (isEditing) return (
     <div className={`min-h-screen ${base} p-8`}>
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex items-center gap-4 pb-6 border-b border-gray-800">
           <button
             onClick={() => setIsEditing(false)}
@@ -134,7 +130,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
           </div>
         </div>
 
-        {/* Fields – vertical stack */}
         <div className="space-y-5">
           <Field label="Tiêu đề bài viết">
             <input
@@ -204,7 +199,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
           </Field>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
           <button
             onClick={() => setIsEditing(false)}
@@ -227,7 +221,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
     <div className={`min-h-screen ${base} p-8`}>
       <div className="max-w-5xl mx-auto space-y-6">
 
-        {/* Page header */}
         <div className="flex items-end justify-between pb-5 border-b border-gray-800">
           <div>
             <h1 className={`text-4xl font-black tracking-tighter ${dark ? "text-white" : "text-gray-900"}`}>
@@ -251,7 +244,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
           </button>
         </div>
 
-        {/* Stats strip */}
         <div className={`flex items-center gap-6 px-5 py-3 rounded-2xl border ${card} text-xs font-bold uppercase tracking-widest`}>
           <span className="text-gray-500">{blogs.length} bài viết</span>
           <span className="text-gray-700">|</span>
@@ -262,14 +254,12 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
           ))}
         </div>
 
-        {/* Vertical list */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog, i) => (
             <div
               key={blog.id}
               className={`group rounded-2xl overflow-hidden border transition-all hover:shadow-lg hover:-translate-y-1 ${card}`}
             >
-              {/* Image */}
               <div className="h-48 overflow-hidden relative">
                 <img
                   src={blog.image}
@@ -281,7 +271,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
                 </span>
               </div>
 
-              {/* Content */}
               <div className="p-4 space-y-2">
                 <h3 className="font-bold text-base line-clamp-2">
                   {blog.title}
@@ -291,7 +280,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
                   {blog.excerpt || blog.content}
                 </p>
 
-                {/* Footer */}
                 <div className="flex items-center justify-between pt-3 border-gray-200 text-xs">
                   <span className="text-gray-400">
                     {blog.author || "Admin"}
@@ -321,7 +309,6 @@ export default function BlogAdminPage({ dark }: { dark: boolean }) {
   );
 }
 
-// ── Helper ─────────────────────────────────────────────────────────
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">

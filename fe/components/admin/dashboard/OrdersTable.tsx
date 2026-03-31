@@ -6,7 +6,6 @@ import {
   CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined, CloseCircleOutlined
 } from "@ant-design/icons";
 
-// Data + config tại chỗ
 type OrderStatus = "Hoàn thành" | "Đang tiến hành" | "Chờ xác nhận" | "Đã hủy";
 
 const orders: Array<{ id: string; customer: string; product: string; amount: string; status: OrderStatus; date: string }> = [

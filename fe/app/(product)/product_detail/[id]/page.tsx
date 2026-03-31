@@ -10,6 +10,7 @@ import { ProductCard } from '@/components/product/ProductCard';
 const API_BASE = 'https://outfitslab.onrender.com/api';
 
 export default function ProductDetailPage() {
+
   const params = useParams();
   const productId = Number(params.id);
   const [product, setProduct] = useState<any>(null);
@@ -19,7 +20,6 @@ export default function ProductDetailPage() {
     if (!productId) {
       setLoading(false);
       return;
-
     }
 
     const fetchProduct = async () => {
@@ -45,7 +45,7 @@ export default function ProductDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p>Không tìm thấy Sản phẩm ID hợp lệ. Vui lòng quay lại trang danh sách.</p>
-        <Link href="/" className="ml-4 text-blue-500 underline">Quay lại</Link>
+        <Link href="" className="ml-4 text-blue-500 underline">Quay lại</Link>
       </div>
     )
   }
@@ -138,10 +138,10 @@ export default function ProductDetailPage() {
         <ReviewSection productId={productId} />
       </div>
 
-      <section className="max-w-7xl mx-auto mt-20">
-        <h2 className="text-2xl font-bold px-4 mb-6 border-l-4 border-pink-500 ml-4">Sản Phẩm Cùng Danh Mục</h2>
-        <div className="px-4">
-          <ProductCard count={10} columns={5} />
+      <section className="">
+        <h2 className="text-3xl font-bold p-6 mb-2">Sản Phẩm Cùng Danh Mục</h2>
+        <div className="px-4 sm:px-6 lg:px-8">
+          <ProductCard count={8} columns={5} />
         </div>
       </section>
     </div>

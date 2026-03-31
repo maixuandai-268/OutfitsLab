@@ -83,7 +83,6 @@ export default function StatsRow({ dark }: StatsRowProps) {
         const formatNumber = (num: number): string =>
           Number(num || 0).toLocaleString("vi-VN");
 
-        // Format shop growth percentage with sign
         const shopChangeText = shopData.percentChange >= 0
           ? `+${shopData.percentChange}%`
           : `${shopData.percentChange}%`;

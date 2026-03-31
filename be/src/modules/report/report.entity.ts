@@ -28,19 +28,19 @@ export class Report {
   targetId: string;
 
   @Column()
-  userId: number; // ai gửi report
+  userId: number;
 
   @Column({ default: 'pending' })
   status: 'pending' | 'in_progress' | 'resolved' | 'rejected';
 
   @Column({ nullable: true })
-  handledBy?: number; // Admin ID who is handling this report
+  handledBy?: number;
 
   @Column({ type: 'timestamp', nullable: true })
-  handledAt?: Date; // When the report was handled
+  handledAt?: Date;
 
   @Column('text', { nullable: true })
-  note?: string; // Admin note about the resolution
+  note?: string;
 
   @CreateDateColumn()
   createdAt: Date;

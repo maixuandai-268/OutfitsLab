@@ -19,12 +19,12 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const fetchShopDetail = async () => {
       if (!shopId || !token) return;
-      
+
       try {
         const res = await fetch(`https://outfitslab.onrender.com/api/shops/${shopId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        
+
         if (res.ok) {
           const data = await res.json();
           setShop(data);
@@ -61,7 +61,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       <ShopHeader shop={shop} owner={user} />
 
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">
-         <ShopNav shopId={Number(shopId)} />
+        <ShopNav shopId={Number(shopId)} />
       </div>
 
       <main className="flex-1 max-w-7xl mx-auto w-full py-10 px-4">

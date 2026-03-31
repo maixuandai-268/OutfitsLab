@@ -189,7 +189,6 @@ export class AdminStatsService {
     };
   }
 
-  // Product Statistics
   async getProductStats(query: QueryStatsDto): Promise<any> {
     const { from, to } = this.resolveDateRange(query);
 

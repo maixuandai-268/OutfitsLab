@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AlertButton from "@/components/common/ReportAlertButton";
 
 const navItems = [
   { label: "Home", href: "/admin" },
@@ -17,7 +18,7 @@ export default function Navbar() {
 
   return (
     <nav className="h-14 border-b bg-white flex items-center px-6">
-      
+
       <div className="flex gap-6">
         {navItems.map((item) => {
           const active = pathname === item.href;
@@ -26,20 +27,19 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`${
-                active
-                  ? "text-blue-600 font-semibold"
-                  : "text-gray-600 hover:text-black"
-              }`}
+              className={`${active
+                ? "text-blue-600 font-semibold"
+                : "text-gray-600 hover:text-black"
+                }`}
             >
               {item.label}
             </Link>
           );
         })}
       </div>
-
       {/* Right */}
       <div className="ml-auto flex gap-4">
+        <AlertButton />
         <Link href="/sign-in" className="text-sm text-gray-600">
           Login
         </Link>

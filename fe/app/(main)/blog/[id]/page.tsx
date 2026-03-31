@@ -13,7 +13,7 @@ export default function BlogDetail() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // gọi song song cho nhanh
+
                 const [blogRes, listRes] = await Promise.all([
                     fetch(`https://outfitslab.onrender.com/api/blog/${id}`),
                     fetch(`https://outfitslab.onrender.com/api/blog`)
@@ -24,7 +24,6 @@ export default function BlogDetail() {
 
                 setBlog(blogData);
 
-                // lọc bỏ bài hiện tại + lấy 5 bài mới
                 const filtered = listData
                     .filter((item: any) => item.id !== blogData.id)
                     .slice(0, 5);
@@ -39,10 +38,8 @@ export default function BlogDetail() {
         if (id) fetchData();
     }, [id]);
 
-    // Hàm xử lý nội dung: nếu là string có xuống dòng, chia thành các <p> riêng biệt
     const renderContent = (content: string | React.ReactNode) => {
         if (typeof content === "string") {
-            // Tách theo xuống dòng (\n) và filter những dòng trống
             const paragraphs = content.split("\n").filter((para) => para.trim());
             return paragraphs.map((para, index) => (
                 <p key={index} className="text-justify text-gray-800 leading-relaxed">
@@ -59,15 +56,11 @@ export default function BlogDetail() {
         <div className="bg-white min-h-screen py-10">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10">
 
-                {/* ===== LEFT: BLOG CONTENT ===== */}
                 <div className="md:col-span-2">
 
-                    {/* TITLE */}
                     <h1 className="text-3xl md:text-4xl font-black text-gray-900">
                         {blog.title}
                     </h1>
-
-                    {/* META */}
                     <div className="flex items-center gap-2 mt-4 text-sm text-gray-500 flex-wrap">
                         <span className="bg-pink-100 text-pink-600 px-2 py-1 rounded text-xs font-bold">
                             {blog.category || "Tin tức"}
@@ -82,28 +75,22 @@ export default function BlogDetail() {
                         </span>
                     </div>
 
-                    {/* EXCERPT */}
                     <p className="mt-6 text-lg italic text-justify text-gray-600 border-l-4 border-pink-500 pl-4">
                         {blog.excerpt}
                     </p>
 
-                    {/* IMAGE */}
                     <img
                         src={blog.image}
                         alt={blog.title}
                         className="w-full max-h-[350px] object-cover rounded-xl mt-8"
                     />
 
-                    {/* CONTENT - Xử lý căn lề justify */}
                     <div className="mt-10 space-y-4">
                         {renderContent(blog.content)}
                     </div>
                 </div>
-
-                {/* ===== RIGHT: SIDEBAR ===== */}
                 <div className="space-y-8 sticky top-24">
 
-                    {/* CATEGORY */}
                     <div className="bg-white p-5 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition">
                         <h3 className="font-bold text-lg mb-4 text-gray-900">Danh mục</h3>
 
@@ -121,7 +108,6 @@ export default function BlogDetail() {
                         </div>
                     </div>
 
-                    {/* LATEST POSTS */}
                     <div className="bg-white p-5 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition">
                         <h3 className="font-bold text-lg mb-4 text-gray-900">Tin mới nhất</h3>
 
@@ -155,9 +141,7 @@ export default function BlogDetail() {
                             ))}
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     );

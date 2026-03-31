@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function BecomePage() {
     const router = useRouter();
-    const { refreshUser } = useAuth(); 
+    const { refreshUser } = useAuth();
     const searchParams = useSearchParams();
     const initialStep = parseInt(searchParams.get("step") || "1");
 
@@ -61,7 +61,7 @@ export default function BecomePage() {
                 if (refreshUser) await refreshUser(); 
                 
                 alert("Đăng ký thành công! Vui lòng chờ Admin phê duyệt.");
-                router.push("/"); 
+                router.push("/");
             } else {
                 const errorMsg = Array.isArray(result.message) ? result.message.join("\n") : result.message;
                 alert("Lỗi: " + errorMsg);
@@ -83,20 +83,20 @@ export default function BecomePage() {
             )}
 
             {step === 2 && (
-                <StepStore 
-                    {...formData} 
-                    onChange={handleChange} 
-                    nextStep={nextStep} 
-                    prevStep={prevStep} 
+                <StepStore
+                    {...formData}
+                    onChange={handleChange}
+                    nextStep={nextStep}
+                    prevStep={prevStep}
                 />
             )}
 
             {step === 3 && (
-                <StepConfirm 
-                    {...formData} 
-                    prevStep={prevStep} 
-                    onSubmit={handleSubmit} 
-                    loading={loading} 
+                <StepConfirm
+                    {...formData}
+                    prevStep={prevStep}
+                    onSubmit={handleSubmit}
+                    loading={loading}
                 />
             )}
         </div>

@@ -36,7 +36,7 @@ export class IssueReportService {
     }
 
     async update(id: number, reportDto: Partial<ReportDto>): Promise<Report> {
-        await this.findById(id); // Verify exists
+        await this.findById(id);
         await this.reportRepository.update(id, reportDto);
         return this.findById(id);
     }
@@ -45,13 +45,13 @@ export class IssueReportService {
         id: number,
         status: 'pending' | 'in_progress' | 'resolved' | 'rejected'
     ): Promise<Report> {
-        await this.findById(id); // Verify exists
+        await this.findById(id);
         await this.reportRepository.update(id, { status });
         return this.findById(id);
     }
 
     async delete(id: number): Promise<{ message: string }> {
-        const report = await this.findById(id); // Verify exists
+        const report = await this.findById(id);
         await this.reportRepository.remove(report);
         return { message: `Report with ID ${id} deleted successfully.` };
     }
