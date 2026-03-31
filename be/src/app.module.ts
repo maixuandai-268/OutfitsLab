@@ -24,13 +24,13 @@ const password = process.env.DB_PASSWORD || '';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: password,
-      database: 'outfitslab_db',
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
+
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
     AuthModule,
     UsersModule,
