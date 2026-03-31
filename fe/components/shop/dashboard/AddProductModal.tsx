@@ -1,24 +1,22 @@
 "use client";
 import React, { useState } from "react";
-import { 
-  Modal, 
-  Input, 
-  InputNumber, 
-  Select, 
-  message, 
-  Tooltip, 
-  Button, 
+import {
+  Modal,
+  Input,
+  InputNumber,
+  Select,
+  message,
+  Tooltip,
+  Button,
   Divider,
   Tag as AntTag,
   Space,
-  Typography,
-  Upload,
-  Spin
+  Typography
 } from "antd";
-import { 
-  PlusOutlined, 
-  UploadOutlined, 
-  DollarOutlined, 
+import {
+  PlusOutlined,
+  UploadOutlined,
+  DollarOutlined,
   BgColorsOutlined,
   InfoCircleOutlined,
   ShopOutlined,
@@ -34,10 +32,9 @@ interface AddProductModalProps {
   onClose: () => void;
   shopId: string | number;
   onSuccess: () => void;
-  editData?: any; 
 }
 
-
+// Lấy chính xác các giá trị từ Sidebar để lọc đồng bộ
 const CATEGORY_OPTIONS = [
   { label: "Áo Sơ Mi (Shirts)", value: "shirts" },
   { label: "Quần (Pants)", value: "pants" },
@@ -64,17 +61,15 @@ const COLOR_OPTIONS = [
 
 const SIZE_OPTIONS = ["S", "M", "L", "XL", "XXL", "FREESIZE"];
 
-export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, editData }: AddProductModalProps) {
+export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: AddProductModalProps) {
   const { token, user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     price: 0,
-    type: "", 
+    type: "", // Category key for filtering
     image: "",
-    images: [] as string[],
     description: "",
     colors: [] as string[],
     sizes: [] as string[],
@@ -82,50 +77,8 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
     affiliateLink: "",
   });
 
-
-  React.useEffect(() => {
-    if (editData && isOpen) {
-      setFormData({
-        name: editData.name || "",
-        price: Number(editData.price) || 0,
-        type: editData.type || "",
-        image: editData.image || "",
-        images: Array.isArray(editData.images) ? editData.images : (editData.image ? [editData.image] : []),
-        description: editData.description || "",
-        colors: Array.isArray(editData.colors) ? editData.colors : [],
-        sizes: Array.isArray(editData.sizes) ? editData.sizes : [],
-        status: editData.status || "active",
-        affiliateLink: editData.affiliateLink || "",
-      });
-    } else if (!editData && isOpen) {
-      setFormData({
-        name: "",
-        price: 0,
-        type: "",
-        image: "",
-        images: [],
-        description: "",
-        colors: [],
-        sizes: [],
-        status: "active",
-        affiliateLink: "",
-      });
-    }
-  }, [editData, isOpen]);
-
   const handleInputChange = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const removeImage = (index: number) => {
-    setFormData((prev) => {
-      const newImages = prev.images.filter((_, i) => i !== index);
-      return {
-        ...prev,
-        images: newImages,
-        image: newImages.length > 0 ? newImages[0] : "",
-      };
-    });
   };
 
   const toggleColor = (colorValue: string) => {
@@ -137,15 +90,16 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
     }));
   };
 
-
+  // Lấy label của category dựa trên type đã chọn
   const getCategoryLabel = (type: string) => {
     const option = CATEGORY_OPTIONS.find(o => o.value === type);
     if (!option) return "";
+    // Lấy phần tên trước trong ngoặc, ví dụ: "Áo Sơ Mi (Shirts)" -> "ÁO SƠ MI"
     return option.label.split("(")[0].trim().toUpperCase();
   };
 
   const handleSubmit = async () => {
-    if (!formData.name || formData.price <= 0 || formData.images.length === 0 || !formData.type) {
+    if (!formData.name || formData.price <= 0 || !formData.image || !formData.type) {
       return message.error("Vui lòng nhập đầy đủ Tên, Giá, Hình ảnh và Danh mục!");
     }
 
@@ -155,23 +109,16 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
 
     setLoading(true);
     try {
-      const isEdit = !!editData;
-      const url = isEdit 
-        ? `http://localhost:3000/api/products/${editData.id}`
-        : "http://localhost:3000/api/products";
-      
-      const method = isEdit ? "PATCH" : "POST";
-
+      // Tự động gán Brand là tên cửa hàng và Tag là nhãn danh mục
       const payload = {
         ...formData,
-        image: formData.images[0], 
         shop_id: Number(shopId),
         brand: user?.shop?.shop_name || "Outfits Lab",
         tag: getCategoryLabel(formData.type) || "SẢN PHẨM",
       };
 
-      const response = await fetch(url, {
-        method: method,
+      const response = await fetch("http://localhost:3000/api/products", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -180,12 +127,23 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
       });
 
       if (response.ok) {
-        message.success(isEdit ? "Cập nhật sản phẩm thành công!" : "Thêm sản phẩm thành công!");
+        message.success("Thêm sản phẩm thành công!");
         onSuccess();
         onClose();
+        setFormData({
+          name: "",
+          price: 0,
+          type: "",
+          image: "",
+          description: "",
+          colors: [],
+          sizes: [],
+          status: "active",
+          affiliateLink: "",
+        });
       } else {
         const errorData = await response.json();
-        message.error(errorData.message || "Đã có lỗi xảy ra.");
+        message.error(errorData.message || "Không thể thêm sản phẩm.");
       }
     } catch (error) {
       message.error("Lỗi kết nối đến máy chủ.");
@@ -201,12 +159,13 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
     <Modal
       title={
         <div className="flex items-center gap-2 text-xl font-bold text-gray-800">
-          <span>{editData ? "Chỉnh Sửa Sản Phẩm" : "Thêm Sản Phẩm Mới"}</span>
+          <PlusOutlined className="text-pink-500" />
+          <span>Thêm Sản Phẩm Mới</span>
         </div>
       }
       open={isOpen}
       onCancel={onClose}
-      onOk={handleSubmit}
+      onOk={handleSubmit}  // Gọi hàm xử lý khi nhấn "Lưu & Hiển thị"
       confirmLoading={loading}
       okText="Lưu & Hiển thị"
       cancelText="Hủy bỏ"
@@ -227,8 +186,8 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
               <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
                 <AppstoreOutlined className="text-pink-500" /> Tên sản phẩm *
               </label>
-              <Input 
-                placeholder="Ví dụ: Áo Sơ Mi Lụa Cao Cấp" 
+              <Input
+                placeholder="Ví dụ: Áo Sơ Mi Lụa Cao Cấp"
                 size="large"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
@@ -267,90 +226,54 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
               />
             </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
-                  <GlobalOutlined className="text-orange-500" /> Link Affiliate (Shopee, Tik Tok...)
-                </label>
-                <Input 
-                  placeholder="Dán link sản phẩm tại đây..." 
-                  size="large"
-                  value={formData.affiliateLink}
-                  onChange={(e) => handleInputChange("affiliateLink", e.target.value)}
-                  className="rounded-lg shadow-sm"
-                />
-              </div>
-
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Mô tả sản phẩm</label>
-                <Input.TextArea 
-                  placeholder="Mô tả sẽ hiển thị tại trang chi tiết sản phẩm..." 
-                  rows={3}
-                  value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
-                  className="rounded-xl border-gray-200"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
+                <GlobalOutlined className="text-orange-500" /> Link Affiliate (Shopee, Tik Tok...)
+              </label>
+              <Input
+                placeholder="Dán link sản phẩm tại đây..."
+                size="large"
+                value={formData.affiliateLink}
+                onChange={(e) => handleInputChange("affiliateLink", e.target.value)}
+                className="rounded-lg shadow-sm"
+              />
             </div>
+
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Mô tả sản phẩm</label>
+              <Input.TextArea
+                placeholder="Mô tả sẽ hiển thị tại trang chi tiết sản phẩm..."
+                rows={3}
+                value={formData.description}
+                onChange={(e) => handleInputChange("description", e.target.value)}
+                className="rounded-xl border-gray-200"
+              />
+            </div>
+          </div>
 
           <div className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
                 <UploadOutlined className="text-green-500" /> Hình ảnh sản phẩm *
               </label>
-              
-              <div className="grid grid-cols-3 gap-2 mb-3">
-                {formData.images.map((img, index) => (
-                  <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 shadow-sm">
-                    <img src={img} className="w-full h-full object-cover" alt={`Product ${index}`} />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                      <button 
-                        onClick={() => removeImage(index)}
-                        className="bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
-                      >
-                        <PlusOutlined className="rotate-45" />
-                      </button>
-                    </div>
-                    {index === 0 && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-pink-500 text-[10px] text-white text-center font-bold py-0.5">ẢNH CHÍNH</div>
-                    )}
+              <Input
+                placeholder="Nhập URL hình ảnh"
+                size="large"
+                value={formData.image}
+                onChange={(e) => handleInputChange("image", e.target.value)}
+                className="rounded-lg"
+              />
+              <div className="mt-3 relative h-40 w-full rounded-2xl border border-gray-100 overflow-hidden bg-gray-50 flex items-center justify-center group">
+                {formData.image ? (
+                  <img src={formData.image} alt="Preview" className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                ) : (
+                  <div className="text-center">
+                    <UploadOutlined className="text-xl text-gray-300" />
+                    <p className="text-[10px] text-gray-400 mt-1">HÌNH ẢNH TRỰC QUAN</p>
                   </div>
-                ))}
-                
-                {formData.images.length < 9 && (
-                  <Upload
-                    name="file"
-                    action="http://localhost:3000/api/upload"
-                    showUploadList={false}
-                    multiple={true}
-                    onChange={(info) => {
-                      if (info.file.status === 'uploading') {
-                        setIsUploadingImage(true);
-                        return;
-                      }
-                      if (info.file.status === 'done') {
-                        setIsUploadingImage(false);
-                        const newUrl = info.file.response.url;
-                        setFormData(prev => ({
-                          ...prev,
-                          images: [...prev.images, newUrl],
-                          image: prev.images.length === 0 ? newUrl : prev.image
-                        }));
-                        message.success('Tải ảnh sản phẩm lên thành công!');
-                      } else if (info.file.status === 'error') {
-                        setIsUploadingImage(false);
-                        message.error('Lỗi khi tải ảnh sản phẩm lên Cloudinary.');
-                      }
-                    }}
-                  >
-                    <div className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center hover:border-pink-400 hover:bg-pink-50 transition-all cursor-pointer">
-                      {isUploadingImage ? <Spin size="small" /> : <PlusOutlined className="text-gray-400 text-xl" />}
-                      <span className="text-[10px] text-gray-400 mt-1 font-bold">Thêm ảnh</span>
-                    </div>
-                  </Upload>
                 )}
               </div>
-              <p className="text-[10px] text-gray-400 uppercase tracking-widest text-center">Tải lên tối đa 9 ảnh</p>
             </div>
 
             <div>
@@ -363,11 +286,10 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
                     <button
                       type="button"
                       onClick={() => toggleColor(color.value)}
-                      className={`group relative w-full aspect-square rounded-lg border-2 transition-all flex items-center justify-center ${
-                        formData.colors.includes(color.value) 
-                          ? "border-pink-500 scale-105 shadow-md" 
-                          : "border-gray-200 hover:border-gray-300 bg-white"
-                      }`}
+                      className={`group relative w-full aspect-square rounded-lg border-2 transition-all flex items-center justify-center ${formData.colors.includes(color.value)
+                        ? "border-pink-500 scale-105 shadow-md"
+                        : "border-gray-200 hover:border-gray-300 bg-white"
+                        }`}
                       style={{ backgroundColor: color.hex }}
                     >
                       {formData.colors.includes(color.value) && (
@@ -396,35 +318,36 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
           </div>
         </div>
 
+        {/* LIVE PREVIEW SECTION */}
         <div className="bg-gradient-to-r from-gray-50 to-white p-5 rounded-3xl border border-gray-100 shadow-sm mt-4">
           <label className="block text-[10px] font-black text-gray-300 uppercase tracking-[0.2em] mb-4">Live Preview (Giao diện khi hiển thị)</label>
           <div className="flex gap-6 items-center">
             <div className="h-28 w-24 rounded-2xl bg-gray-200 overflow-hidden shadow-inner border border-gray-100">
-               {formData.image && <img src={formData.image} className="w-full h-full object-cover" />}
+              {formData.image && <img src={formData.image} className="w-full h-full object-cover" />}
             </div>
             <div className="flex-1 space-y-1">
-               <div className="flex items-center gap-2">
-                 <AntTag color="pink" className="font-black text-[9px] rounded-md px-2 m-0 border-none shadow-sm capitalize">
-                    {currentCategoryLabel || "SẢN PHẨM"}
-                 </AntTag>
-                 <Space size={3}>
-                    {formData.colors.map(c => (
-                      <div key={c} className="w-2.5 h-2.5 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: COLOR_OPTIONS.find(o => o.value === c)?.hex }} />
-                    ))}
-                 </Space>
-               </div>
-               <h3 className="font-extrabold text-lg text-gray-900 line-clamp-1">{formData.name || "Tên Sản Phẩm Của Bạn..."}</h3>
-               <div className="flex items-center gap-2">
-                 <ShopOutlined className="text-pink-500 text-xs" />
-                 <Text className="text-xs font-bold text-gray-500 uppercase tracking-widest">{currentBrand}</Text>
-               </div>
-               <div className="flex gap-1 mt-1">
-                 {formData.sizes.map(s => <span key={s} className="text-[10px] font-bold px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded">{s}</span>)}
-               </div>
+              <div className="flex items-center gap-2">
+                <AntTag color="pink" className="font-black text-[9px] rounded-md px-2 m-0 border-none shadow-sm capitalize">
+                  {currentCategoryLabel || "SẢN PHẨM"}
+                </AntTag>
+                <Space size={3}>
+                  {formData.colors.map(c => (
+                    <div key={c} className="w-2.5 h-2.5 rounded-full border border-gray-100 shadow-sm" style={{ backgroundColor: COLOR_OPTIONS.find(o => o.value === c)?.hex }} />
+                  ))}
+                </Space>
+              </div>
+              <h3 className="font-extrabold text-lg text-gray-900 line-clamp-1">{formData.name || "Tên Sản Phẩm Của Bạn..."}</h3>
+              <div className="flex items-center gap-2">
+                <ShopOutlined className="text-pink-500 text-xs" />
+                <Text className="text-xs font-bold text-gray-500 uppercase tracking-widest">{currentBrand}</Text>
+              </div>
+              <div className="flex gap-1 mt-1">
+                {formData.sizes.map(s => <span key={s} className="text-[10px] font-bold px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded">{s}</span>)}
+              </div>
             </div>
             <div className="text-right border-l pl-6 py-2">
-               <p className="text-amber-500 font-black text-xl italic tracking-tighter">{formData.price.toLocaleString()} VND</p>
-               <Text type="secondary" className="text-[10px] uppercase font-bold tracking-widest">Giá niêm yết</Text>
+              <p className="text-amber-500 font-black text-xl italic tracking-tighter">{formData.price.toLocaleString()} VND</p>
+              <Text type="secondary" className="text-[10px] uppercase font-bold tracking-widest">Giá niêm yết</Text>
             </div>
           </div>
         </div>

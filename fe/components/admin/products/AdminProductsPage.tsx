@@ -67,7 +67,7 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3000/api/products', {
+      const res = await fetch('https://outfitslab.onrender.com/api/products', {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -121,7 +121,7 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
         payload.model_url = [singleModelUrl || ''];
       }
 
-      const res = await fetch(`http://localhost:3000/api/products/${selectedProduct.id}`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/products/${selectedProduct.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(payload),
@@ -144,7 +144,7 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
 
   const handleDelete = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/products/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -391,7 +391,7 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
                       <Upload.Dragger
                         name="file"
                         multiple={false}
-                        action="http://localhost:3000/api/upload"
+                        action="https://outfitslab.onrender.com/api/upload"
                         headers={{ Authorization: `Bearer ${token}` }}
                         showUploadList={false}
                         style={{ padding: '2px 0' }}
@@ -422,7 +422,7 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
                 <Upload.Dragger
                   name="file"
                   multiple={false}
-                  action="http://localhost:3000/api/upload"
+                  action="https://outfitslab.onrender.com/api/upload"
                   headers={{ Authorization: `Bearer ${token}` }}
                   showUploadList={false}
                   onChange={(info) => {

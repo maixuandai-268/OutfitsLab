@@ -16,7 +16,6 @@ import {
 } from '@ant-design/icons'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
-/* ================= BACKGROUND IMAGES ================= */
 const bgImages = [
   '/bg/bg1.jpg',
   '/bg/bg2.jpg',
@@ -24,7 +23,6 @@ const bgImages = [
   '/bg/bg4.jpg'
 ]
 
-/* ================= BACKGROUND COMPONENT ================= */
 function BackgroundImage({ url }: { url: string }) {
   const { scene } = useThree()
 
@@ -38,7 +36,6 @@ function BackgroundImage({ url }: { url: string }) {
   return null
 }
 
-/* ================= MODEL ================= */
 function BodyModel({ url }: { url: string }) {
   const gl = useThree((state) => state.gl)
   const gltf = useGLTF(url, true, true, (loader) => {
@@ -65,7 +62,6 @@ function Garment({ url }: { url: string }) {
   return <primitive object={gltf.scene} />
 }
 
-/* ================= MAIN ================= */
 export default function ModelViewer() {
   const { bodyType, activeGarments, modelId } = useCustomizer()
   const controlsRef = useRef<OrbitControlsImpl | null>(null)
@@ -78,7 +74,6 @@ export default function ModelViewer() {
     if (canvas) canvasRef.current = canvas as HTMLCanvasElement
   }, [])
 
-  /* ================= SCREENSHOT ================= */
   const takeScreenshot = () => {
     if (!canvasRef.current) return null
     return canvasRef.current.toDataURL('image/png')
@@ -93,7 +88,6 @@ export default function ModelViewer() {
     a.click()
   }
 
-  /* ================= BG SWITCH ================= */
   const prevBg = () => {
     setBgIndex((prev) => (prev === 0 ? bgImages.length - 1 : prev - 1))
   }
@@ -115,7 +109,6 @@ export default function ModelViewer() {
         gl={{ preserveDrawingBuffer: true }}
       >
         <Suspense fallback={null}>
-          {/* 👉 Background Image */}
           <BackgroundImage url={bgImages[bgIndex]} />
 
           <group position={[0, -0.9, 0]}>
@@ -147,7 +140,6 @@ export default function ModelViewer() {
         />
       </Canvas>
 
-      {/* ================= TOP RIGHT (CAMERA + DOWNLOAD) ================= */}
       <div className="absolute top-6 right-6 z-10">
         <div className="flex items-center gap-4 px-5 py-2 rounded-full bg-black/70 backdrop-blur-md shadow-lg">
 
@@ -172,8 +164,6 @@ export default function ModelViewer() {
         </div>
       </div>
 
-
-      {/* ================= BOTTOM RIGHT (BG SWITCH) ================= */}
       <div className="absolute bottom-6 right-6 z-10">
         <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-black/60 backdrop-blur-md shadow-md">
 

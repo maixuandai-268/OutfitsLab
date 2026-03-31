@@ -3,7 +3,6 @@ import Card from "../shared/card";
 import CardTitle from "../shared/cardTitle";
 import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
-// Data tại chỗ
 const visitorData = [
   { day: "Mon", visitors: 1200 }, { day: "Tue", visitors: 1900 },
   { day: "Wed", visitors: 1600 }, { day: "Thu", visitors: 2300 },

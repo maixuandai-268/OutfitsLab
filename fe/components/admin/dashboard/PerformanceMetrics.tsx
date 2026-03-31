@@ -141,7 +141,6 @@ export default function PerformanceMetrics({ dark }: { dark: boolean }) {
                     </span>
                   </td>
 
-                  {/* Tên sản phẩm */}
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center text-[10px] font-black flex-shrink-0">

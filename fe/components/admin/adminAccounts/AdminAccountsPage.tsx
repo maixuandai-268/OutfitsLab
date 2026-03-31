@@ -119,7 +119,7 @@ function cls(...arr: Array<string | false | null | undefined>): string {
   return arr.filter(Boolean).join(" ");
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://outfitslab.onrender.com";
 
 async function apiPut(id: string, body: Record<string, unknown>): Promise<void> {
   const res = await fetch(`${API_BASE}/api/users/${id}`, {
