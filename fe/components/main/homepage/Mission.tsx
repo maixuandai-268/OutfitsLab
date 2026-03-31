@@ -56,8 +56,6 @@ export default function Mission() {
             ))}
           </div>
         </div>
-
-        {/* Right Decor */}
         <div className="relative group">
            <div className="absolute -inset-4 bg-linear-to-r from-pink-500 to-indigo-500 rounded-[3rem] opacity-10 blur-2xl group-hover:opacity-20 transition-opacity" />
            <div className="relative aspect-square bg-white/60 backdrop-blur-2xl rounded-[3rem] border border-white shadow-2xl flex flex-col items-center justify-center p-10 overflow-hidden">
