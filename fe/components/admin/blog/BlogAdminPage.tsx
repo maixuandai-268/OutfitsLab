@@ -8,6 +8,7 @@ interface Blog {
   image: string;
   category: string;
   author: string;
+  excerpt?: string;
   date?: string;
   createdAt?: string;
 }

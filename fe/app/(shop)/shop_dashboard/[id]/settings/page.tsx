@@ -30,7 +30,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchShop = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/shops/${shopId}`, {
+        const res = await fetch(`https://outfitslab.onrender.com/api/shops/${shopId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
@@ -59,7 +59,7 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/shops/${shopId}`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/shops/${shopId}`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ export default function SettingsPage() {
             </label>
             <Upload
               name="file"
-              action="http://localhost:3000/api/upload"
+              action="https://outfitslab.onrender.com/api/upload"
               showUploadList={false}
               onChange={(info) => {
                 if (info.file.status === 'uploading') {

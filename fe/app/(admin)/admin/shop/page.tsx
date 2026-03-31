@@ -10,7 +10,7 @@ export default function AdminSellersPage() {
   // 1. Lấy danh sách shop đang chờ duyệt bằng fetch
   const fetchSellers = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/shops/pending");
+      const response = await fetch("https://outfitslab.onrender.com/api/shops/pending");
       if (!response.ok) throw new Error("Lỗi mạng");
       const data = await response.json();
       setSellers(data);
@@ -26,7 +26,7 @@ export default function AdminSellersPage() {
   // 2. Hàm xử lý duyệt bằng fetch (Dùng PATCH)
   const handleApprove = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/shops/${id}/approve`, {
+      const response = await fetch(`https://outfitslab.onrender.com/api/shops/${id}/approve`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

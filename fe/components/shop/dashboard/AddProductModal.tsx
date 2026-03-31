@@ -109,7 +109,13 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: 
 
     setLoading(true);
     try {
-      // Tự động gán Brand là tên cửa hàng và Tag là nhãn danh mục
+      const isEdit = !!editData;
+      const url = isEdit 
+        ? `https://outfitslab.onrender.com/api/products/${editData.id}`
+        : "https://outfitslab.onrender.com/api/products";
+      
+      const method = isEdit ? "PATCH" : "POST";
+
       const payload = {
         ...formData,
         shop_id: Number(shopId),
@@ -272,6 +278,39 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess }: 
                     <UploadOutlined className="text-xl text-gray-300" />
                     <p className="text-[10px] text-gray-400 mt-1">HÌNH ẢNH TRỰC QUAN</p>
                   </div>
+                ))}
+                
+                {formData.images.length < 9 && (
+                  <Upload
+                    name="file"
+                    action="https://outfitslab.onrender.com/api/upload"
+                    showUploadList={false}
+                    multiple={true}
+                    onChange={(info) => {
+                      if (info.file.status === 'uploading') {
+                        setIsUploadingImage(true);
+                        return;
+                      }
+                      if (info.file.status === 'done') {
+                        setIsUploadingImage(false);
+                        const newUrl = info.file.response.url;
+                        setFormData(prev => ({
+                          ...prev,
+                          images: [...prev.images, newUrl],
+                          image: prev.images.length === 0 ? newUrl : prev.image
+                        }));
+                        message.success('Tải ảnh sản phẩm lên thành công!');
+                      } else if (info.file.status === 'error') {
+                        setIsUploadingImage(false);
+                        message.error('Lỗi khi tải ảnh sản phẩm lên Cloudinary.');
+                      }
+                    }}
+                  >
+                    <div className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center hover:border-pink-400 hover:bg-pink-50 transition-all cursor-pointer">
+                      {isUploadingImage ? <Spin size="small" /> : <PlusOutlined className="text-gray-400 text-xl" />}
+                      <span className="text-[10px] text-gray-400 mt-1 font-bold">Thêm ảnh</span>
+                    </div>
+                  </Upload>
                 )}
               </div>
             </div>

@@ -42,7 +42,7 @@ export default function BecomePage() {
         }
 
         try {
-            const res = await fetch("https://outfitslab.onrender.com/api/shops/become", {
+            const res = await fetch("https://outfitslab.onrender.com/api/shops/become", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -58,8 +58,8 @@ export default function BecomePage() {
             const result = await res.json();
 
             if (res.ok) {
-                if (refreshUser) await refreshUser();
-
+                if (refreshUser) await refreshUser(); 
+                
                 alert("Đăng ký thành công! Vui lòng chờ Admin phê duyệt.");
                 router.push("/");
             } else {

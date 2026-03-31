@@ -7,14 +7,15 @@ type User = {
   email: string;
   displayName: string;
   avatarUrl?: string;
+  phone?: string;
+  bio?: string;
+  password?: string;
   role: string;
-
   shop?: {
     id: number;
     status: string;
     shop_name?: string;
   };
-
   shopId?: number | null;
   shopStatus?: string | null;
 };
@@ -45,7 +46,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!res.ok) throw new Error();
       const data = await res.json();
-
 
       setUser({
         ...data,

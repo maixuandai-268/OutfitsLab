@@ -22,6 +22,66 @@ export default function Navbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
+  const fetchNotifications = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const res = await fetch("https://outfitslab.onrender.com/api/notifications", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data);
+      }
+    } catch (error) {
+      console.error("Lỗi tải thông báo:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+      // Polling thông báo mỗi 30 giây
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user, fetchNotifications]);
+
+  const handleMarkAsRead = async (id: number) => {
+    try {
+      const res = await fetch(`https://outfitslab.onrender.com/api/notifications/${id}/read`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setNotifications(prev =>
+          prev.map(n => n.id === id ? { ...n, isRead: true } : n)
+        );
+      }
+    } catch (error) {
+      message.error("Không thể cập nhật trạng thái thông báo");
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      const res = await fetch(`https://outfitslab.onrender.com/api/notifications/read-all`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        message.success("Đã đánh dấu tất cả là đã đọc");
+      }
+    } catch (error) {
+      message.error("Lỗi khi cập nhật thông báo");
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
   const handleShopClick = () => {
     if (!user?.shopId) {
       message.info("Bạn chưa có shop. Hãy đăng ký để bắt đầu bán hàng!");

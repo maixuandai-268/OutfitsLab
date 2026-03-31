@@ -15,7 +15,6 @@ export default function TryOnModel({
   const shirt = useGLTF(shirtPath);
 
   useEffect(() => {
-    // đổi màu áo
     shirt.scene.traverse((child: any) => {
       if (child.isMesh) {
         child.material = child.material.clone();
@@ -23,7 +22,6 @@ export default function TryOnModel({
       }
     });
 
-    // căn áo lên thân người (fake try-on)
     shirt.scene.position.set(0, 1.05, 0.02);
     shirt.scene.scale.set(1.05, 1.05, 1.05);
   }, [shirtPath, color]);

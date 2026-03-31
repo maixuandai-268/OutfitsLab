@@ -33,9 +33,9 @@ export default function AnalyticsPage() {
       if (!shopId || !token) return;
       try {
         const [resProd, resShop, resViews] = await Promise.all([
-          fetch(`http://localhost:3000/api/products?shop_id=${shopId}&limit=100`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`http://localhost:3000/api/shops/${shopId}`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`http://localhost:3000/api/shops/${shopId}/view-stats`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`https://outfitslab.onrender.com/api/products?shop_id=${shopId}&limit=100`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`https://outfitslab.onrender.com/api/shops/${shopId}`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`https://outfitslab.onrender.com/api/shops/${shopId}/view-stats`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
         if (resProd.ok) {

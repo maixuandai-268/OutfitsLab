@@ -5,7 +5,7 @@ import { Environment, OrbitControls, ContactShadows, useGLTF } from '@react-thre
 import * as THREE from 'three'
 import { KTX2Loader, MeshoptDecoder } from 'three-stdlib'
 import { Suspense, useMemo, useRef, useState, useEffect } from 'react'
-import { useCustomizer } from '@/store/useCustomizer'
+import { useCustomizer, BodyType } from '@/store/useCustomizer'
 import { BODY_MODELS } from '@/lib/assetsCatalog'
 import {
   CameraOutlined,
@@ -16,6 +16,13 @@ import {
 } from '@ant-design/icons'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
+const HAT_POSITIONS: Record<BodyType, [number, number, number]> = {
+  skinny: [-0.003326, 0.04891, 0.001306],
+  fit:    [0.00631, 0.027743, 0],
+  fat:    [0, 0, 0]
+}
+
+/* ================= BACKGROUND IMAGES ================= */
 const bgImages = [
   '/bg/bg1.jpg',
   '/bg/bg2.jpg',
@@ -49,7 +56,13 @@ function BodyModel({ url }: { url: string }) {
   return <primitive object={gltf.scene} />
 }
 
-function Garment({ url }: { url: string }) {
+function Garment({
+  url,
+  position = [0, 0, 0]
+}: {
+  url: string
+  position?: [number, number, number]
+}) {
   const gl = useThree((state) => state.gl)
   const gltf = useGLTF(url, true, true, (loader) => {
     const ktx2Loader = new KTX2Loader()
@@ -59,7 +72,7 @@ function Garment({ url }: { url: string }) {
     loader.setMeshoptDecoder(MeshoptDecoder)
   }) as any
 
-  return <primitive object={gltf.scene} />
+  return <primitive object={gltf.scene} scale={[1, 1, 1]} position={position} rotation={[0, 0, 0]} />
 }
 
 export default function ModelViewer() {
@@ -98,7 +111,7 @@ export default function ModelViewer() {
 
   const gender = modelId === 'avatar_female' ? 'female' : 'male'
   const bodyUrl = BODY_MODELS[gender][bodyType]
-
+  const hatPos = HAT_POSITIONS[bodyType]
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -116,6 +129,12 @@ export default function ModelViewer() {
             {activeGarments.top && <Garment url={activeGarments.top} />}
             {activeGarments.bottom && <Garment url={activeGarments.bottom} />}
             {activeGarments.shoes && <Garment url={activeGarments.shoes} />}
+            {activeGarments.hat && (
+              <Garment
+                url={activeGarments.hat}
+                position={hatPos}
+              />
+            )}
 
             <ContactShadows
               position={[0, -0.9, 0]}

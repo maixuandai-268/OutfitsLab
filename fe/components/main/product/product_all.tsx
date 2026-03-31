@@ -264,6 +264,7 @@ export default function ProductAll() {
         model_url: product.model_url,
         image: product.image
       });
+      router.push('/try-on');
     } else {
       message.info("Sản phẩm này hiện chưa có mô hình 3D để thử đồ.");
     }
@@ -273,7 +274,7 @@ export default function ProductAll() {
   const fetchProductsFromDB = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/products?limit=1000");
+      const res = await fetch("https://outfitslab.onrender.com/api/products?limit=1000");
       if (res.ok) {
         const result = await res.json();
         const rawData = result.data || result;

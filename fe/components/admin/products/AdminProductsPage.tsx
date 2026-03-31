@@ -9,6 +9,7 @@ import {
   DeleteOutlined, EyeOutlined, SearchOutlined, ReloadOutlined,
   ShoppingOutlined, RightOutlined, CloudUploadOutlined, LinkOutlined,
   MailOutlined, EnvironmentOutlined, InboxOutlined, CheckCircleFilled,
+  CloseCircleOutlined
 } from "@ant-design/icons";
 import { useAuth } from "@/context/AuthContext";
 import Card from "../shared/card";
@@ -383,7 +384,6 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
               </p>
 
               {needsBodySplit(garmentSlot) ? (
-                /* Áo / Quần → 3 zones */
                 <div className="space-y-2">
                   {BODY_TYPE_ZONES.map(({ key, label }) => (
                     <div key={key}>
@@ -405,9 +405,22 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
                         }}
                       >
                         {modelUrls[key] ? (
-                          <p className="text-xs text-green-600 font-bold py-2 flex items-center justify-center gap-1">
-                            <CheckCircleFilled /> {modelUrls[key].split('/').pop()?.slice(0, 40)}
-                          </p>
+                          <div className="flex items-center justify-between px-4 py-2 group">
+                            <p className="text-xs text-green-600 font-bold flex items-center gap-1 mb-0">
+                              <CheckCircleFilled /> {modelUrls[key].split('/').pop()?.slice(0, 40)}
+                            </p>
+                            <Button
+                              type="text"
+                              danger
+                              size="small"
+                              icon={<CloseCircleOutlined />}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setModelUrls(prev => ({ ...prev, [key]: '' }));
+                              }}
+                            />
+                          </div>
                         ) : (
                           <p className="text-xs text-gray-400 py-2 flex items-center justify-center gap-1">
                             <InboxOutlined /> Kéo thả hoặc nhấn để chọn .glb
@@ -435,9 +448,24 @@ function AdminProductsContent({ dark }: { dark: boolean }) {
                   }}
                 >
                   {singleModelUrl ? (
-                    <p className="text-xs text-green-600 font-bold py-3 flex items-center justify-center gap-1">
-                      <CheckCircleFilled /> {singleModelUrl.split('/').pop()?.slice(0, 45)}
-                    </p>
+                    <div className="flex items-center justify-between px-6 py-4 group">
+                      <p className="text-xs text-green-600 font-bold flex items-center gap-1 mb-0">
+                        <CheckCircleFilled /> {singleModelUrl.split('/').pop()?.slice(0, 45)}
+                      </p>
+                      <Button
+                        type="text"
+                        danger
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSingleModelUrl('');
+                        }}
+                      >
+                        Xóa
+                      </Button>
+                    </div>
                   ) : (
                     <>
                       <p className="ant-upload-drag-icon">

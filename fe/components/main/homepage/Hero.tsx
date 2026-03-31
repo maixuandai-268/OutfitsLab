@@ -6,11 +6,9 @@ import Image from "next/image";
 export default function Hero() {
   return (
     <section className="w-full pb-20  pt-26 relative">
-      {/* Hiệu ứng phát sáng nền */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-pink-200/30 rounded-full blur-[120px] -z-10" />
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20 items-center">
-        {/* Left Column - Content */}
         <div className="flex flex-col justify-center space-y-8">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[1.1] text-slate-900 tracking-tighter">
             Khám Phá Outfit{" "}
@@ -47,7 +45,6 @@ export default function Hero() {
 
           </div>
 
-          {/* Stats Section */}
           <div className="grid grid-cols-3 gap-4 mt-12">
             {[
               { v: "10K+", l: "Mẫu Outfit" },
@@ -67,7 +64,6 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right Column - Image Replacement */}
         <div className="flex items-center justify-center relative">
             <div className="absolute inset-0 bg-linear-to-tr from-pink-100/40 to-indigo-100/40 blur-3xl -z-10 rounded-full" />
             
