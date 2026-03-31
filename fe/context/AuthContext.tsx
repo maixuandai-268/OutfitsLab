@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!res.ok) throw new Error();
       const data = await res.json();
 
-      // FIX: Map dữ liệu từ data.shop sang shopId và shopStatus cho Navbar dùng
       setUser({
         ...data,
         shopId: data.shop?.id || null,

@@ -5,7 +5,7 @@ import { Star, ThumbsUp, ChevronDown, ChevronLeft, ChevronRight, Send } from 'lu
 import { useAuth } from '@/context/AuthContext';
 import { message, Spin, Rate, Input, Button as AntButton } from 'antd';
 
-const API_BASE = 'https://outfitslab.onrender.com/api/';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface User {
   id: number;
@@ -32,8 +32,7 @@ export default function ReviewSection({ productId }: { productId: number }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('Tất cả đánh giá');
-  
-  // Form state
+
   const [submitting, setSubmitting] = useState(false);
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');

@@ -78,12 +78,10 @@ export default function BecomePage() {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Bước 1: Nhập thông tin */}
             {step === 1 && (
                 <StepInfo {...formData} onChange={handleChange} nextStep={nextStep} />
             )}
 
-            {/* Bước 2: Thiết lập cửa hàng */}
             {step === 2 && (
                 <StepStore 
                     {...formData} 
@@ -93,7 +91,6 @@ export default function BecomePage() {
                 />
             )}
 
-            {/* Bước 3: Tóm tắt và Xác nhận */}
             {step === 3 && (
                 <StepConfirm 
                     {...formData} 

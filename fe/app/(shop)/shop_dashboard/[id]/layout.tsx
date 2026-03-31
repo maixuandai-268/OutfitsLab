@@ -4,13 +4,13 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ShopHeader from '@/components/shop/dashboard/ShopDasHeader';
 import ShopNav from '@/components/shop/dashboard/ShopDasNav';
-import { useAuth } from "@/context/AuthContext"; // Import useAuth để lấy thông tin user
+import { useAuth } from "@/context/AuthContext"; 
 import { Spin } from 'antd';
 import Navbar from "@/components/main/navbar";
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
-  const { token, user } = useAuth(); // Lấy cả token và user từ context
+  const { token, user } = useAuth(); 
   const [shop, setShop] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +21,6 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       if (!shopId || !token) return;
       
       try {
-        // Gọi API Backend: Get chi tiết 1 shop
         const res = await fetch(`https://outfitslab.onrender.com/api/shops/${shopId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
