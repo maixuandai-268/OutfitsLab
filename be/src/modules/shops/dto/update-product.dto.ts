@@ -18,9 +18,9 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
 
   @IsOptional()
   @IsString()
-  model3DUrl?: string; // 🔥 Nhận link file 3D
+  model3DUrl?: string;
 
   @IsOptional()
   @IsBoolean()
-  is3DGenerated?: boolean; // 🔥 Nhận trạng thái
+  is3DGenerated?: boolean;
 }

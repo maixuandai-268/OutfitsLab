@@ -15,6 +15,8 @@ interface Product {
     salesCount?: number;
     rating?: number;
     reviews?: { rating: number }[];
+    averageRating?: number;
+    reviewCount?: number;
 }
 
 interface ProductCardProps {
@@ -60,13 +62,13 @@ export const ProductCard = ({ count = 3, columns = 3 }: ProductCardProps) => {
             style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
         >
             {products.map(item => {
-                // 🌟 LOGIC ĐÁNH GIÁ: Tính trung bình từ reviews, nếu rỗng thì dùng cột rating
-                const reviewData = item.reviews || [];
-                const reviewCount = reviewData.length;
+                const reviewCount = item.reviewCount !== undefined ? Number(item.reviewCount) : (item.reviews?.length || 0);
                 let displayRating: string;
 
-                if (reviewCount > 0) {
-                    const avg = reviewData.reduce((acc, rev) => acc + Number(rev.rating), 0) / reviewCount;
+                if (item.averageRating !== undefined) {
+                    displayRating = Number(item.averageRating).toFixed(1);
+                } else if (reviewCount > 0) {
+                    const avg = (item.reviews || []).reduce((acc: any, rev: any) => acc + Number(rev.rating), 0) / reviewCount;
                     displayRating = avg.toFixed(1);
                 } else {
                     displayRating = item.rating !== undefined && item.rating !== null ? Number(item.rating).toFixed(1) : "5.0";

@@ -57,24 +57,31 @@ export class Product {
   @Column({ nullable: true })
   brand: string;
 
+  @Column({ nullable: true, default: 'male' })
+  gender: string;
+
   @Column({ nullable: true })
   tag: string;
-
-  // Cập nhật/Thêm các cột mới ở đây
   @Column({ nullable: true })
   affiliateLink: string;
 
   @Column({ nullable: true })
-  model3DUrl: string; // 🔥 Lưu đường dẫn file 3D
+  garment_slot: string;
+
+  @Column('jsonb', { nullable: true, default: [] })
+  model_url: string[];
 
   @Column({ default: false })
-  is3DGenerated: boolean; // 🔥 Đánh dấu trạng thái 3D
+  is3DGenerated: boolean;
 
   @Column({ default: 0 })
   affiliateClicks: number;
 
   @Column({ default: 0 })
   viewCount: number;
+
+  @Column('jsonb', { nullable: true, default: [] })
+  images: string[];
 
   @Column('jsonb', { nullable: true, default: [] })
   colors: string[];

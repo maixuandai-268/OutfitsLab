@@ -18,10 +18,10 @@ export class ShopsService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  // 1. Tạo Shop mới - Đã khóa mỗi user chỉ 1 shop
+
   async create(userId: number, createShopDto: CreateShopDto) {
     try {
-      // Kiểm tra xem user này đã có shop chưa
+
       const existingShop = await this.shopsRepository.findOne({ 
         where: { ownerId: userId } 
       });
@@ -44,7 +44,6 @@ export class ShopsService {
     }
   }
 
-  // 2. Lấy danh sách Shop (Có tính toán động số lượng sản phẩm và rating trung bình)
   async findAll() {
     const shops = await this.shopsRepository.createQueryBuilder('shop')
       .leftJoinAndSelect('shop.products', 'products')
@@ -52,11 +51,10 @@ export class ShopsService {
       .orderBy('shop.created_at', 'DESC')
       .getMany();
 
-    // Tính toán thống kê cho từng shop
+
     return shops.map(shop => {
       const productCount = shop.products?.length || 0;
-      
-      // Tính rating trung bình từ tất cả review của tất cả sản phẩm trong shop
+    
       let totalRating = 0;
       let totalReviews = 0;
       
@@ -71,7 +69,7 @@ export class ShopsService {
         ? Number((totalRating / totalReviews).toFixed(1)) 
         : 0;
 
-      // Trả về object sạch không kèm mảng products/reviews quá lớn
+
       const { products, ...shopInfo } = shop;
       return {
         ...shopInfo,
@@ -115,7 +113,7 @@ export class ShopsService {
       ...shopInfo,
       productCount,
       rating: averageRating,
-      reviews: totalReviews // map to shop.reviews for Frontend
+      reviews: totalReviews 
     };
   }
 
@@ -125,15 +123,14 @@ export class ShopsService {
     return await this.shopsRepository.save(shop);
   }
 
-  // Ghi nhận 1 lượt xem mới vào bảng shop_views (có timestamp để thống kê theo tháng)
+
   async trackView(shopId: number, sessionId?: string): Promise<void> {
     const view = this.shopViewRepository.create({ shopId, sessionId });
     await this.shopViewRepository.save(view);
-    // Đồng thời cập nhật tổng views trong bảng shops
+
     await this.shopsRepository.increment({ id: shopId }, 'views', 1);
   }
 
-  // Lấy thống kê lượt xem theo từng tháng trong năm hiện tại
   async getMonthlyViewStats(shopId: number, year?: number): Promise<{ month: number; views: number }[]> {
     const targetYear = year || new Date().getFullYear();
     const rows = await this.shopViewRepository
@@ -146,7 +143,6 @@ export class ShopsService {
       .orderBy('month', 'ASC')
       .getRawMany();
 
-    // Điền 0 cho các tháng chưa có
     const result = Array.from({ length: 12 }, (_, i) => ({
       month: i + 1,
       views: 0,
@@ -194,12 +190,9 @@ export class ShopsService {
     return savedShop;
   }
 
-  // FIX: Thay vì đổi status thành rejected, ta xóa luôn khỏi DB 
-  // NHƯNG gửi thông báo trước khi xóa
   async reject(id: number) {
     const shop = await this.findOne(id);
     
-    // Gửi thông báo cho chủ shop trước khi xóa
     await this.notificationsService.create({
       userId: shop.ownerId,
       message: `Rất tiếc! Đơn đăng ký cửa hàng "${shop.shop_name}" của bạn đã bị từ chối.`,

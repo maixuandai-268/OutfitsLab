@@ -24,10 +24,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   searchQuery,
   setSearchQuery,
 }) => {
-  // ---- dữ liệu tĩnh ----
   const categories = useMemo(
     () => [
-      { value: "all", label: "All Categories" },
+      { value: "all", label: "Tất cả danh mục" },
       { value: "shirts", label: "Shirts" },
       { value: "pants", label: "Pants" },
       { value: "dresses", label: "Dresses" },
@@ -41,21 +40,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const colors = useMemo(
     () => [
-      { value: "all", label: "All Colors" },
-      { value: "black", label: "Black" },
-      { value: "white", label: "White" },
-      { value: "gray", label: "Gray" },
-      { value: "red", label: "Red" },
-      { value: "blue", label: "Blue" },
-      { value: "pink", label: "Pink" },
+      { value: "all", label: "Tất cả màu" },
+      { value: "black", label: "Đen" },
+      { value: "white", label: "Trắng" },
+      { value: "gray", label: "Xám" },
+      { value: "red", label: "Đỏ" },
+      { value: "blue", label: "Xanh" },
+      { value: "pink", label: "Hồng" },
       { value: "mustard", label: "Mustard" },
-      { value: "cream", label: "Cream" },
-      { value: "green", label: "Green" },
+      { value: "cream", label: "Màu kem" },
+      { value: "green", label: "Xanh lá" },
     ],
     []
   );
 
-  // ---- toggle multi-select ----
   const toggleMulti = useCallback(
     (key: keyof Filters, value: string) => {
       setFilters((prev) => {
@@ -72,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     [setFilters]
   );
 
-  // ---- price min/max đọc trực tiếp từ filters ----
+ 
   const { minVal, maxVal } = useMemo(() => {
     const raw = filters.priceRanges?.[0] || "";
     const [m, x] = raw.split("-");
@@ -81,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const updatePrice = useCallback(
     (m: string, x: string) => {
-      // Loại bỏ dấu chấm trước khi lưu vào filter state
+     
       const rawM = m.replace(/\./g, "");
       const rawX = x.replace(/\./g, "");
       const normalized = `${rawM || ""}-${rawX || ""}`;
@@ -90,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     [setFilters]
   );
 
-  // Helper định dạng tiền có dấu chấm
+ 
   const formatVND = (val: string) => {
     if (!val) return "";
     const num = val.replace(/\D/g, "");
@@ -107,10 +105,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="m-3 rounded-[24px] border border-[#F2C58B] shadow-[0_8px_24px_rgba(16,24,40,0.04)] bg-white p-4">
         <h2 className="text-[13px] font-semibold text-gray-800 mb-3">Filters</h2>
 
-        {/* Search */}
+     
         <div className="mb-4">
           <label className="block text-xs font-medium text-gray-600 mb-2">
-            Search
+            Tìm kiếm
           </label>
           <div className="relative">
             <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -127,39 +125,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        {/* Category */}
+      
         <FilterSection
           title="Category"
           options={categories}
           selectedOptions={filters.categories}
           onToggle={(v) => toggleMulti("categories", v)}
-          variant="chip-list"   // <-- dòng 132 đã hợp lệ
-          icon="category"       // <-- dòng 132 đã hợp lệ
+          variant="chip-list"  
+          icon="category"       
         />
 
-        {/* Color */}
         <FilterSection
           title="Color"
           options={colors}
           selectedOptions={filters.colors}
           onToggle={(v) => toggleMulti("colors", v)}
-          variant="chip-list"   // <-- dòng 142 đã hợp lệ
-          icon="color"          // <-- dòng 142 đã hợp lệ
+          variant="chip-list"   
+          icon="color"          
         />
 
-        {/* Price Range */}
+   
         <div className="mb-2">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <DollarOutlined className="text-[#C4872E]" />
-              <h3 className="text-xs font-medium text-gray-600">Price Range</h3>
+              <h3 className="text-xs font-medium text-gray-600">Mức giá</h3>
             </div>
           </div>
 
           <div className="space-y-3">
-            {/* Min */}
+       
             <div>
-              <label className="block text-[11px] text-gray-500 mb-1">Min</label>
+              <label className="block text-[11px] text-gray-500 mb-1">Tối thiểu</label>
               <div className="relative">
                 <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#C4872E]">
                   <DollarOutlined />
@@ -176,9 +173,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </div>
 
-            {/* Max */}
+    
             <div>
-              <label className="block text-[11px] text-gray-500 mb-1">Max</label>
+              <label className="block text-[11px] text-gray-500 mb-1">Tối đa</label>
               <div className="relative">
                 <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#C4872E]">
                   <DollarOutlined />
@@ -197,15 +194,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        {/* Divider */}
+       
         <div className="my-3 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
 
-        {/* Reset */}
         <button
           onClick={resetFilters}
           className="w-full py-2 rounded-full border border-[#E8B56C] text-[#C4872E] text-sm font-medium hover:bg-[#FFF6EA] transition-colors"
         >
-          Reset Filters
+          Xóa bộ lọc
         </button>
       </div>
     </aside>

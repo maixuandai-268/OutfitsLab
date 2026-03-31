@@ -31,6 +31,12 @@ export class CreateProductDto {
   @IsString({ message: 'Ảnh phải là chuỗi URL' })
   image?: string;
 
+  @ApiPropertyOptional({ description: 'Danh sách URL ảnh sản phẩm (Shopee style)' })
+  @IsOptional()
+  @IsArray({ message: 'images phải là một mảng chuỗi' })
+  @IsString({ each: true, message: 'Mỗi ảnh phải là một chuỗi URL' })
+  images?: string[];
+
   @ApiProperty({ description: 'Giá bán sản phẩm', minimum: 0 })
   @IsNumber({}, { message: 'Giá bán phải là số' })
   @IsNotEmpty({ message: 'Giá bán không được để trống' })
@@ -65,6 +71,11 @@ export class CreateProductDto {
   @IsString()
   brand?: string;
 
+  @ApiPropertyOptional({ description: 'Giới tính (male, female)' })
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
   @ApiPropertyOptional({ description: 'Tag sản phẩm (MỚI, HOT, SALE...)' })
   @IsOptional()
   @IsString()
@@ -89,4 +100,18 @@ export class CreateProductDto {
   @IsOptional()
   @IsEnum(ProductStatus, { message: 'Trạng thái không hợp lệ' })
   status?: ProductStatus;
+
+  @ApiPropertyOptional({ description: 'Slot thử đồ: top | bottom | shoes | hat' })
+  @IsOptional()
+  @IsString()
+  garment_slot?: string;
+
+  @ApiPropertyOptional({ description: 'Mảng URL 3D: [skinny, fit, fat]' })
+  @IsOptional()
+  @IsArray({ message: 'model_url phải là một mảng' })
+  model_url?: string[];
+
+  @ApiPropertyOptional({ description: 'Đánh dấu đã có model 3D' })
+  @IsOptional()
+  is3DGenerated?: boolean;
 }

@@ -2,6 +2,8 @@
 import React, { useMemo, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { Sidebar } from "./sidebar";
+import { useRouter } from "next/navigation";
+import { useCustomizer } from "@/store/useCustomizer";
 import {
   HeartOutlined,
   HeartFilled,
@@ -32,6 +34,10 @@ export interface Product {
   rating?: number;
   reviews?: number;
   shop_id?: number;
+  garment_slot?: string;
+  model_url?: string[];
+  type?: string;
+  gender?: string;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -108,7 +114,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Rate 
             disabled 
             allowHalf 
-            defaultValue={product.rating || 0} 
+            value={product.rating || 0} 
             className="text-[12px] text-amber-400"
           />
           {typeof product.reviews === "number" && (
@@ -242,6 +248,27 @@ export default function ProductAll() {
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const router = useRouter();
+  const { setGarment, setGender } = useCustomizer();
+
+  const handleTryOn = useCallback((product: Product) => {
+    if (product.garment_slot && Array.isArray(product.model_url) && product.model_url.some(x => !!x)) {
+      if (product.gender === 'male' || product.gender === 'female') {
+        setGender(product.gender);
+      }
+      setGarment(product.garment_slot as any, {
+        id: product.id,
+        name: product.name,
+        type: product.type || '',
+        garment_slot: product.garment_slot,
+        model_url: product.model_url,
+        image: product.image
+      });
+    } else {
+      message.info("Sản phẩm này hiện chưa có mô hình 3D để thử đồ.");
+    }
+  }, [router, setGarment, setGender]);
+
   // --- FETCH DỮ LIỆU TỪ DATABASE ---
   const fetchProductsFromDB = useCallback(async () => {
     setLoading(true);
@@ -285,11 +312,6 @@ export default function ProductAll() {
         const formatted = rawData.map((item: any) => {
           const catKey = normalizeCategory(item.type);
           
-          let avgRating = Number(item.rating) || 0;
-          if (Array.isArray(item.reviews) && item.reviews.length > 0) {
-            avgRating = item.reviews.reduce((sum: number, rev: any) => sum + Number(rev.rating), 0) / item.reviews.length;
-          }
-          
           return {
             id: item.id,
             name: item.name,
@@ -298,11 +320,15 @@ export default function ProductAll() {
             colors: Array.isArray(item.colors) ? item.colors.map((c: string) => normalizeColor(c)) : [],
             sizes: Array.isArray(item.sizes) ? item.sizes : [],
             brand: item.brand || item.shop?.shop_name || "Outfits Lab",
-            rating: Number(avgRating.toFixed(1)), 
-            reviews: Array.isArray(item.reviews) ? item.reviews.length : 0,
+            rating: item.averageRating !== undefined ? Number(item.averageRating) : (Number(item.rating) || 0), 
+            reviews: item.reviewCount !== undefined ? Number(item.reviewCount) : 0,
             price: Number(item.price) || 0,
             image: item.image || item.image_url,
             tag: item.tag || CATEGORY_LABELS[catKey] || "MỚI",
+            garment_slot: item.garment_slot,
+            model_url: Array.isArray(item.model_url) ? item.model_url : [],
+            type: item.type,
+            gender: item.gender,
           };
         });
         setDbProducts(formatted);
@@ -405,7 +431,7 @@ export default function ProductAll() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {visibleProducts.map(p => (
-                <ProductCard key={`${p.id}-${p.name}`} product={p} onTryOn={(prod) => console.log("Thử đồ:", prod.name)} />
+                <ProductCard key={`${p.id}-${p.name}`} product={p} onTryOn={handleTryOn} />
               ))}
             </div>
             <Pagination 

@@ -107,6 +107,7 @@ export default function SignIn() {
                                 <input
                                     id="password"
                                     name="password"
+                                    type="password"
                                     placeholder="••••••••"
                                     className="w-full h-14 pl-14 pr-14 rounded-2xl border border-[#D5DBE4] focus:border-[#515152] focus:ring-4 focus:ring-[#4D4D4D]/10 outline-none text-base transition-all"
                                     required

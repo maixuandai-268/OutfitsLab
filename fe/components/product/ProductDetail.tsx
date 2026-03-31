@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import { ProductCard } from './ProductCard';
 import { FavoriteButton } from './FavoriteButton';
+import { useRouter } from 'next/navigation';
+import { useCustomizer, BodyType } from '@/store/useCustomizer';
+import { message } from 'antd';
 
-// 🛠️ Định nghĩa Review chuẩn (là một mảng các đối tượng)
 interface Review {
   id: number;
   rating: number;
@@ -15,16 +17,23 @@ interface Product {
   shop_id: number;
   name: string;
   image?: string;
+  images?: string[];
   image_url?: string;
   price: number | string;
   salesCount?: number;
   description?: string;
   type: 'TOP' | 'BOTTOM' | 'SHOES' | 'HAT' | 'GLASSES' | 'ACCESSORY';
   rating?: number;
-  reviews?: Review[]; // 🔥 Phải là mảng Review[]
+  reviews?: Review[];
   affiliateLink?: string;
   colors?: string[] | any[];
   sizes?: string[];
+  averageRating?: number;
+  reviewCount?: number;
+  shop?: any;
+  garment_slot?: string;
+  model_url?: string[];
+  gender?: string;
 }
 
 interface ProductDetailProps {
@@ -34,29 +43,93 @@ interface ProductDetailProps {
 export const ProductDetail = ({ product }: ProductDetailProps) => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  
-  // 💰 Format tiền Việt Nam
+  const [selectedBodyType, setSelectedBodyType] = useState<BodyType>('fit');
+
+  const router = useRouter();
+  const { setGarment, setGender } = useCustomizer();
+
+  const handleTryOn = () => {
+    if (product.garment_slot && Array.isArray(product.model_url)) {
+      const isShoeOrHat = product.garment_slot === 'shoes' || product.garment_slot === 'hat';
+      const index = selectedBodyType === 'skinny' ? 0 : selectedBodyType === 'fat' ? 2 : 1;
+      const modelExists = isShoeOrHat ? !!product.model_url[0] : !!product.model_url[index];
+
+      if (modelExists) {
+        if (product.gender === 'male' || product.gender === 'female') {
+          setGender(product.gender as any);
+        }
+        setGarment(product.garment_slot as any, {
+          id: product.id,
+          name: product.name,
+          type: product.type || '',
+          garment_slot: product.garment_slot,
+          model_url: product.model_url,
+          image: product.image || product.image_url
+        });
+        useCustomizer.getState().setBodyType(selectedBodyType);
+        router.push('/try-on');
+      } else {
+        message.info("Phiên bản 3D cho vóc dáng này hiện chưa khả dụng.");
+      }
+    } else {
+      message.info("Sản phẩm này hiện chưa có mô hình 3D để thử đồ.");
+    }
+  };
+
+  const handleSelectBodyType = (bt: BodyType) => {
+    if (checkModelStatus(bt)) {
+      setSelectedBodyType(bt);
+    }
+  };
+
+  const bodyTypes: { type: BodyType; label: string; icon: React.ReactNode }[] = [
+    { type: 'skinny', label: 'Mảnh mai', icon: <BodySkinnyIcon className="w-5 h-5" /> },
+    { type: 'fit', label: 'Cân đối', icon: <BodyFitIcon className="w-5 h-5" /> },
+    { type: 'fat', label: 'Đầy đặn', icon: <BodyFatIcon className="w-5 h-5" /> },
+  ];
+
+  const checkModelStatus = (bt: BodyType) => {
+    if (!product.model_url || !Array.isArray(product.model_url)) return false;
+    const isShoeOrHat = product.garment_slot === 'shoes' || product.garment_slot === 'hat';
+    if (isShoeOrHat) return !!product.model_url[0];
+    const index = bt === 'skinny' ? 0 : bt === 'fat' ? 2 : 1;
+    return !!product.model_url[index];
+  };
+
+
+  const initialImages = Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : [product.image || product.image_url || 'https://via.placeholder.com/500'];
+
+  const [activeImage, setActiveImage] = useState(initialImages[0]);
+
+  useState(() => {
+    if (initialImages[0] !== activeImage) {
+      setActiveImage(initialImages[0]);
+    }
+  });
+
+
   const formatCurrency = (amount: number | string) => {
-    return new Intl.NumberFormat('vi-VN', { 
-      style: 'currency', 
-      currency: 'VND' 
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
     }).format(Number(amount));
   };
 
-  // ⭐ Xử lý logic Đánh giá (Rating) & Số lượng Review
-  // Tránh lỗi render Object trực tiếp vào JSX
-  const reviewData = Array.isArray(product.reviews) ? product.reviews : [];
-  const reviewCount = reviewData.length;
-  const averageRating = reviewCount > 0
-    ? (reviewData.reduce((acc, rev) => acc + Number(rev.rating), 0) / reviewCount).toFixed(1)
-    : (product.rating !== undefined && product.rating !== null ? Number(product.rating).toFixed(1) : "5.0");
 
-  // 📏 Xử lý Size
-  const sizes = product.sizes && product.sizes.length > 0 
-    ? product.sizes 
+  const reviewData = Array.isArray(product.reviews) ? product.reviews : [];
+  const reviewCount = product.reviewCount !== undefined ? Number(product.reviewCount) : (Array.isArray(product.reviews) ? product.reviews.length : 0);
+  const averageRating = product.averageRating !== undefined ? Number(product.averageRating).toFixed(1) : (reviewCount > 0
+    ? (reviewData.reduce((acc: any, rev: any) => acc + Number(rev.rating), 0) / reviewCount).toFixed(1)
+    : (product.rating !== undefined && product.rating !== null ? Number(product.rating).toFixed(1) : "5.0"));
+
+
+  const sizes = product.sizes && product.sizes.length > 0
+    ? product.sizes
     : ['90cm', '100cm', '110cm', '120cm', '130cm', '140cm'];
-  
-  // 🎨 Xử lý Màu sắc
+
+
   const displayColors = product.colors && product.colors.length > 0
     ? product.colors.map((c: any) => typeof c === 'string' ? { color: c } : c)
     : [{ color: '#000000' }, { color: '#FFFFFF' }, { color: '#FF69B4' }];
@@ -64,8 +137,8 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   const handleAffiliateClick = async () => {
     if (!product.affiliateLink) return;
     try {
-      fetch(`http://localhost:3000/api/products/${product.id}/click-affiliate`, { 
-        method: 'PATCH' 
+      fetch(`http://localhost:3000/api/products/${product.id}/click-affiliate`, {
+        method: 'PATCH'
       });
     } catch (e) {
       console.error("Lỗi track click:", e);
@@ -75,37 +148,54 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
-      {/* Cột trái: Ảnh sản phẩm */}
       <div className="w-full md:w-1/2 px-4">
-        <img 
-          src={product.image || product.image_url || 'https://via.placeholder.com/500'} 
-          alt={product.name} 
-          className="rounded-lg w-full h-[500px] object-cover shadow-2xl" 
-        />
+        <div className="relative group overflow-hidden rounded-xl shadow-2xl bg-white aspect-square mb-4">
+          <img
+            src={activeImage}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        </div>
+
+
+        {initialImages.length > 1 && (
+          <div className="grid grid-cols-5 gap-2 mb-6">
+            {initialImages.map((img, idx) => (
+              <div
+                key={idx}
+                onMouseEnter={() => setActiveImage(img)}
+                className={`aspect-square rounded-md overflow-hidden border-2 cursor-pointer transition-all ${activeImage === img ? 'border-pink-500 ring-2 ring-pink-100' : 'border-transparent hover:border-pink-300'
+                  }`}
+              >
+                <img src={img} className="w-full h-full object-cover" alt={`Thumb ${idx}`} />
+              </div>
+            ))}
+          </div>
+        )}
+
         <p className="font-semibold mt-6 uppercase text-xs text-gray-400 tracking-widest">Gợi ý phối đồ</p>
         <div className="mt-4">
           <ProductCard />
         </div>
       </div>
 
-      {/* Cột phải: Thông tin sản phẩm */}
       <div className="w-full md:w-1/2 px-4">
         <p className="text-base mb-1 text-gray-500 uppercase tracking-wider">{product.type}</p>
         <h1 className="text-3xl font-bold mb-5 text-gray-900 leading-tight">{product.name}</h1>
-        
+
         <div className="flex items-center gap-4 mb-5 text-gray-600">
           <p className="text-base">{product.salesCount || 0} Đã bán</p>
           <div className="flex items-center gap-1 border-l pl-4 border-gray-200">
             <StarIcon className="text-yellow-500 w-5 h-5" filled={true} />
             <p className="text-sm font-medium">
-              {averageRating} 
+              {averageRating}
               <span className="text-gray-400 font-normal ml-1">
                 ({reviewCount} Đánh giá)
               </span>
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2 mb-6 bg-gray-50 p-4 rounded-lg">
           <p className="text-4xl font-black text-pink-600">
             {product.price ? formatCurrency(product.price) : 'Liên hệ'}
@@ -113,16 +203,15 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
         </div>
 
         <div className="bg-gray-200 mx-auto mb-6 h-px w-full"></div>
-        
+
         <p className="font-semibold mb-3">Màu sắc</p>
         <div className="flex flex-wrap gap-3 mb-6">
           {displayColors.map((item: any, index: number) => (
             <button
               key={index}
               type="button"
-              className={`w-10 h-10 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
-                selectedColor === item.color ? 'border-pink-500 scale-110 shadow-md' : 'border-gray-300'
-              }`}
+              className={`w-10 h-10 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${selectedColor === item.color ? 'border-pink-500 scale-110 shadow-md' : 'border-gray-300'
+                }`}
               style={{ backgroundColor: item.color }}
               onClick={() => setSelectedColor(item.color)}
             >
@@ -145,9 +234,8 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
             <button
               key={size}
               type="button"
-              className={`h-12 rounded-lg font-bold transition-all border-2 ${
-                selectedSize === size ? 'bg-black text-white border-black shadow-lg' : 'bg-white text-gray-600 border-gray-100 hover:border-black'
-              }`}
+              className={`h-12 rounded-lg font-bold transition-all border-2 ${selectedSize === size ? 'bg-black text-white border-black shadow-lg' : 'bg-white text-gray-600 border-gray-100 hover:border-black'
+                }`}
               onClick={() => setSelectedSize(size)}
             >
               {size}
@@ -155,8 +243,63 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
           ))}
         </div>
 
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-semibold text-gray-800">Dáng người hỗ trợ mô hình 3D</p>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {bodyTypes.map((bt) => {
+              const available = checkModelStatus(bt.type);
+              const isSelected = selectedBodyType === bt.type;
+              return (
+                <button
+                  key={bt.type}
+                  disabled={!available}
+                  onClick={() => handleSelectBodyType(bt.type)}
+                  className={`
+                    relative flex flex-col items-center justify-center py-3 rounded-xl border-2 transition-all duration-300
+                    ${available
+                      ? isSelected 
+                        ? 'border-pink-500 bg-pink-50/50 shadow-md scale-105' 
+                        : 'border-pink-200 bg-white hover:border-pink-400 cursor-pointer group'
+                      : 'border-gray-100 bg-gray-50/50 opacity-40 cursor-not-allowed'}
+                  `}
+                >
+                  <div className={`mb-1.5 transition-transform duration-300 ${available ? isSelected ? 'scale-110 text-pink-600' : 'group-hover:scale-110 text-pink-400' : 'text-gray-400'}`}>
+                    {bt.icon}
+                  </div>
+                  <span className={`text-[11px] font-bold uppercase tracking-tighter ${available ? isSelected ? 'text-pink-700' : 'text-gray-600' : 'text-gray-400'}`}>
+                    {bt.label}
+                  </span>
+
+                  {isSelected && (
+                    <div className="absolute -top-2 -right-2 bg-pink-500 text-white rounded-full p-0.5 shadow-sm border border-white">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </div>
+                  )}
+
+                  {available && !isSelected && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500 shadow-sm border border-white"></span>
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-gray-400 mt-2 italic text-center">
+            * Chọn vóc dáng sáng đèn để thử đồ trực tiếp với mô hình tương ứng
+          </p>
+        </div>
+
         <div className="flex gap-4">
-          <button className="flex-[2] py-4 bg-pink-500 text-white font-bold rounded-full flex items-center justify-center hover:bg-pink-600 transition-all shadow-lg uppercase tracking-wide">
+          <button
+            onClick={handleTryOn}
+            className="flex-[2] py-4 bg-pink-500 text-white font-bold rounded-full flex items-center justify-center hover:bg-pink-600 transition-all shadow-lg uppercase tracking-wide"
+          >
             <MagicWand className="w-5 h-5 mr-2" />
             Thử đồ ngay!
           </button>
@@ -193,12 +336,46 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
   );
 };
 
-// --- Sub-components (Icons) ---
-
 function MagicWand({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" className={className}>
       <path d="M295.4 37L310.2 73.8L347 88.6C350 89.8 352 92.8 352 96C352 99.2 350 102.2 347 103.4L310.2 118.2L295.4 155C294.2 158 291.2 160 288 160C284.8 160 281.8 158 280.6 155L265.8 118.2L229 103.4C226 102.2 224 99.2 224 96C224 92.8 226 89.8 229 88.6L265.8 73.8L280.6 37C281.8 34 284.8 32 288 32C291.2 32 294.2 34 295.4 37zM142.7 105.7L164.2 155.8L214.3 177.3C220.2 179.8 224 185.6 224 192C224 198.4 220.2 204.2 214.3 206.7L164.2 228.2L142.7 278.3C140.2 284.2 134.4 288 128 288C121.6 288 115.8 284.2 113.3 278.3L91.8 228.2L41.7 206.7C35.8 204.2 32 198.4 32 192C32 185.6 35.8 179.8 41.7 177.3L91.8 155.8L113.3 105.7C115.8 99.8 121.6 96 128 96C134.4 96 140.2 99.8 142.7 105.7zM496 368C502.4 368 508.2 371.8 510.7 377.7L532.2 427.8L582.3 449.3C588.2 451.8 592 457.6 592 464C592 470.4 588.2 476.2 582.3 478.7L532.2 500.2L510.7 550.3C508.2 556.2 502.4 560 496 560C489.6 560 483.8 556.2 481.3 550.3L459.8 500.2L409.7 478.7C403.8 476.2 400 470.4 400 464C400 457.6 403.8 451.8 409.7 449.3L459.8 427.8L481.3 377.7C483.8 371.8 489.6 368 496 368zM492 64C503 64 513.6 68.4 521.5 76.2L563.8 118.5C571.6 126.4 576 137 576 148C576 159 571.6 169.6 563.8 177.5L475.6 265.7L374.3 164.4L462.5 76.2C470.4 68.4 481 64 492 64zM76.2 462.5L340.4 198.3L441.7 299.6L177.5 563.8C169.6 571.6 159 576 148 576C137 576 126.4 571.6 118.5 563.8L76.2 521.5C68.4 513.6 64 503 64 492C64 481 68.4 470.4 76.2 462.5z" />
+    </svg>
+  );
+}
+
+function BodySkinnyIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
+      <path d="m11 10-1.5 2h3L11 10Z" />
+      <path d="M12 6v14" />
+      <path d="M9 10c0-1.2.6-2 1.5-2h3c.9 0 1.5.8 1.5 2" />
+      <path d="m9 22 3-8 3 8" />
+    </svg>
+  );
+}
+
+function BodyFitIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
+      <path d="M12 6c-2 0-3 1-3 3v4c0 1 1 2 2 2h2c1 0 2-1 2-2V9c0-2-1-3-3-3Z" />
+      <path d="M12 15v5" />
+      <path d="m9 22 3-7 3 7" />
+      <path d="M9 9h6" />
+    </svg>
+  );
+}
+
+function BodyFatIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
+      <path d="M12 6c-3 0-5 1.5-5 4.5v3c0 3 2 4.5 5 4.5s5-1.5 5-4.5v-3c0-3-2-4.5-5-4.5Z" />
+      <path d="M12 18v3" />
+      <path d="m8 22 4-4 4 4" />
+      <path d="M7 10h10" />
     </svg>
   );
 }
@@ -209,4 +386,4 @@ export function StarIcon({ className, filled = true }: { className?: string; fil
       <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
     </svg>
   );
-} 
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Shirt,
   RotateCcw,
@@ -10,11 +10,49 @@ import {
   PersonStanding,
   Scissors
 } from 'lucide-react'
-import { useCustomizer, GarmentSlot, ModelId } from '@/store/useCustomizer'
-import { GARMENTS, BODY_MODELS } from '@/lib/assetsCatalog'
+import { useCustomizer, GarmentSlot, GarmentProduct, BodyType, resolveModelUrl, ModelId } from '@/store/useCustomizer'
+import { useGarments } from '@/hooks/useGarments'
 
 export default function Sidebar() {
   const [activeTab, setActiveTab] = useState<string>('body')
+
+  const { bodyType, selectedGarments, setGarment, modelId } = useCustomizer()
+  const genderFilter = modelId === 'avatar_female' ? 'female' : 'male'
+
+  const { garments: hatGarments, loading: hatLoading } = useGarments('hat', genderFilter)
+  const { garments: topGarments, loading: topLoading } = useGarments('top', genderFilter)
+  const { garments: bottomGarments, loading: bottomLoading } = useGarments('bottom', genderFilter)
+  const { garments: shoesGarments, loading: shoesLoading } = useGarments('shoes', genderFilter)
+
+  useEffect(() => {
+    const autoSelect = (slot: GarmentSlot, list: GarmentProduct[], isLoading: boolean) => {
+
+      if (isLoading || list.length === 0) return
+
+      const curr = selectedGarments[slot]
+      const isInList = curr ? list.some(g => g.id === curr.id) : false
+
+      if (curr && resolveModelUrl(curr, bodyType) && isInList) return
+
+      const firstValid = list.find(g => resolveModelUrl(g, bodyType))
+      if (firstValid && firstValid.id !== curr?.id) {
+        setGarment(slot, firstValid)
+      } else if (!firstValid && curr && !isInList) {
+        setGarment(slot, null)
+      }
+    }
+
+    autoSelect('top', topGarments, topLoading)
+    autoSelect('bottom', bottomGarments, bottomLoading)
+    autoSelect('shoes', shoesGarments, shoesLoading)
+
+  }, [
+    bodyType,
+    topGarments, topLoading,
+    bottomGarments, bottomLoading,
+    shoesGarments, shoesLoading,
+    selectedGarments, setGarment
+  ])
 
   const navItems = [
     { id: 'body', icon: PersonStanding },
@@ -35,7 +73,7 @@ export default function Sidebar() {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center justify-center w-15 h-15 rounded-full  duration-300 ${isActive
+              className={`flex items-center justify-center rounded-full duration-300 w-12 h-12 ${isActive
                 ? 'text-white bg-black'
                 : 'text-gray-500 bg-gray-100 hover:text-gray-900 hover:bg-gray-200'
                 }`}
@@ -51,218 +89,174 @@ export default function Sidebar() {
         {activeTab === 'body' ? (
           <BodyContent />
         ) : (
-          <GarmentsContent slot={activeTab as GarmentSlot} />
+          <GarmentsContent
+            slot={activeTab as GarmentSlot}
+            garments={
+              activeTab === 'hat' ? hatGarments :
+                activeTab === 'top' ? topGarments :
+                  activeTab === 'bottom' ? bottomGarments :
+                    shoesGarments
+            }
+            loading={
+              activeTab === 'hat' ? hatLoading :
+                activeTab === 'top' ? topLoading :
+                  activeTab === 'bottom' ? bottomLoading :
+                    shoesLoading
+            }
+          />
         )}
       </div>
     </div>
   )
 }
 
+function GarmentsContent({ slot, garments, loading }: { slot: GarmentSlot, garments: GarmentProduct[], loading: boolean }) {
+  const { selectedGarments, bodyType, setGarment } = useCustomizer()
 
-function GarmentsContent({ slot }: { slot: GarmentSlot }) {
-  const { activeGarments, setGarment } = useCustomizer()
-
-  const entries = Object.entries(GARMENTS[slot]) as [string, string][]
+  const Icon = slot === 'hat' ? HatGlasses :
+    slot === 'top' ? Shirt :
+      slot === 'bottom' ? Scissors : Footprints;
 
   return (
     <div className="grid grid-cols-4 gap-2.5">
       {/* None Button */}
-      <button
-        onClick={() => setGarment(slot, null)}
-        className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem]  hover:opacity-70 ${!activeGarments[slot] ? 'border-[1.5px] border-black' : 'border-[1.5px] border-transparent'
-          }`}
-      >
-        <div className="w-full h-full rounded-2xl bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-semibold">
-          Không có
-        </div>
-      </button>
+      {slot === 'hat' && (
+        <button
+          onClick={() => setGarment(slot, null)}
+          className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem] hover:opacity-70 ${!selectedGarments[slot] ? 'border-[1.5px] border-black' : 'border-[1.5px] border-transparent'
+            }`}
+        >
+          <div className="w-full h-full rounded-2xl bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-semibold">
+            Không có
+          </div>
+        </button>
+      )}
 
       {/* Garment Buttons */}
-      {entries.map(([name, url]) => {
-        const isSelected = activeGarments[slot] === url;
-        const Icon = slot === 'hat' ? HatGlasses :
-          slot === 'top' ? Shirt :
-            slot === 'bottom' ? Scissors :
-              Footprints;
+      {loading ? (
+        <div className="col-span-3 py-10 text-center text-xs text-gray-400">Đang tải...</div>
+      ) : garments.length === 0 ? (
+        <div className="col-span-3 py-10 text-center text-xs text-gray-400"></div>
+      ) : (
+        garments.map((product) => {
+          const currentUrl = resolveModelUrl(product, bodyType)
+          const isSelected = selectedGarments[slot]?.id === product.id
+          const hasModel = !!currentUrl
 
-        return (
-          <button
-            key={name}
-            onClick={() => setGarment(slot, url)}
-            className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem]  hover:opacity-70 ${isSelected ? 'border-[1.5px] border-black' : 'border-[1.5px] border-transparent'
-              }`}
-          >
-            <div className="w-full h-full rounded-2xl bg-[#D6E0EC] flex items-center justify-center relative overflow-hidden">
-              <span className="text-[10px] text-gray-800 font-bold z-10 text-center px-1 bg-white/70 backdrop-blur-sm rounded-md py-1 mx-1">
-                {name.replace(/_/g, ' ')}
-              </span>
-              <div className="absolute inset-0 flex flex-col items-center justify-end pb-3 opacity-30 text-gray-900 pointer-events-none">
-                <Icon size={28} />
+          return (
+            <button
+              key={product.id}
+              onClick={() => hasModel ? setGarment(slot, product) : undefined}
+              disabled={!hasModel}
+              title={
+                !hasModel
+                  ? `Sản phẩm này chưa có model cho thân hình "${bodyType}"`
+                  : product.name
+              }
+              className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem] transition-all ${!hasModel
+                ? 'opacity-30 cursor-not-allowed border-[1.5px] border-transparent'
+                : isSelected
+                  ? 'border-[1.5px] border-black hover:opacity-70'
+                  : 'border-[1.5px] border-transparent hover:opacity-70'
+                }`}
+            >
+              <div className={`w-full h-full rounded-2xl flex items-center justify-center relative overflow-hidden ${isSelected ? 'bg-[#c8d4e3]' : 'bg-[#D6E0EC]'}`}>
+                {product.image && (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="absolute inset-0 w-full h-full object-cover opacity-80"
+                  />
+                )}
+                <span className="text-[9px] text-gray-800 font-bold z-10 text-center px-1 bg-white/70 backdrop-blur-sm rounded-md py-1 mx-1 line-clamp-2">
+                  {product.name}
+                </span>
               </div>
-            </div>
-          </button>
-        )
-      })}
+            </button>
+          )
+        })
+      )}
     </div>
   )
 }
 
 function BodyContent() {
-  const { modelId, setModelId, colors, setColor } = useCustomizer()
-  const [activeScaleId, setActiveScaleId] = useState<number>(3)
+  const { modelId, setModelId, bodyType, setBodyType } = useCustomizer()
+
+  // ✅ mapping chuẩn giữa type và file SVG
+  const BODY_OPTIONS = [
+    { type: 'skinny', img: '/body/Bskinny.svg', label: 'Gầy' },
+    { type: 'fit', img: '/body/Bfit.svg', label: 'Chuẩn' },
+    { type: 'fat', img: '/body/Bfat.svg', label: 'Béo' },
+  ]
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
+
       {/* Gender */}
       <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-4">
-          <Smile className="w-4 h-4 text-gray-500" /> Giới tính
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {(Object.keys(BODY_MODELS) as ModelId[]).map((id) => (
-            <button
-              key={id}
-              onClick={() => setModelId(id)}
-              className={`rounded-[1rem] border py-2.5 flex items-center justify-center font-bold text-[14px]  ${
-                modelId === id 
-                  ? 'border-black bg-black text-white shadow-sm' 
-                  : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              {id === 'avatar_female' ? 'Nữ' : 'Nam'}
-            </button>
-          ))}
-        </div>
-      </div>
-      {/* Body Type */}
-      <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex justify-between items-center mb-5">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <PersonStanding className="w-4 h-4 text-gray-500" /> Thân hình
-          </div>
+        <div className="text-sm font-semibold text-gray-900 mb-4">
+          Giới tính
         </div>
 
-        <div className="flex justify-between gap-5 items-end h-[90px] px-1">
-          {[
-            { id: 1, scaleX: 0.6 },
-            { id: 2, scaleX: 0.9 },
-            { id: 3, scaleX: 1.2 },
-            { id: 4, scaleX: 1.5 },
-            { id: 5, scaleX: 1.8 }
-          ].map((type) => {
-            const isSelected = type.id === activeScaleId
+        <div className="grid grid-cols-2 gap-3">
+          {(['avatar_male', 'avatar_female'] as ModelId[]).map((id) => {
+            const isSelected = modelId === id
 
             return (
               <button
-                key={type.id}
-                onClick={() => setActiveScaleId(type.id)}
-                className={`w-full h-full rounded-[1.1rem] flex flex-col justify-center items-center overflow-hidden  ${isSelected
-                  ? 'bg-black border border-black'
-                  : 'bg-white border border-gray-200 hover:bg-gray-50'
+                key={id}
+                onClick={() => setModelId(id)}
+                className={`rounded-xl py-2.5 font-bold text-sm transition ${isSelected
+                  ? 'bg-black text-white'
+                  : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-100'
                   }`}
               >
-                <svg
-                  viewBox="0 0 24 36"
-                  fill={isSelected ? 'white' : '#9ca3af'}
-                  className="w-9 h-[60px]"
-                  style={{ transform: `scaleX(${type.scaleX})`, transformOrigin: 'center' }}
-                >
-                  <circle cx="12" cy="6" r="3.5" />
-                  <path d="M7 11.5 C5 11.5 4 12.5 4 15 L4 21 C4 22 5 23 6.5 23 L8 23 L8 35 C8 36.5 10 36.5 10 35 L10 24 L14 24 L14 35 C14 36.5 16 36.5 16 35 L16 23 L17.5 23 C19 23 20 22 20 21 L20 15 C20 12.5 19 11.5 17 11.5 L7 11.5 Z" />
-                </svg>
+                {id === 'avatar_female' ? 'Nữ' : 'Nam'}
               </button>
             )
           })}
         </div>
       </div>
 
-      {/* Skin */}
+      {/* Body Type */}
       <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <div className="w-4 h-4 rounded-md bg-white border-2 border-gray-300"></div> Màu da
-          </div>
-          <span className="text-gray-500 text-xs">{colors.skin}</span>
+        <div className="text-sm font-semibold text-gray-900 mb-4">
+          Thân hình
         </div>
 
-        <div className="w-full flex items-center justify-between gap-4">
-          <span className="text-[11px] text-gray-500 whitespace-nowrap"></span>
-          <div className="relative flex items-center w-full h-[6px] rounded-full overflow-hidden border border-gray-200 bg-gray-200">
-            <input
-              type="color"
-              value={colors.skin}
-              onChange={(e) => setColor('skin', e.target.value as `#${string}`)}
-              className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] cursor-pointer border-none bg-transparent"
-            />
-          </div>
-        </div>
-      </div>
+        <div className="grid grid-cols-3 gap-3">
+          {BODY_OPTIONS.map((item) => {
+            const isSelected = bodyType === item.type
 
-      {/* Body proportions */}
-      <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex justify-between items-center mb-5">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <PersonStanding className="w-4 h-4 text-gray-500" /> Tỷ lệ cơ thể
-          </div>
-          <button className="text-gray-400 hover:text-gray-900 transition-colors">
-            <RotateCcw size={14} />
-          </button>
-        </div>
-        <div className="space-y-5">
-          <CustomSlider label="Đầu" defaultValue={0} />
-          <CustomSlider label="Thân" defaultValue={0} />
-          <CustomSlider label="Chân" defaultValue={0} />
-        </div>
-      </div>
-    </div>
-  )
-}
+            return (
+              <button
+                key={item.type}
+                onClick={() => setBodyType(item.type as BodyType)}
+                className={`flex flex-col items-center justify-center rounded-xl p-2 transition ${isSelected
+                  ? 'bg-black text-white scale-105 shadow-md'
+                  : 'bg-white border border-gray-200 hover:bg-gray-100'
+                  }`}
+              >
+                {/* SVG BODY */}
+                <img
+                  src={item.img}
+                  alt={item.type}
+                  className={`w-10 h-16 object-contain transition ${isSelected ? 'opacity-100' : 'opacity-70'
+                    }`}
+                />
 
-function CustomSlider({
-  label,
-  min = -1,
-  max = 1,
-  step = 0.01,
-  defaultValue = 0
-}: {
-  label: string
-  min?: number
-  max?: number
-  step?: number
-  defaultValue?: number
-}) {
-  const [value, setValue] = React.useState(defaultValue)
-  const percentage = ((value - min) / (max - min)) * 100
-
-  return (
-    <div className="flex flex-col gap-2 group">
-      <div className="flex justify-between text-[11px] text-gray-600 font-medium">
-        <span>{label}</span>
-        <span>{value.toFixed(2)}</span>
-      </div>
-      <div className="relative flex items-center w-full h-4 mt-1">
-        {/* Track */}
-        <div className="absolute w-full h-[3px] bg-gray-200 rounded-full overflow-hidden pointer-events-none">
-          <div
-            className="h-full bg-black rounded-r-full"
-            style={{ width: `${percentage}%` }}
-          />
+                {/* LABEL */}
+                <span
+                  className={`text-[11px] mt-1 ${isSelected ? 'text-white' : 'text-gray-500'
+                    }`}
+                >
+                  {item.label}
+                </span>
+              </button>
+            )
+          })}
         </div>
-        {/* Thumb */}
-        <div
-          className="absolute w-3 h-3 bg-white rounded-full shadow-md pointer-events-none transition-transform group-hover:scale-[1.3]"
-          style={{ left: `calc(${percentage}% - 6px)` }}
-        />
-        {/* Input */}
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => setValue(parseFloat(e.target.value))}
-          className="absolute w-full h-full opacity-0 cursor-pointer"
-        />
       </div>
     </div>
   )
