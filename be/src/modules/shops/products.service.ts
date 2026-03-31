@@ -209,8 +209,19 @@ export class ProductsService {
   }
 
 
+  private async findRaw(id: number): Promise<Product> {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: { shop: true },
+    });
+    if (!product) {
+      throw new NotFoundException(`Không tìm thấy sản phẩm với ID: ${id}`);
+    }
+    return product;
+  }
+
   async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
-    const product = await this.findOne(id, ['shop']);
+    const product = await this.findRaw(id);
     Object.assign(product, updateProductDto);
 
     const updated = await this.productRepository.save(product);
@@ -227,7 +238,7 @@ export class ProductsService {
 
 
   async remove(id: number): Promise<{ message: string }> {
-    const product = await this.findOne(id, ['shop']);
+    const product = await this.findRaw(id);
     await this.productRepository.remove(product);
 
     if (product.shop?.ownerId) {
