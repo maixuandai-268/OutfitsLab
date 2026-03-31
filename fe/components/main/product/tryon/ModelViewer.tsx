@@ -3,74 +3,42 @@
 import { Canvas, useThree } from '@react-three/fiber'
 import { Environment, OrbitControls, ContactShadows, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { GLTFLoader, GLTF, KTX2Loader, MeshoptDecoder } from 'three-stdlib'
-import { Suspense, useMemo, useRef } from 'react'
+import { KTX2Loader, MeshoptDecoder } from 'three-stdlib'
+import { Suspense, useMemo, useRef, useState, useEffect } from 'react'
 import { useCustomizer } from '@/store/useCustomizer'
-import { MATERIAL_TAGS } from '@/lib/materialMap'
-import { makePatternTexture } from '@/lib/patterns'
 import { BODY_MODELS } from '@/lib/assetsCatalog'
-import { RedoOutlined, PauseCircleOutlined, PlayCircleOutlined } from '@ant-design/icons'
-import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib' // <-- type cho ref
+import {
+  CameraOutlined,
+  DownloadOutlined,
+  LeftOutlined,
+  RightOutlined,
+  PictureOutlined
+} from '@ant-design/icons'
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
-type Hex = `#${string}`
-type Colors = { skin: Hex; top: Hex; bottom: Hex; shoes: Hex }
-type PatternKey = 'none' | 'stripes' | 'polka' | 'plaid'
-type Patterns = { top: PatternKey; bottom: PatternKey }
+/* ================= BACKGROUND IMAGES ================= */
+const bgImages = [
+  '/bg/bg1.jpg',
+  '/bg/bg2.jpg',
+  '/bg/bg3.jpg',
+  '/bg/bg4.jpg'
+]
 
-function isMesh(o: THREE.Object3D): o is THREE.Mesh {
-  return (o as THREE.Mesh).isMesh === true
-}
-function isStdMat(m: THREE.Material): m is THREE.MeshStandardMaterial {
-  return (m as THREE.MeshStandardMaterial).isMeshStandardMaterial === true
-}
-type EnvPreset =
-  | 'apartment' | 'city' | 'dawn' | 'forest' | 'lobby'
-  | 'night' | 'park' | 'studio' | 'sunset' | 'warehouse'
+/* ================= BACKGROUND COMPONENT ================= */
+function BackgroundImage({ url }: { url: string }) {
+  const { scene } = useThree()
 
-function applyToMaterial(
-  src: THREE.Material,
-  candidateName: string,
-  colors: Colors,
-  patterns: Patterns
-) {
-  if (!isStdMat(src)) return src
+  useEffect(() => {
+    new THREE.TextureLoader().load(url, (texture) => {
+      texture.mapping = THREE.EquirectangularReflectionMapping
+      scene.background = texture
+    })
+  }, [url, scene])
 
-  const mat = src.clone()
-  mat.roughness = 0.6
-  mat.metalness = 0
-
-  const includes = (tags: string[]) => tags.some((t) => candidateName.includes(t.toLowerCase()))
-  const isSkin = includes(MATERIAL_TAGS.skin.map((s) => s.toLowerCase()))
-  if (!isSkin) return null
-  if (isSkin) {
-    mat.needsUpdate = true
-  }
-  return mat
+  return null
 }
 
-function materializeScene(scene: THREE.Object3D, colors: Colors, patterns: Patterns) {
-  scene.traverse((obj) => {
-    if (!isMesh(obj)) return
-
-    const candidateName = (
-      (!Array.isArray(obj.material) && obj.material ? obj.material.name : '') ||
-      obj.name ||
-      ''
-    ).toLowerCase()
-
-    if (Array.isArray(obj.material)) {
-      obj.material = obj.material.map((m) => applyToMaterial(m, candidateName, colors, patterns) ?? m)
-    } else if (obj.material) {
-      const maybe = applyToMaterial(obj.material, candidateName, colors, patterns)
-      if (maybe) obj.material = maybe
-    }
-
-    obj.castShadow = true
-    obj.receiveShadow = true
-  })
-}
-
-
+/* ================= MODEL ================= */
 function BodyModel({ url }: { url: string }) {
   const gl = useThree((state) => state.gl)
   const gltf = useGLTF(url, true, true, (loader) => {
@@ -80,24 +48,11 @@ function BodyModel({ url }: { url: string }) {
     loader.setKTX2Loader(ktx2Loader)
     loader.setMeshoptDecoder(MeshoptDecoder)
   }) as any
-  // const c: Colors = colors as Colors
-  // const p: Patterns = patterns as Patterns
 
-  // useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
   return <primitive object={gltf.scene} />
 }
 
-function Garment({
-  url,
-  scale = [1, 1, 1],
-  position = [0, 0, 0],
-  rotation = [0, 0, 0]
-}: {
-  url: string;
-  scale?: [number, number, number];
-  position?: [number, number, number];
-  rotation?: [number, number, number];
-}) {
+function Garment({ url }: { url: string }) {
   const gl = useThree((state) => state.gl)
   const gltf = useGLTF(url, true, true, (loader) => {
     const ktx2Loader = new KTX2Loader()
@@ -106,56 +61,68 @@ function Garment({
     loader.setKTX2Loader(ktx2Loader)
     loader.setMeshoptDecoder(MeshoptDecoder)
   }) as any
-  // const c: Colors = colors as Colors
-  // const p: Patterns = patterns as Patterns
 
-  const rotationInRadians = useMemo(() => {
-    return rotation.map(deg => deg * (Math.PI / 180)) as [number, number, number]
-  }, [rotation])
-
-  // useMemo(() => materializeScene(gltf.scene, c, p), [gltf.scene, c, p])
-  return <primitive object={gltf.scene} scale={scale} position={position} rotation={rotationInRadians} />
+  return <primitive object={gltf.scene} />
 }
 
-
+/* ================= MAIN ================= */
 export default function ModelViewer() {
-  const { autoRotate, background, bodyType, activeGarments, modelId } = useCustomizer()
+  const { bodyType, activeGarments, modelId } = useCustomizer()
   const controlsRef = useRef<OrbitControlsImpl | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
-  const bgColor: string =
-    background === 'neutral' ? '#ebebeb'
-      : background === 'gradientWarm' ? '#f8e7d8'
-        : background === 'gradientCool' ? '#e6eef7'
-          : '#eaeaea'
+  const [bgIndex, setBgIndex] = useState(0)
 
-  const envPreset: EnvPreset = background === 'studio' ? 'studio' : 'apartment'
-  const shadowColor = background === 'shadow' ? '#d0d0d0' : '#e0e0e0'
-  // Dùng bodyType và modelId (gender) để chọn head model tương ứng
+  useEffect(() => {
+    const canvas = document.querySelector('canvas')
+    if (canvas) canvasRef.current = canvas as HTMLCanvasElement
+  }, [])
+
+  /* ================= SCREENSHOT ================= */
+  const takeScreenshot = () => {
+    if (!canvasRef.current) return null
+    return canvasRef.current.toDataURL('image/png')
+  }
+
+  const downloadScreenshot = () => {
+    const dataUrl = takeScreenshot()
+    if (!dataUrl) return
+    const a = document.createElement('a')
+    a.href = dataUrl
+    a.download = `outfit-${Date.now()}.png`
+    a.click()
+  }
+
+  /* ================= BG SWITCH ================= */
+  const prevBg = () => {
+    setBgIndex((prev) => (prev === 0 ? bgImages.length - 1 : prev - 1))
+  }
+
+  const nextBg = () => {
+    setBgIndex((prev) => (prev === bgImages.length - 1 ? 0 : prev + 1))
+  }
+
   const gender = modelId === 'avatar_female' ? 'female' : 'male'
   const bodyUrl = BODY_MODELS[gender][bodyType]
 
+
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <Canvas shadows camera={{ position: [0, 1.2, 3.2], fov: 40 }} dpr={[1, 2]}>
-        <color attach="background" args={[bgColor]} />
+      <Canvas
+        shadows
+        camera={{ position: [0, 1.2, 3.2], fov: 40 }}
+        dpr={[1, 2]}
+        gl={{ preserveDrawingBuffer: true }}
+      >
         <Suspense fallback={null}>
+          {/* 👉 Background Image */}
+          <BackgroundImage url={bgImages[bgIndex]} />
+
           <group position={[0, -0.9, 0]}>
             <BodyModel url={bodyUrl} />
-            {activeGarments.top && (
-              <Garment
-                url={activeGarments.top}
-              />
-            )}
-            {activeGarments.bottom && (
-              <Garment
-                url={activeGarments.bottom}
-              />
-            )}
-            {activeGarments.shoes && (
-              <Garment
-                url={activeGarments.shoes}
-              />
-            )}
+            {activeGarments.top && <Garment url={activeGarments.top} />}
+            {activeGarments.bottom && <Garment url={activeGarments.bottom} />}
+            {activeGarments.shoes && <Garment url={activeGarments.shoes} />}
 
             <ContactShadows
               position={[0, -0.9, 0]}
@@ -163,10 +130,11 @@ export default function ModelViewer() {
               scale={6}
               blur={2.5}
               far={3}
-              color={shadowColor}
+              color="#e0e0e0"
             />
           </group>
-          <Environment preset={envPreset} />
+
+          <Environment preset="studio" />
         </Suspense>
 
         <OrbitControls
@@ -176,48 +144,68 @@ export default function ModelViewer() {
           dampingFactor={0.08}
           minDistance={1.8}
           maxDistance={4.5}
-          minPolarAngle={Math.PI * 0.1}
-          maxPolarAngle={Math.PI * 0.9}
-          autoRotate={autoRotate}
-          autoRotateSpeed={0.8}
         />
       </Canvas>
-      <div className="absolute bottom-3 right-3 z-10 flex items-center gap-2">
-        <AutoRotateBtn />
-        <ResetViewBtn onReset={() => controlsRef.current?.reset()} /> {/* <-- gọi reset() */}
+
+      {/* ================= TOP RIGHT (CAMERA + DOWNLOAD) ================= */}
+      <div className="absolute top-6 right-6 z-10">
+        <div className="flex items-center gap-4 px-5 py-2 rounded-full bg-black/70 backdrop-blur-md shadow-lg">
+
+          <button
+            onClick={prevBg}
+            className="text-white/70 hover:text-white transition hover:scale-110"
+          >
+            <LeftOutlined />
+          </button>
+
+          <div className="text-white/80">
+            <PictureOutlined />
+          </div>
+
+          <button
+            onClick={nextBg}
+            className="text-white/70 hover:text-white transition hover:scale-110"
+          >
+            <RightOutlined />
+          </button>
+
+        </div>
+      </div>
+
+
+      {/* ================= BOTTOM RIGHT (BG SWITCH) ================= */}
+      <div className="absolute bottom-6 right-6 z-10">
+        <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-black/60 backdrop-blur-md shadow-md">
+
+          <button
+            onClick={() => {
+              const img = takeScreenshot()
+              if (img) window.open(img, '_blank')
+            }}
+            className="text-gray-300 hover:text-white transition hover:scale-110"
+            title="Chụp ảnh"
+          >
+            <CameraOutlined />
+          </button>
+
+          <button
+            onClick={downloadScreenshot}
+            className="text-gray-300 hover:text-white transition hover:scale-110"
+            title="Tải ảnh"
+          >
+            <DownloadOutlined />
+          </button>
+
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 left-6 z-10">
+        <img
+          src="/images/logo.png"
+          alt="logo"
+          className="h-6 w-auto opacity-80 hover:opacity-100 transition duration-300 drop-shadow-md"
+        />
       </div>
     </div>
-  )
-}
-
-
-function AutoRotateBtn() {
-  const { autoRotate, toggleAutoRotate } = useCustomizer()
-  return (
-    <button
-      onClick={toggleAutoRotate}
-      className={`inline-flex items-center gap-2 rounded-md border bg-white/90 px-3 py-1 text-sm shadow ${autoRotate ? 'border-orange-400 text-orange-500' : 'border-gray-200 text-gray-700'
-        }`}
-      title="Bật/Tắt xoay tự động"
-    >
-      {autoRotate ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-      <span className="hidden sm:inline">
-        {autoRotate ? 'Tự Động Xoay: Bật' : 'Tự Động Xoay: Tắt'}
-      </span>
-    </button>
-  )
-}
-
-type ResetViewBtnProps = { onReset: () => void }
-function ResetViewBtn({ onReset }: ResetViewBtnProps) {
-  return (
-    <button
-      onClick={onReset}
-      className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white/90 px-3 py-1 text-sm text-gray-700 shadow"
-      title="Đặt lại góc nhìn"
-    >
-      <RedoOutlined rotate={-90} />
-      <span className="hidden sm:inline">Đặt Lại Góc Nhìn</span>
-    </button>
   )
 }

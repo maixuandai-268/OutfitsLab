@@ -154,10 +154,10 @@ function GarmentsContent({ slot, garments, loading }: { slot: GarmentSlot, garme
                   : product.name
               }
               className={`relative aspect-[3/4] p-[1.5px] rounded-[1.25rem] transition-all ${!hasModel
-                  ? 'opacity-30 cursor-not-allowed border-[1.5px] border-transparent'
-                  : isSelected
-                    ? 'border-[1.5px] border-black hover:opacity-70'
-                    : 'border-[1.5px] border-transparent hover:opacity-70'
+                ? 'opacity-30 cursor-not-allowed border-[1.5px] border-transparent'
+                : isSelected
+                  ? 'border-[1.5px] border-black hover:opacity-70'
+                  : 'border-[1.5px] border-transparent hover:opacity-70'
                 }`}
             >
               <div className={`w-full h-full rounded-2xl flex items-center justify-center relative overflow-hidden ${isSelected ? 'bg-[#c8d4e3]' : 'bg-[#D6E0EC]'}`}>
@@ -181,92 +181,81 @@ function GarmentsContent({ slot, garments, loading }: { slot: GarmentSlot, garme
 }
 
 function BodyContent() {
-  const { modelId, setModelId, colors, setColor, bodyType, setBodyType } = useCustomizer()
+  const { modelId, setModelId, bodyType, setBodyType } = useCustomizer()
 
-  const SCALE_OPTIONS: { type: BodyType, scaleX: number }[] = [
-    { type: 'skinny', scaleX: 0.6 },
-    { type: 'fit', scaleX: 0.9 },
-    { type: 'fat', scaleX: 1.2 },
+  // ✅ mapping chuẩn giữa type và file SVG
+  const BODY_OPTIONS = [
+    { type: 'skinny', img: '/body/Bskinny.svg', label: 'Gầy' },
+    { type: 'fit', img: '/body/Bfit.svg', label: 'Chuẩn' },
+    { type: 'fat', img: '/body/Bfat.svg', label: 'Béo' },
   ]
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
+
       {/* Gender */}
       <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-4">
-          <Smile className="w-4 h-4 text-gray-500" /> Giới tính
+        <div className="text-sm font-semibold text-gray-900 mb-4">
+          Giới tính
         </div>
+
         <div className="grid grid-cols-2 gap-3">
-          {(['avatar_male', 'avatar_female'] as ModelId[]).map((id) => (
-            <button
-              key={id}
-              onClick={() => setModelId(id)}
-              className={`rounded-[1rem] border py-2.5 flex items-center justify-center font-bold text-[14px]  ${modelId === id
-                  ? 'border-black bg-black text-white shadow-sm'
-                  : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-                }`}
-            >
-              {id === 'avatar_female' ? 'Nữ' : 'Nam'}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Body Type */}
-      <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex justify-between items-center mb-5">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <PersonStanding className="w-4 h-4 text-gray-500" /> Thân hình
-          </div>
-        </div>
-
-        <div className="flex justify-between gap-5 items-end h-[90px] px-1">
-          {SCALE_OPTIONS.map((type) => {
-            const isSelected = type.type === bodyType
+          {(['avatar_male', 'avatar_female'] as ModelId[]).map((id) => {
+            const isSelected = modelId === id
 
             return (
               <button
-                key={type.type}
-                onClick={() => setBodyType(type.type)}
-                className={`w-full h-full rounded-[1.1rem] flex flex-col justify-center items-center overflow-hidden  ${isSelected
-                  ? 'bg-black border border-black'
-                  : 'bg-white border border-gray-200 hover:bg-gray-50'
+                key={id}
+                onClick={() => setModelId(id)}
+                className={`rounded-xl py-2.5 font-bold text-sm transition ${isSelected
+                  ? 'bg-black text-white'
+                  : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-100'
                   }`}
               >
-                <svg
-                  viewBox="0 0 24 36"
-                  fill={isSelected ? 'white' : '#9ca3af'}
-                  className="w-9 h-[60px]"
-                  style={{ transform: `scaleX(${type.scaleX})`, transformOrigin: 'center' }}
-                >
-                  <circle cx="12" cy="6" r="3.5" />
-                  <path d="M7 11.5 C5 11.5 4 12.5 4 15 L4 21 C4 22 5 23 6.5 23 L8 23 L8 35 C8 36.5 10 36.5 10 35 L10 24 L14 24 L14 35 C14 36.5 16 36.5 16 35 L16 23 L17.5 23 C19 23 20 22 20 21 L20 15 C20 12.5 19 11.5 17 11.5 L7 11.5 Z" />
-                </svg>
+                {id === 'avatar_female' ? 'Nữ' : 'Nam'}
               </button>
             )
           })}
         </div>
       </div>
 
-      {/* Skin */}
+      {/* Body Type */}
       <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <div className="w-4 h-4 rounded-md bg-white border-2 border-gray-300"></div> Màu da
-          </div>
-          <span className="text-gray-500 text-xs">{colors.skin}</span>
+        <div className="text-sm font-semibold text-gray-900 mb-4">
+          Thân hình
         </div>
 
-        <div className="w-full flex items-center justify-between gap-4">
-          <span className="text-[11px] text-gray-500 whitespace-nowrap"></span>
-          <div className="relative flex items-center w-full h-[6px] rounded-full overflow-hidden border border-gray-200 bg-gray-200">
-            <input
-              type="color"
-              value={colors.skin}
-              onChange={(e) => setColor('skin', e.target.value as `#${string}`)}
-              className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] cursor-pointer border-none bg-transparent"
-            />
-          </div>
+        <div className="grid grid-cols-3 gap-3">
+          {BODY_OPTIONS.map((item) => {
+            const isSelected = bodyType === item.type
+
+            return (
+              <button
+                key={item.type}
+                onClick={() => setBodyType(item.type as BodyType)}
+                className={`flex flex-col items-center justify-center rounded-xl p-2 transition ${isSelected
+                  ? 'bg-black text-white scale-105 shadow-md'
+                  : 'bg-white border border-gray-200 hover:bg-gray-100'
+                  }`}
+              >
+                {/* SVG BODY */}
+                <img
+                  src={item.img}
+                  alt={item.type}
+                  className={`w-10 h-16 object-contain transition ${isSelected ? 'opacity-100' : 'opacity-70'
+                    }`}
+                />
+
+                {/* LABEL */}
+                <span
+                  className={`text-[11px] mt-1 ${isSelected ? 'text-white' : 'text-gray-500'
+                    }`}
+                >
+                  {item.label}
+                </span>
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>

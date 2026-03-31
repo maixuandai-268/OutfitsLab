@@ -7,11 +7,11 @@ import { useRef, useMemo } from 'react'
 type Item = { id: string; title: string; price: number }
 
 const ITEMS: ReadonlyArray<Item> = [
-  { id: '1', title: 'Cotton Pajamas',     price: 26 },
-  { id: '2', title: 'Green Cotton Shirt',  price: 28 },
-  { id: '3', title: 'Muslin Set',          price: 32 },
-  { id: '4', title: 'Printed Shorts',      price: 18 },
-  { id: '5', title: 'Relax Tee',           price: 20 },
+  { id: '1', title: 'Cotton Pajamas', price: 26 },
+  { id: '2', title: 'Green Cotton Shirt', price: 28 },
+  { id: '3', title: 'Muslin Set', price: 32 },
+  { id: '4', title: 'Printed Shorts', price: 18 },
+  { id: '5', title: 'Relax Tee', price: 20 },
 ]
 
 function svgPlaceholder(w: number, h: number, text = 'No image') {

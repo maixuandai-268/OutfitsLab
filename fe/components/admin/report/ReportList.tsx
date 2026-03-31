@@ -76,7 +76,6 @@ export default function ReportList({
     const [selectedReport, setSelectedReport] = useState<Report | null>(null);
     const [takingReportId, setTakingReportId] = useState<number | null>(null);
 
-    // Filter reports based on selectedStatus
     const filteredReports = selectedStatus === "ALL"
         ? report
         : report.filter(r => r.status === selectedStatus);
@@ -121,7 +120,6 @@ export default function ReportList({
         onRefresh?.();
     };
 
-    // Loading state
     if (loading && report.length === 0) {
         return (
             <div className={`rounded-2xl border ${dark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} p-6`}>
@@ -136,7 +134,6 @@ export default function ReportList({
         );
     }
 
-    // Error state
     if (error) {
         return (
             <div className={`rounded-2xl border border-red-200 ${dark ? 'bg-red-950' : 'bg-red-50'} p-6`}>
@@ -159,7 +156,6 @@ export default function ReportList({
         );
     }
 
-    // Empty state
     if (filteredReports.length === 0) {
         return (
             <div className={`rounded-2xl border ${dark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} p-12 text-center`}>
@@ -172,7 +168,6 @@ export default function ReportList({
         );
     }
 
-    // Report list
     return (
         <div className="space-y-3">
             {filteredReports.map((report) => {
@@ -192,17 +187,13 @@ export default function ReportList({
                                 : 'border-gray-200 bg-white hover:border-gray-300'
                             }`}
                     >
-                        {/* Header - Click để expand */}
                         <button
                             onClick={() => setExpandedId(isExpanded ? null : report.id)}
                             className="w-full p-4 flex items-start gap-3 text-left"
                         >
-                            {/* Level Badge */}
                             <div className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold ${levelColor.bg} ${levelColor.text}`}>
                                 {levelColor.label}
                             </div>
-
-                            {/* Content */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
@@ -214,7 +205,6 @@ export default function ReportList({
                                         </p>
                                     </div>
 
-                                    {/* Status & Time */}
                                     <div className="flex items-center gap-2 shrink-0">
                                         <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${statusColor.bg} ${statusColor.text}`}>
                                             {statusColor.label}
@@ -232,12 +222,9 @@ export default function ReportList({
                                 </div>
                             </div>
                         </button>
-
-                        {/* Expanded Content */}
                         {isExpanded && (
                             <div className={`border-t ${dark ? 'border-gray-700 px-4 py-3' : 'border-gray-200 px-4 py-3'} bg-opacity-50`}>
                                 <div className="space-y-3">
-                                    {/* Description */}
                                     <div>
                                         <p className={`text-xs font-bold uppercase tracking-wide ${dark ? 'text-gray-500' : 'text-gray-600'}`}>
                                             Mô tả
@@ -247,7 +234,6 @@ export default function ReportList({
                                         </p>
                                     </div>
 
-                                    {/* Meta Info */}
                                     <div className="grid grid-cols-2 gap-3 pt-2">
                                         <div>
                                             <p className={`text-xs font-bold uppercase tracking-wide ${dark ? 'text-gray-500' : 'text-gray-600'}`}>
@@ -276,7 +262,6 @@ export default function ReportList({
                                     </div>
                                 </div>
 
-                                {/* Action Buttons */}
                                 <div className="flex gap-2 pt-3 border-t border-gray-200">
                                     {report.status === 'pending' && (
                                         <button
@@ -323,7 +308,6 @@ export default function ReportList({
                 );
             })}
 
-            {/* Handle Report Modal */}
             <HandleReportModal
                 report={selectedReport}
                 open={modalOpen}
@@ -332,7 +316,6 @@ export default function ReportList({
                 token={token}
             />
 
-            {/* Refresh Button */}
             {onRefresh && (
                 <div className="flex justify-center pt-2">
                     <button
@@ -342,7 +325,7 @@ export default function ReportList({
                             : 'bg-indigo-600 text-white hover:bg-indigo-700'
                             }`}
                     >
-                        ↻ Refresh
+                        Refresh
                     </button>
                 </div>
             )}

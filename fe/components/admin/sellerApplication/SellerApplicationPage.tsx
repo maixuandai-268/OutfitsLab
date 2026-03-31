@@ -1,16 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
-
-interface Shop {
-  id: number;
-  shop_name: string;
-  contact_email: string;
-  status: "pending" | "approved" | "Blocked";
-  description: string;
-  created_at: string;
-  ownerId: number;
-}
+import { sellerAPI, Shop } from "@/lib/api/seller";
 
 export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
   const [apps, setApps] = useState<Shop[]>([]);
@@ -20,9 +11,8 @@ export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
   const fetchShops = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/shops");
-      const data = await res.json();
-      setApps(Array.isArray(data) ? data : []);
+      const data = await sellerAPI.getShops();
+      setApps(data);
     } catch (error) {
       console.error("Lỗi fetch:", error);
     } finally {
@@ -36,12 +26,12 @@ export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
 
   const onApprove = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/shops/${id}/approve`, {
-        method: "PATCH",
-      });
-      if (res.ok) {
+      const success = await sellerAPI.approveShop(id);
+      if (success) {
         alert("Đã phê duyệt shop thành công!");
         fetchShops();
+      } else {
+        alert("Lỗi khi kết nối server phê duyệt.");
       }
     } catch (error) {
       alert("Lỗi khi kết nối server phê duyệt.");
@@ -50,12 +40,12 @@ export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
 
   const onReject = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/shops/${id}/reject`, {
-        method: "PATCH",
-      });
-      if (res.ok) {
+      const success = await sellerAPI.rejectShop(id);
+      if (success) {
         alert("Đã từ chối shop!");
         fetchShops();
+      } else {
+        alert("Lỗi khi kết nối server từ chối.");
       }
     } catch (error) {
       alert("Lỗi khi kết nối server từ chối.");
@@ -63,10 +53,10 @@ export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
   };
 
   const filtered = useMemo(() => {
-    const statusMap: any = { 
-      "Chờ xét duyệt": "pending", 
-      "Đã duyệt": "approved", 
-      "Từ chối": "rejected", 
+    const statusMap: any = {
+      "Chờ xét duyệt": "pending",
+      "Đã duyệt": "approved",
+      "Từ chối": "rejected",
     };
     if (tab === "Tất cả") return apps;
     return apps.filter((a) => a.status === statusMap[tab]);
@@ -77,15 +67,14 @@ export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
   return (
     <main className={`flex-1 p-6 ${dark ? "bg-gray-900" : "bg-amber-50/40"}`}>
       <h1 className={`text-2xl font-bold mb-6 ${dark ? "text-white" : "text-gray-800"}`}>Quản lý đăng ký Seller</h1>
-      
+
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
         {["Tất cả", "Chờ xét duyệt", "Đã duyệt", "Từ chối"].map(t => (
-          <button 
-            key={t} 
+          <button
+            key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all ${
-              tab === t ? "bg-teal-700 text-white border-teal-700" : "bg-white text-gray-600 border-gray-200"
-            }`}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all ${tab === t ? "bg-teal-700 text-white border-teal-700" : "bg-white text-gray-600 border-gray-200"
+              }`}
           >
             {t}
           </button>
@@ -103,7 +92,7 @@ export default function SellerApplicationsPage({ dark }: { dark: boolean }) {
               </div>
               <StatusBadge status={app.status} />
             </div>
-            
+
             <div className="border-t pt-4 flex flex-wrap justify-between items-center gap-3">
               <span className="text-xs text-gray-400 font-medium">
                 Gửi lúc: {new Date(app.created_at).toLocaleString('vi-VN')}
