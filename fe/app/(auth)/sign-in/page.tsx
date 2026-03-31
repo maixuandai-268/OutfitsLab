@@ -54,7 +54,7 @@ export default function SignIn() {
                     <div className="h-[74px] flex items-center justify-center">
                         <Link href={"/product"}>
                             <img
-                                src="/images/logo.png"
+                                src="/images/Logo.png"
                                 alt="OutfitsLab"
                                 width={300}
                                 height={60}
