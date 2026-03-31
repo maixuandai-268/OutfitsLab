@@ -2,9 +2,9 @@ import { create } from 'zustand'
 
 export type Gender = 'female' | 'male'
 export type Part = 'skin' | 'hat' | 'top' | 'bottom' | 'shoes'
-export type Size = 'XS'|'S'|'M'|'L'|'XL'
-export type Pattern = 'none'|'stripes'|'polka'|'plaid'
-export type BackgroundPreset = 'neutral'|'studio'|'shadow'|'gradientWarm'|'gradientCool'
+export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL'
+export type Pattern = 'none' | 'stripes' | 'polka' | 'plaid'
+export type BackgroundPreset = 'neutral' | 'studio' | 'shadow' | 'gradientWarm' | 'gradientCool'
 export type ModelId = 'avatar_female' | 'avatar_male'
 export type GarmentSlot = 'top' | 'bottom' | 'shoes' | 'hat'
 export type BodyType = 'skinny' | 'fit' | 'fat'
@@ -21,10 +21,10 @@ export interface GarmentProduct {
 
 export function resolveModelUrl(product: GarmentProduct, bodyType: BodyType): string | undefined {
   if (!product.model_url || product.model_url.length === 0) return undefined
-  
+
   const slot = product.garment_slot || product.type
   if (slot === 'shoes' || slot === 'hat') return product.model_url[0]
-  
+
   if (bodyType === 'skinny') return product.model_url[0]
   if (bodyType === 'fat') return product.model_url[2]
   return product.model_url[1] // fit
@@ -45,7 +45,7 @@ interface CustomizerState {
   setGender: (g: Gender) => void
   setModelId: (id: ModelId) => void
   setColor: (p: Part, c: Hex) => void
-  setPattern: (p: 'top'|'bottom'|'hat'|'shoes', pattern: Pattern) => void
+  setPattern: (p: 'top' | 'bottom' | 'hat' | 'shoes', pattern: Pattern) => void
   setBackground: (b: BackgroundPreset) => void
   setSize: (s: Size) => void
   setBodyType: (t: BodyType) => void
@@ -57,11 +57,11 @@ export const useCustomizer = create<CustomizerState>((set, get) => ({
   gender: 'male',
   modelId: 'avatar_male',
   autoRotate: true,
-  colors: { skin:'#f7c7a3', hat:'#f7c7a3', top:'#d9534f', bottom:'#506680', shoes:'#222222' },
-  patterns: { top:'none', bottom:'none', hat:'none', shoes:'none' },
+  colors: { skin: '#f7c7a3', hat: '#f7c7a3', top: '#d9534f', bottom: '#506680', shoes: '#222222' },
+  patterns: { top: 'none', bottom: 'none', hat: 'none', shoes: 'none' },
   background: 'neutral',
   size: 'M',
-  bodyType: 'fit',   
+  bodyType: 'fit',
   activeGarments: {},
   selectedGarments: {},
 

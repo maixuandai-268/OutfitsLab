@@ -2,6 +2,7 @@
 import StatCard from "./StatCard";
 import { UserOutlined, ShopOutlined, ShoppingOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
+import { sellerAPI } from "@/lib/api/seller";
 
 interface StatsRowProps {
   dark: boolean;
@@ -55,15 +56,19 @@ export default function StatsRow({ dark }: StatsRowProps) {
       try {
         const API_BASE = 'http://localhost:3000';
 
-        const res = await fetch(`${API_BASE}/api/admin/stats`);
+        const [adminRes, shopData] = await Promise.all([
+          fetch(`${API_BASE}/api/admin/stats`),
+          sellerAPI.getApprovedShopsWithGrowth(),
+        ]);
 
-        if (!res.ok) {
-          console.error("API lỗi:", res.status);
+        if (!adminRes.ok) {
+          console.error("Admin API lỗi:", adminRes.status);
           return;
         }
 
-        const data = await res.json();
-        console.log("DATA:", data);
+        const data = await adminRes.json();
+        console.log("ADMIN STATS DATA:", data);
+        console.log("APPROVED SHOPS DATA:", shopData);
 
         const usersOverview = data.users?.overview || {
           total: 0,
@@ -78,15 +83,16 @@ export default function StatsRow({ dark }: StatsRowProps) {
         const formatNumber = (num: number): string =>
           Number(num || 0).toLocaleString("vi-VN");
 
-        interface StatsRowProps {
-          dark: boolean;
-        }
+        // Format shop growth percentage with sign
+        const shopChangeText = shopData.percentChange >= 0
+          ? `+${shopData.percentChange}%`
+          : `${shopData.percentChange}%`;
 
         setStats([
           {
             title: "Tổng số người dùng",
-            value: "0",   // ⚠️ bạn chưa có users API
-            change: "0%",
+            value: formatNumber(usersOverview.total),
+            change: `+${usersOverview.growthRate || 0}%`,
             up: true,
             icon: <UserOutlined />,
             iconColor: "#f59e0b",
@@ -94,9 +100,9 @@ export default function StatsRow({ dark }: StatsRowProps) {
           },
           {
             title: "Shop đăng ký thành công",
-            value: formatNumber(usersOverview.total),
-            change: `+${usersOverview.growthRate || 0}%`,
-            up: true,
+            value: formatNumber(shopData.currentCount),
+            change: shopChangeText,
+            up: shopData.percentChange >= 0,
             icon: <ShopOutlined />,
             iconColor: "#6366f1",
             iconBg: "#eef2ff"

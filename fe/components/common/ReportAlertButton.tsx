@@ -5,10 +5,8 @@ import { useContext, useCallback, useState } from 'react';
 import { AuthContext } from '@/context/AuthContext';
 import { reportAPI } from '@/lib/api/reports';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type AlertLevel = 'error' | 'warning' | 'info';
-type AlertTarget = 'all' | 'shop' | 'user';
+type AlertTarget = 'all' | 'shop';
 
 interface AlertForm {
     title: string;
@@ -19,7 +17,7 @@ interface AlertForm {
 }
 
 interface AlertButtonProps {
-    onReportCreated?: () => void; // Callback để refetch danh sách
+    onReportCreated?: () => void;
 }
 
 const INITIAL_FORM: AlertForm = {
@@ -29,8 +27,6 @@ const INITIAL_FORM: AlertForm = {
     target: 'all',
     targetId: '',
 };
-
-// ─── Config ───────────────────────────────────────────────────────────────────
 
 const LEVEL_CONFIG = {
     error: {
@@ -71,10 +67,7 @@ const LEVEL_CONFIG = {
 const TARGET_CONFIG = {
     all: { label: 'Toàn hệ thống', icon: '🌐' },
     shop: { label: 'Cửa hàng cụ thể', icon: '🏪' },
-    user: { label: 'Người dùng cụ thể', icon: '👤' },
 };
-
-// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function AlertButton({ onReportCreated }: AlertButtonProps) {
     const auth = useContext(AuthContext);
@@ -90,12 +83,10 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
             setError('Bạn cần đăng nhập để gửi cảnh báo');
             return;
         }
-
         setLoading(true);
         setError(null);
 
         try {
-            // Gọi API tạo report
             await reportAPI.createReport(
                 {
                     title: form.title,
@@ -107,14 +98,11 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                 },
                 auth.token
             );
-
-            // Success
             setSubmitted(true);
             setTimeout(() => {
                 setSubmitted(false);
                 setOpen(false);
                 setForm(INITIAL_FORM);
-                // Gọi callback để refetch danh sách
                 onReportCreated?.();
             }, 1800);
         } catch (err) {
@@ -130,15 +118,12 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
 
     return (
         <>
-            {/* ── Overlay ── */}
             {open && (
                 <div
                     className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
                     onClick={() => setOpen(false)}
                 />
             )}
-
-            {/* ── Floating Panel ── */}
             <div
                 className="fixed inset-0 z-50 flex items-center justify-center transition-all duration-300"
                 style={{
@@ -149,8 +134,6 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
             >
                 <div className="w-96 rounded-2xl shadow-2xl overflow-hidden"
                     style={{ border: '1.5px solid #e5e7eb', background: '#fff' }}>
-
-                    {/* Header */}
                     <div className="px-5 py-4 flex items-center justify-between"
                         style={{ background: cfg.bg, borderBottom: `1.5px solid ${cfg.border}` }}>
                         <div className="flex items-center gap-2">
@@ -168,10 +151,8 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                             </svg>
                         </button>
                     </div>
-
                     {submitted ? (
-                        // ── Success State ──
-                        <div className="px-5 py-10 flex flex-col items-center gap-3">
+                        <div className="px-5 py-10 flex flex-col items-center gap-2">
                             <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth={2.5} className="w-7 h-7">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -181,9 +162,7 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                             <p className="text-xs text-gray-400">Hệ thống đang xử lý...</p>
                         </div>
                     ) : (
-                        // ── Form ──
                         <div className="px-5 py-4 space-y-4">
-                            {/* Error Message */}
                             {error && (
                                 <div className="px-3 py-2.5 rounded-lg bg-red-50 border border-red-200 flex items-start gap-2">
                                     <svg viewBox="0 0 24 24" fill="#dc2626" className="w-4 h-4 mt-0.5 shrink-0">
@@ -192,8 +171,6 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                                     <p className="text-xs text-red-700">{error}</p>
                                 </div>
                             )}
-
-                            {/* Tiêu đề */}
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">
                                     Tiêu đề cảnh báo <span className="text-red-400">*</span>
@@ -211,7 +188,6 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                                 />
                             </div>
 
-                            {/* Mức độ */}
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">
                                     Mức độ
@@ -239,12 +215,11 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                                 </div>
                             </div>
 
-                            {/* Đối tượng nhận */}
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">
                                     Đối tượng nhận
                                 </label>
-                                <div className="grid grid-cols-3 gap-2">
+                                <div className="w-full grid grid-cols-2 gap-2">
                                     {(Object.keys(TARGET_CONFIG) as AlertTarget[]).map(target => {
                                         const tc = TARGET_CONFIG[target];
                                         const active = form.target === target;
@@ -265,12 +240,10 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                                         );
                                     })}
                                 </div>
-
-                                {/* Input ID nếu chọn shop/user */}
-                                {form.target !== 'all' && (
+                                {form.target === 'shop' && (
                                     <input
                                         type="text"
-                                        placeholder={form.target === 'shop' ? 'Nhập Shop ID...' : 'Nhập User ID...'}
+                                        placeholder="Nhập Shop ID..."
                                         value={form.targetId}
                                         onChange={e => setForm(f => ({ ...f, targetId: e.target.value }))}
                                         className="mt-2 w-full px-3 py-2.5 rounded-xl text-sm outline-none"
@@ -279,7 +252,6 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                                 )}
                             </div>
 
-                            {/* Nội dung */}
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">
                                     Nội dung mô tả <span className="text-red-400">*</span>
@@ -297,7 +269,6 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                                 />
                             </div>
 
-                            {/* Submit */}
                             <button
                                 onClick={handleSubmit}
                                 disabled={loading || !form.title.trim() || !form.description.trim()}
@@ -331,7 +302,6 @@ export default function AlertButton({ onReportCreated }: AlertButtonProps) {
                 </div>
             </div>
 
-            {/* ── Floating Button ── */}
             <button
                 onClick={() => setOpen(o => !o)}
                 className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"

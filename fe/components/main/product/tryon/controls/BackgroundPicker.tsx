@@ -3,9 +3,9 @@ import { useCustomizer, BackgroundPreset } from '@/store/useCustomizer'
 import { BgColorsOutlined } from '@ant-design/icons'
 
 const PRESETS: ReadonlyArray<{ key: BackgroundPreset; label: string }> = [
-  { key: 'neutral',      label: 'Neutral' },
-  { key: 'studio',       label: 'Studio' },
-  { key: 'shadow',       label: 'Shadow' },
+  { key: 'neutral', label: 'Neutral' },
+  { key: 'studio', label: 'Studio' },
+  { key: 'shadow', label: 'Shadow' },
   { key: 'gradientWarm', label: 'Gradient warm' },
   { key: 'gradientCool', label: 'Gradient cool' },
 ]
