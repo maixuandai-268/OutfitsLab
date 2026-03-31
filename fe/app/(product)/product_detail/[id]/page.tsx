@@ -7,7 +7,7 @@ import { ProductDetail } from '@/components/product/ProductDetail';
 import ReviewSection from '@/components/product/ProductReview';
 import { ProductCard } from '@/components/product/ProductCard';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -51,21 +51,21 @@ export default function ProductDetailPage() {
   }
 
 
-const shop = product.shop;
+  const shop = product.shop;
 
-const totalShopReviews = shop?.reviewCount !== undefined 
-  ? Number(shop.reviewCount) 
-  : (shop?.products || []).reduce((acc: number, p: any) => {
+  const totalShopReviews = shop?.reviewCount !== undefined
+    ? Number(shop.reviewCount)
+    : (shop?.products || []).reduce((acc: number, p: any) => {
       return acc + (Array.isArray(p.reviews) ? p.reviews.length : 0);
     }, 0);
 
-const shopAvgRating = shop?.rating !== undefined 
-  ? Number(shop.rating).toFixed(1) 
-  : "5.0";
+  const shopAvgRating = shop?.rating !== undefined
+    ? Number(shop.rating).toFixed(1)
+    : "5.0";
 
-const shopProductCount = shop?.productCount !== undefined 
-  ? Number(shop.productCount) 
-  : (shop?.products || []).length;
+  const shopProductCount = shop?.productCount !== undefined
+    ? Number(shop.productCount)
+    : (shop?.products || []).length;
 
   return (
     <div className="bg-gray-50/30 min-h-screen pb-20">
@@ -79,17 +79,17 @@ const shopProductCount = shop?.productCount !== undefined
 
           <div className="flex items-center gap-5 md:border-r border-gray-100 pr-10 min-w-[320px] w-full md:w-auto">
             <div className="relative shrink-0">
-              <img 
+              <img
                 src={
-                  product.shop?.avatar_url?.startsWith('data:image') 
-                    ? product.shop.avatar_url 
+                  product.shop?.avatar_url?.startsWith('data:image')
+                    ? product.shop.avatar_url
                     : product.shop?.avatar_url?.startsWith('http')
-                      ? product.shop.avatar_url 
-                      : `http://localhost:3000${product.shop?.avatar_url || ''}`
-                } 
+                      ? product.shop.avatar_url
+                      : `https://outfitslab.onrender.com${product.shop?.avatar_url || ''}`
+                }
                 alt="shop-avatar"
                 className="w-20 h-20 rounded-full border border-gray-100 object-cover shadow-sm"
-                onError={(e) => { 
+                onError={(e) => {
                   (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(product.shop?.shop_name || 'S')}&background=F43F5E&color=fff`;
                 }}
               />
@@ -97,7 +97,7 @@ const shopProductCount = shop?.productCount !== undefined
             <div className="flex-1">
               <h3 className="text-lg font-bold text-gray-800 mb-3 truncate">{product.shop?.shop_name || "Tên Gian Hàng"}</h3>
               <div className="flex gap-2">
-                <Link 
+                <Link
                   href={`/shop_profile/${product.shop_id}`}
                   className="px-5 py-1.5 border border-pink-500 text-pink-500 text-xs hover:bg-pink-50 transition-all rounded-sm font-medium flex items-center gap-2"
                 >
@@ -116,7 +116,7 @@ const shopProductCount = shop?.productCount !== undefined
               <span className="text-gray-400 whitespace-nowrap">Đánh Giá</span>
               <span className="text-pink-500 font-bold">{shopAvgRating}</span>
             </div>
-            
+
 
             <div className="flex justify-between items-center">
               <span className="text-gray-400 whitespace-nowrap">Tổng lượt đánh giá</span>

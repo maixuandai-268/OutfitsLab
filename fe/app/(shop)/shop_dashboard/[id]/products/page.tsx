@@ -42,7 +42,7 @@ export default function ProductsPage() {
   const handleDelete = async (productId: number) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/products/${productId}`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/products/${productId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -62,7 +62,7 @@ export default function ProductsPage() {
     if (!shopIdUrl) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/products?shop_id=${shopIdUrl}`, {
+      const res = await fetch(`https://outfitslab.onrender.com/api/products?shop_id=${shopIdUrl}`, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Cache-Control': 'no-cache'

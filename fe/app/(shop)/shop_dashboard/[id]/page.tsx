@@ -13,10 +13,9 @@ import {
 
 } from "@ant-design/icons";
 
-// Giữ nguyên import mock data cho các mục chưa có API như Review, Order
 import { USERS, REVIEWS, ORDERS } from '../../shopData';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://outfitslab.onrender.com/api';
 
 interface Shop {
   id: number;
@@ -72,13 +71,12 @@ export default function OverviewPage() {
     fetchDashboardData();
   }, [shopId]);
 
-  // Temporary calculate from fetched products
   const activeProducts = products.length;
   const totalSales = products.reduce((sum, p) => sum + (p.price * p.salesCount), 0);
 
   const dashboardData = {
     totalSales: totalSales,
-    totalOrders: ORDERS.length, // Placeholder mock count
+    totalOrders: ORDERS.length, 
     activeProducts: activeProducts,
     avgRating: shop?.rating ? Number(shop.rating).toFixed(1) : "5.0",
   };
@@ -154,7 +152,6 @@ export default function OverviewPage() {
             <tbody className="text-sm">
               {ORDERS.slice(0, 4).map((order) => {
                 const customer = USERS.find(u => u.id === order.user_id);
-                // Find from current fetched shop products
                 const prod = products.find(p => p.id === order.product_id) || { name: 'Sản phẩm ' + order.product_id, price: 100000 };
                 return (
                   <tr key={order.id} className="hover:bg-orange-50/20 transition group">

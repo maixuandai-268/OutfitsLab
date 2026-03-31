@@ -10,7 +10,7 @@ export interface Shop {
     ownerId: number;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://outfitslab.onrender.com';
 
 export const sellerAPI = {
     /**
@@ -52,19 +52,16 @@ export const sellerAPI = {
         const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
         const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
-        // Count approved shops in current month
         const currentCount = approvedShops.filter((shop) => {
             const createdDate = new Date(shop.created_at);
             return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
         }).length;
 
-        // Count approved shops in previous month
         const prevCount = approvedShops.filter((shop) => {
             const createdDate = new Date(shop.created_at);
             return createdDate.getMonth() === prevMonth && createdDate.getFullYear() === prevYear;
         }).length;
 
-        // Calculate percentage change
         let percentChange = 0;
         if (prevCount === 0) {
             percentChange = currentCount > 0 ? 100 : 0;

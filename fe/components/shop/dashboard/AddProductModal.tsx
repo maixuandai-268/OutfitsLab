@@ -157,8 +157,8 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
     try {
       const isEdit = !!editData;
       const url = isEdit 
-        ? `http://localhost:3000/api/products/${editData.id}`
-        : "http://localhost:3000/api/products";
+        ? `https://outfitslab.onrender.com/api/products/${editData.id}`
+        : " https://outfitslab.onrender.com/api/products";
       
       const method = isEdit ? "PATCH" : "POST";
 
@@ -320,7 +320,7 @@ export default function AddProductModal({ isOpen, onClose, shopId, onSuccess, ed
                 {formData.images.length < 9 && (
                   <Upload
                     name="file"
-                    action="http://localhost:3000/api/upload"
+                    action="https://outfitslab.onrender.com/api/upload"
                     showUploadList={false}
                     multiple={true}
                     onChange={(info) => {
