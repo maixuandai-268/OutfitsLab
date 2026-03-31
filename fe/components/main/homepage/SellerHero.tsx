@@ -2,36 +2,31 @@
 
 import Link from "next/link";
 import {
-  ThunderboltOutlined, // Tăng Doanh Thu
-  UploadOutlined,      // Nhập Sản Phẩm Dễ Dàng
-  SafetyOutlined,      // Hỗ Trợ Toàn Bộ
+  ThunderboltOutlined, 
+  UploadOutlined,      
+  SafetyOutlined,     
 } from "@ant-design/icons";
 
 export default function SellerSection() {
   return (
     <section className="relative isolate">
-      {/* Không set background tại đây — dùng màu nền của layout/page */}
 
       <div className="mx-auto max-w-7.5xl px-6 md:px-8 py-14 md:py-20">
-        {/* Badge */}
         <div className="flex justify-center">
           <span className="inline-flex items-center rounded-full bg-[#E7F3FF] text-[#0B74DA] text-xs md:text-sm font-semibold px-3 py-1 border border-[#BFE0FF]">
             CHO CÁC NHÀ THIẾT KẾ
           </span>
         </div>
 
-        {/* Title */}
         <h1 className="mt-5 text-center text-3xl md:text-5xl font-extrabold tracking-tight text-[#111827]">
           Trở Thành <span className="text-[#F59E0B]">Seller</span> Ngay Hôm Nay!
         </h1>
 
-        {/* Subtitle */}
         <p className="mx-auto mt-4 max-w-3xl text-center text-[15px] md:text-lg leading-relaxed text-[#6B7280]">
           Mở gian hàng cá nhân, nhập mẫu 3D sẵn có (GLB từ Blender), và bán cho cộng đồng.
           Đăng ký miễn phí chỉ trong 2 phút!
         </p>
 
-        {/* Feature cards */}
         <div className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
   <FeatureCard
     title="Tăng Doanh Thu"
@@ -53,7 +48,6 @@ export default function SellerSection() {
   />
 </div>
 
-        {/* CTAs */}
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="#dang-ky"
@@ -88,7 +82,6 @@ export default function SellerSection() {
           </Link>
         </div>
 
-        {/* Stats */}
         <div className="mt-8 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
   <Stat
     value={<span className="text-[#F59E0B]">15K+</span>}
@@ -127,7 +120,6 @@ function FeatureCard({
   desc: string;
   tone: "orange" | "teal" | "yellow";
 }) {
-  // Màu nền nhạt cho ô icon (nhẹ nhàng như bản gốc)
   const toneStyles = {
     orange: { badgeTo: "#FFF3E0", dot: "#F59E0B" },
     teal:   { badgeTo: "#E6FFFB", dot: "#14B8A6" },
@@ -136,9 +128,7 @@ function FeatureCard({
 
   return (
     <div className="rounded-2xl bg-white p-4 md:p-5 shadow-[0_10px_30px_rgba(16,24,40,0.06)] border border-black/5">
-      {/* Stack dọc + căn giữa */}
       <div className="flex flex-col items-center text-center">
-        {/* Ô icon ở chính giữa */}
         <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white border border-black/5">
           <div
             className="absolute inset-0 rounded-xl"
@@ -149,14 +139,12 @@ function FeatureCard({
           />
           <div className="relative z-[1]">{icon}</div>
 
-          {/* chấm trang trí nhỏ (giữ lại như bản gốc; có thể bỏ nếu muốn tối giản) */}
           <span
             className="absolute -top-1 -right-1 h-2 w-2 rounded-full"
             style={{ backgroundColor: toneStyles.dot }}
           />
         </div>
 
-        {/* Text */}
         <h3 className="mt-3 text-[15px] md:text-base font-semibold text-[#111827]">
           {title}
         </h3>
