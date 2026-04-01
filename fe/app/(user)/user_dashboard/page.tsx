@@ -102,7 +102,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 pb-20 font-sans text-left text-zinc-900 pt-18">
+    <div className="min-h-screen bg-zinc-50 pb-20 font-sans text-left text-zinc-900 ">
       <div className="bg-white border-b border-zinc-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-8 pt-12 pb-8">
           <div className="flex flex-col md:flex-row items-start gap-8">
