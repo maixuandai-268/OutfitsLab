@@ -233,7 +233,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-1.5">
           <div className="w-[80px] h-auto flex items-center justify-center">
             <img
-              src="/images/logo.png"
+              src="/images/Logo.png"
               alt="OutfitsLab Logo"
               className="object-cover scale-150 transition-transform hover:scale-175"
             />
