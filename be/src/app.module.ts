@@ -30,6 +30,7 @@ const password = process.env.DB_PASSWORD || '';
 
       ssl: {
         rejectUnauthorized: false,
+        
       },
     }),
     AuthModule,

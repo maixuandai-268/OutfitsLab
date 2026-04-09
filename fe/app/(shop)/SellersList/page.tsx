@@ -59,9 +59,7 @@ export default function FeaturedSellersPage() {
 
   return (
     <div className="text-lg font-sans">
-      <Navbar />
-
-      <div className="max-w-310 mx-auto mb-7 mt-8">
+      <div className="max-w-310 mx-auto mb-7 ">
         <div className="mb-6">
           <input
             type="text"
